@@ -171,6 +171,20 @@
     <div id="comuni-analisi-footer" style="display:none"></div>
   </div>
 
+  <!-- Cerca via e numero civico (bottom-center) -->
+  <div id="address-search-box">
+    <div id="address-suggestions"></div>
+    <div id="address-search-row">
+      <svg class="addr-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="address-search-input" placeholder="Es. Piazza delle Iris, 41, Roma"
+             autocomplete="off" oninput="onAddressInput(this.value)"
+             onkeydown="onAddressKeydown(event)" aria-label="Cerca via e numero civico" />
+      <button id="address-search-clear" onclick="clearAddressSearch()" title="Cancella ricerca">✕</button>
+    </div>
+  </div>
+
   <!-- Pannello Analisi della mappa (bottom-left) -->
   <div id="analisi-panel">
     <div id="analisi-resize-handle"></div>
