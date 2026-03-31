@@ -865,7 +865,7 @@ style: {
   });
 
   function resetToItaly() {
-    map.fitBounds(ITALY_BOUNDS, { padding: 20, duration: 800 });
+    map.flyTo({ center: MAP_CENTER, zoom: MAP_ZOOM, duration: 800 });
   }
 
   const navControl = new maplibregl.NavigationControl({ showCompass: false });
