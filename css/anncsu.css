@@ -296,6 +296,8 @@
 
     /* ── Controllo layer comuni ──────────────────────────────────────────────── */
     .maplibregl-ctrl button.comuni-ctrl-active { color: rgb(58,134,255); }
+    .maplibregl-ctrl-home { display: flex; align-items: center; justify-content: center; }
+    .maplibregl-ctrl-home:hover { background: var(--accent-ok) !important; color: #fff !important; }
 
     /* ── Legenda ─────────────────────────────────────────────────────────────── */
     #legend {
