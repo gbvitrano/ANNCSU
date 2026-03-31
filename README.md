@@ -67,3 +67,9 @@ Il dataset degli aggiudicatari è stato costruito unendo più fonti open data. I
 ## Credits
 
 Web app progettata e sviluppata da [@gbvitrano](https://www.linkedin.com/in/gbvitrano/) in collaborazione con [Claude AI](https://claude.ai) (Anthropic), che ha affiancato le scelte architetturali, l'ottimizzazione del codice e lo sviluppo delle funzionalità di visualizzazione geospaziale.
+
+## Licenza
+
+[![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/deed.it)
+
+I contenuti di questa applicazione sono rilasciati sotto licenza [CC BY 4.0 – Attribuzione 4.0 Internazionale](https://creativecommons.org/licenses/by/4.0/deed.it). Sei libero di condividere e adattare il materiale per qualsiasi scopo, anche commerciale, a condizione di citare adeguatamente la fonte.
