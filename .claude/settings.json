@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:anncsu-open.github.io)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:anncsu.open.agenziaentrate.gov.it)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s \"https://pub-1e760dc850cb4a5aa5f8afb77713f8cd.r2.dev/anncsu-indirizzi.pmtiles\" --range 0-511)",
+      "Bash(xxd)",
+      "Bash(curl -s -I \"https://cdn.jsdelivr.net/npm/pmtiles@4/dist/pmtiles.js\")",
+      "Bash(curl -s \"https://cdn.jsdelivr.net/npm/pmtiles@4/dist/pmtiles.js\")",
+      "Bash(curl -sL -o /dev/null -w \"%{url_effective} %{http_code}\\\\n\" \"https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js\")",
+      "Bash(curl -s -r 0-5000 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://anncsu.open.agenziaentrate.gov.it/\" \"https://anncsu.open.agenziaentrate.gov.it/age-inspire/opendata/anncsu/getds.php?INDIR_SICI\")",
+      "Bash(curl -s -r 0-5000 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://anncsu.open.agenziaentrate.gov.it/\" \"https://anncsu.open.agenziaentrate.gov.it/age-inspire/opendata/anncsu/getds.php?INDIR_SICI\" -o /tmp/anncsu_sample.zip)",
+      "Bash(node -e \":*)",
+      "Bash(curl -s -r 0-5000 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://anncsu.open.agenziaentrate.gov.it/\" \"https://anncsu.open.agenziaentrate.gov.it/age-inspire/opendata/anncsu/getds.php?INDIR_SICI\" -o \"$TEMP/anncsu_sample.zip\")",
+      "Read(//f/TEMP/QGISWebExporter_Viewer/**)"
+    ]
+  }
+}

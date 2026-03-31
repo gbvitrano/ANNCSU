@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "mcp__Windows-MCP__Screenshot",
+      "WebFetch(domain:pub-1e760dc850cb4a5aa5f8afb77713f8cd.r2.dev)",
+      "Bash(npm --version)",
+      "Bash(curl -I \"http://localhost:3001/anncsu-indirizzi.pmtiles\" --max-time 10)",
+      "Bash(py --version)",
+      "Bash(python3.exe --version)",
+      "Bash(python -c \":*)"
+    ]
+  }
+}

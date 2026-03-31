@@ -794,7 +794,7 @@ style: {
       type: 'raster',
       tiles: ['https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'],
       tileSize: 256,
-      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors © <a href="https://www.linkedin.com/in/gbvitrano/" target="_blank">CARTO</a> | by <a href="https://carto.com/attribution" title="@gbvitrano "target="_blank">@gbvitrano</a>'
+      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors © <a href="https://www.linkedin.com/in/gbvitrano/" target="_blank">CARTO</a> | by <a href="https://www.linkedin.com/in/gbvitrano/" title="@gbvitrano "target="_blank">@gbvitrano</a> - <a href="https://creativecommons.org/licenses/by/4.0/deed.it" title="@gbvitrano "target="_blank">CC BY 4.0</a>  '
     }
   },
   layers: [{ id: 'carto-tiles', type: 'raster', source: 'carto' }]
