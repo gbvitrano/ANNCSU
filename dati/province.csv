@@ -1,0 +1,108 @@
+pkuid,cod_rip,cod_reg,cod_prov,cod_cm,cod_uts,den_prov,den_cm,den_uts,sigla,tipo_uts,shape_leng,shape_area,den_reg,den_rip,ontopia
+1,1,1,001,201,201,-,Torino,Torino,TO,Città metropolitana,524672.517515,6828295538.05,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/001
+2,1,1,002,0,2,Vercelli,-,Vercelli,VC,Provincia,405721.918228,2081509241.32,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/002
+3,1,1,003,0,3,Novara,-,Novara,NO,Provincia,240770.050417,1339821884.78,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/003
+4,1,1,004,0,4,Cuneo,-,Cuneo,CN,Provincia,473327.247891,6896013927,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/004
+5,1,1,005,0,5,Asti,-,Asti,AT,Provincia,299541.621473,1510005129.2,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/005
+6,1,1,006,0,6,Alessandria,-,Alessandria,AL,Provincia,454212.481984,3558001962.63,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/006
+7,1,2,007,0,7,Aosta,-,Aosta,AO,Provincia,306845.25087,3259897160.65,Valle d'Aosta,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/007
+8,1,7,008,0,8,Imperia,-,Imperia,IM,Provincia,171553.085449,1156507446.26,Liguria,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/008
+9,1,7,009,0,9,Savona,-,Savona,SV,Provincia,257168.066883,1545690016.75,Liguria,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/009
+10,1,7,010,210,210,-,Genova,Genova,GE,Provincia,356234.820595,1833925671.8,Liguria,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/010
+11,1,7,011,0,11,La Spezia,-,La Spezia,SP,Provincia,208193.743344,882294977107,Liguria,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/011
+12,1,3,012,0,12,Varese,-,Varese,VA,Provincia,235867.619899,1198537559.13,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/012
+13,1,3,013,0,13,Como,-,Como,CO,Provincia,250790.196567,1279588467.53,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/013
+14,1,3,014,0,14,Sondrio,-,Sondrio,SO,Provincia,457198.848864,3194532940.43,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/014
+15,1,3,015,215,215,-,Milano,Milano,MI,Città metropolitana,290638.436676,1573936305.02,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/015
+16,1,3,016,0,16,Bergamo,-,Bergamo,BG,Provincia,299913.479642,2754985456.52,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/016
+17,1,3,017,0,17,Brescia,-,Brescia,BS,Provincia,434554.545578,4785483260.89,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/017
+18,1,3,018,0,18,Pavia,-,Pavia,PV,Provincia,436906.321711,2968474248.32,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/018
+19,1,3,019,0,19,Cremona,-,Cremona,CR,Provincia,352910.714783,1768367641.48,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/019
+20,1,3,020,0,20,Mantova,-,Mantova,MN,Provincia,374271.190467,2341586503.54,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/020
+21,2,4,021,0,21,Bolzano,-,Bolzano,BZ,Provincia autonoma,607277.924312,7399184318.38,Trentino-Alto Adige,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/021
+22,2,4,022,0,22,Trento,-,Trento,TN,Provincia autonoma,579137.662668,6207066491.28,Trentino-Alto Adige,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/022
+23,2,5,023,0,23,Verona,-,Verona,VR,Provincia,328780.447066,3096050584.51,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/023
+24,2,5,024,0,24,Vicenza,-,Vicenza,VI,Provincia,310835.393632,2722142886.7,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/024
+25,2,5,025,0,25,Belluno,-,Belluno,BL,Provincia,408363.380912,3609640502.73,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/025
+26,2,5,026,0,26,Treviso,-,Treviso,TV,Provincia,286121.505362,2478531837.92,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/026
+27,2,5,027,227,227,-,Venezia,Venezia,VE,Città metropolitana,430672.700202,2479879469.15,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/027
+28,2,5,028,0,28,Padova,-,Padova,PD,Provincia,318862.568638,2143613346.81,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/028
+29,2,5,029,0,29,Rovigo,-,Rovigo,RO,Provincia,324736.063421,1824185181.27,Veneto,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/029
+30,2,6,030,0,30,Udine,-,Udine,UD,Unità non amministrativa,476290.074984,4970401847.64,Friuli-Venezia Giulia,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/030
+31,2,6,031,0,31,Gorizia,-,Gorizia,GO,Unità non amministrativa,170104.005669,474738172851,Friuli-Venezia Giulia,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/031
+32,2,6,032,0,32,Trieste,-,Trieste,TS,Unità non amministrativa,101527.993273,212308995149,Friuli-Venezia Giulia,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/032
+33,2,8,033,0,33,Piacenza,-,Piacenza,PC,Provincia,325550.333259,2586250137.5,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/033
+34,2,8,034,0,34,Parma,-,Parma,PR,Provincia,315043.100325,3446573993.56,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/034
+35,2,8,035,0,35,Reggio nell'Emilia,-,Reggio nell'Emilia,RE,Provincia,257635.010513,2291949637.62,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/035
+36,2,8,036,0,36,Modena,-,Modena,MO,Provincia,326479.45661,2686944249.49,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/036
+37,2,8,037,237,237,-,Bologna,Bologna,BO,Città metropolitana,390278.213819,3702315130.95,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/037
+38,2,8,038,0,38,Ferrara,-,Ferrara,FE,Provincia,344529.131619,2627232701.33,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/038
+39,2,8,039,0,39,Ravenna,-,Ravenna,RA,Provincia,294133.109804,1858796756.43,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/039
+40,2,8,040,0,40,Forli'-Cesena,-,Forli'-Cesena,FC,Provincia,255579.989496,2377645733.9,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/040
+41,3,11,041,0,41,Pesaro e Urbino,-,Pesaro e Urbino,PU,Provincia,312684.81976,2511586518.82,Marche,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/041
+42,3,11,042,0,42,Ancona,-,Ancona,AN,Provincia,267790.142471,1962861079.57,Marche,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/042
+43,3,11,043,0,43,Macerata,-,Macerata,MC,Provincia,312366.147013,2778894911.12,Marche,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/043
+44,3,11,044,0,44,Ascoli Piceno,-,Ascoli Piceno,AP,Provincia,199286.873979,1228792429.87,Marche,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/044
+45,3,9,045,0,45,Massa Carrara,-,Massa Carrara,MS,Provincia,197904.285583,1154654733.26,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/045
+46,3,9,046,0,46,Lucca,-,Lucca,LU,Provincia,208366.916241,1773781408.06,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/046
+47,3,9,047,0,47,Pistoia,-,Pistoia,PT,Provincia,168661.783485,964221999.39,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/047
+48,3,9,048,248,248,-,Firenze,Firenze,FI,Città metropolitana,409075.627636,3513788595.44,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/048
+49,3,9,049,0,49,Livorno,-,Livorno,LI,Provincia,438956.637161,1215274365.23,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/049
+50,3,9,050,0,50,Pisa,-,Pisa,PI,Provincia,332645.991492,2445915882.8,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/050
+51,3,9,051,0,51,Arezzo,-,Arezzo,AR,Provincia,369655.076224,3233772313.18,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/051
+52,3,9,052,0,52,Siena,-,Siena,SI,Provincia,387319.209088,3820972791.39,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/052
+53,3,9,053,0,53,Grosseto,-,Grosseto,GR,Provincia,442428.3364,4502562423.78,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/053
+54,3,10,054,0,54,Perugia,-,Perugia,PG,Provincia,588094.661637,6337453430.15,Umbria,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/054
+55,3,10,055,0,55,Terni,-,Terni,TR,Provincia,372130.132333,2125209391.57,Umbria,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/055
+56,3,12,056,0,56,Viterbo,-,Viterbo,VT,Provincia,395777.392533,3615295887.92,Lazio,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/056
+57,3,12,057,0,57,Rieti,-,Rieti,RI,Provincia,373738.024188,2750253391.17,Lazio,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/057
+58,3,12,058,258,258,-,Roma,Roma,RM,Città metropolitana,593144.914569,5367114417.26,Lazio,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/058
+59,3,12,059,0,59,Latina,-,Latina,LT,Provincia,425800.162206,2257669540.91,Lazio,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/059
+60,3,12,060,0,60,Frosinone,-,Frosinone,FR,Provincia,326736.427462,3247437863.76,Lazio,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/060
+61,4,15,061,0,61,Caserta,-,Caserta,CE,Provincia,320637.045523,2652599924.93,Campania,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/061
+62,4,15,062,0,62,Benevento,-,Benevento,BN,Provincia,291839.322817,2080070534.39,Campania,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/062
+63,4,15,063,263,263,-,Napoli,Napoli,NA,Città metropolitana,356002.572787,1179728362.4,Campania,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/063
+64,4,15,064,0,64,Avellino,-,Avellino,AV,Provincia,352110.886114,2805329463.41,Campania,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/064
+65,4,15,065,0,65,Salerno,-,Salerno,SA,Provincia,465641.077632,4956605774.42,Campania,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/065
+66,4,13,066,0,66,L'Aquila,-,L'Aquila,AQ,Provincia,462394.368169,5047540138.48,Abruzzo,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/066
+67,4,13,067,0,67,Teramo,-,Teramo,TE,Provincia,213687.500645,1953983625.3,Abruzzo,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/067
+68,4,13,068,0,68,Pescara,-,Pescara,PE,Provincia,196836.689391,1229699555.16,Abruzzo,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/068
+69,4,13,069,0,69,Chieti,-,Chieti,CH,Provincia,259588.072114,2599408502.35,Abruzzo,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/069
+70,4,14,070,0,70,Campobasso,-,Campobasso,CB,Provincia,292169.895323,2925951924.81,Molise,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/070
+71,4,16,071,0,71,Foggia,-,Foggia,FG,Provincia,465964.088918,7007323331.21,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/071
+72,4,16,072,272,272,-,Bari,Bari,BA,Città metropolitana,362192.623588,3862751014.19,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/072
+73,4,16,073,0,73,Taranto,-,Taranto,TA,Provincia,351851.740835,2467722841.12,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/073
+74,4,16,074,0,74,Brindisi,-,Brindisi,BR,Provincia,250589.435036,1861087711.25,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/074
+75,4,16,075,0,75,Lecce,-,Lecce,LE,Provincia,270191.226401,2797716162.85,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/075
+76,4,17,076,0,76,Potenza,-,Potenza,PZ,Provincia,578685.790668,6593281262.59,Basilicata,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/076
+77,4,17,077,0,77,Matera,-,Matera,MT,Provincia,363236.725054,3479656696.54,Basilicata,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/077
+78,4,18,078,0,78,Cosenza,-,Cosenza,CS,Provincia,517944.100288,6708284930.22,Calabria,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/078
+79,4,18,079,0,79,Catanzaro,-,Catanzaro,CZ,Provincia,321942.320509,2415744819.43,Calabria,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/079
+80,4,18,080,280,280,-,Reggio di Calabria,Reggio di Calabria,RC,Città metropolitana,307667.66784,3209153692.19,Calabria,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/080
+81,5,19,081,0,81,Trapani,-,Trapani,TP,Libero consorzio di comuni,389642.41312,2470305848.95,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/081
+82,5,19,082,282,282,-,Palermo,Palermo,PA,Città metropolitana,523404.753558,5007669064.62,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/082
+83,5,19,083,283,283,-,Messina,Messina,ME,Città metropolitana,543754.050883,3264859841.77,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/083
+84,5,19,084,0,84,Agrigento,-,Agrigento,AG,Libero consorzio di comuni,455343.163051,3053410589.48,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/084
+85,5,19,085,0,85,Caltanissetta,-,Caltanissetta,CL,Libero consorzio di comuni,388933.148881,2137186554.28,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/085
+86,5,19,086,0,86,Enna,-,Enna,EN,Libero consorzio di comuni,342317.886378,2574348472.81,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/086
+87,5,19,087,287,287,-,Catania,Catania,CT,Città metropolitana,505901.173158,3574993810.37,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/087
+88,5,19,088,0,88,Ragusa,-,Ragusa,RG,Libero consorzio di comuni,253196.455722,1623966337.32,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/088
+89,5,19,089,0,89,Siracusa,-,Siracusa,SR,Libero consorzio di comuni,371814.581978,2124260113.58,Sicilia,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/089
+90,5,20,090,0,90,Sassari,-,Sassari,SS,Provincia,900187.011614,7694741897.71,Sardegna,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/090
+91,5,20,091,0,91,Nuoro,-,Nuoro,NU,Provincia,538142.955928,5639590202.91,Sardegna,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/091
+92,5,20,092,292,292,-,Cagliari,Cagliari,CA,Città metropolitana,237927.437763,1250078451.5,Sardegna,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/092
+93,2,6,093,0,93,Pordenone,-,Pordenone,PN,Unità non amministrativa,271563.54428,2275299182.15,Friuli-Venezia Giulia,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/093
+94,4,14,094,0,94,Isernia,-,Isernia,IS,Provincia,252398.302262,1534349808.87,Molise,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/094
+95,5,20,095,0,95,Oristano,-,Oristano,OR,Provincia,372608.73406,2990784344.46,Sardegna,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/095
+96,1,1,096,0,96,Biella,-,Biella,BI,Provincia,154590.41645,913922316333,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/096
+97,1,3,097,0,97,Lecco,-,Lecco,LC,Provincia,174895.384544,805582293049,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/097
+98,1,3,098,0,98,Lodi,-,Lodi,LO,Provincia,228840.905426,784538248945,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/098
+99,2,8,099,0,99,Rimini,-,Rimini,RN,Provincia,253416.809544,923123104627,Emilia-Romagna,Nord-est,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/099
+100,3,9,100,0,100,Prato,-,Prato,PO,Provincia,116928.299616,365872341581,Toscana,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/100
+101,4,18,101,0,101,Crotone,-,Crotone,KR,Provincia,250876.217062,1735218214.2,Calabria,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/101
+102,4,18,102,0,102,Vibo Valentia,-,Vibo Valentia,VV,Provincia,199369.757599,1149573307.72,Calabria,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/102
+103,1,1,103,0,103,Verbano-Cusio-Ossola,-,Verbano-Cusio-Ossola,VB,Provincia,293903.552483,2261152968.59,Piemonte,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/103
+104,1,3,108,0,108,Monza e della Brianza,-,Monza e della Brianza,MB,Provincia,117107.011328,405893298477,Lombardia,Nord-ovest,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/108
+105,3,11,109,0,109,Fermo,-,Fermo,FM,Provincia,192502.020918,863643123229,Marche,Centro,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/109
+106,4,16,110,0,110,Barletta-Andria-Trani,-,Barletta-Andria-Trani,BT,Provincia,232243.506303,1542118161.03,Puglia,Sud,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/110
+107,5,20,111,0,111,Sud Sardegna,-,Sud Sardegna,SU,Provincia,705665.406486,6532815349.94,Sardegna,Isole,https://w3id.org/italia/controlled-vocabulary/territorial-classifications/provinces/111
