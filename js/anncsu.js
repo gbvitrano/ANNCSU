@@ -74,8 +74,62 @@
       const res = await fetch('https://raw.githubusercontent.com/anncsu-open/anncsu-viewer/main/data/comuni.json');
       allComuni = await res.json();
       buildComuneList();
+      applyUrlParams();
     } catch(e) {
       console.warn('comuni.json non caricato:', e);
+    }
+  }
+
+  // ── ROUTING URL (?comune=CODISTAT) ──────────────────────────────────────────
+  function applyUrlParams() {
+    const codistat = new URLSearchParams(window.location.search).get('comune');
+    if (!codistat) return;
+
+    const c = allComuni.find(x => x.codice_istat === codistat);
+    if (!c) return;
+
+    // Seleziona regione e provincia corrispondenti al comune
+    const provCode = codistat.slice(0, 3);
+    const regName  = PROV_TO_REG[provCode];
+    if (regName) selectedRegions.add(regName);
+    selectedProvinces.add(provCode);
+    selectedComune = c;
+
+    updateRegionLabel();
+    updateProvinceLabel();
+    buildProvinceList();
+    buildComuneList();
+    updateComuneLabel();
+    applyFilter();
+
+    // Zoom al poligono del comune tramite il source comuni (PMTiles)
+    const doZoom = () => {
+      map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
+      map.once('idle', () => {
+        const cod = parseInt(codistat, 10);
+        const features = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
+          .filter(f => parseInt(f.properties.pro_com_t, 10) === cod);
+        map.setLayoutProperty('comuni-fill', 'visibility', 'none');
+        if (features.length === 0) return;
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        features.forEach(f => {
+          const rings = f.geometry.type === 'Polygon'
+            ? f.geometry.coordinates
+            : f.geometry.coordinates.flat(1);
+          rings[0].forEach(([lng, lat]) => {
+            if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+            if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+          });
+        });
+        if (isFinite(minLng))
+          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14 });
+      });
+    };
+
+    if (map.loaded()) {
+      doZoom();
+    } else {
+      map.once('load', doZoom);
     }
   }
 
