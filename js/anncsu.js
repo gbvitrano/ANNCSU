@@ -12,6 +12,31 @@
   ];
   const COMUNI_PMTILES_URL = 'https://gbvitrano.github.io/ANNCSU/dati/comuni.pmtiles';
 
+  // Centroidi approssimativi delle 20 regioni italiane [lon, lat]
+  // usati per caricare le tiles dei comuni prima di interrogare querySourceFeatures
+  const REGION_CENTROIDS = {
+    'Valle d\'Aosta':        [ 7.37, 45.73],
+    'Piemonte':              [ 8.00, 45.07],
+    'Lombardia':             [ 9.80, 45.47],
+    'Trentino-Alto Adige':   [11.12, 46.42],
+    'Veneto':                [11.88, 45.44],
+    'Friuli-Venezia Giulia': [13.23, 46.06],
+    'Liguria':               [ 8.90, 44.41],
+    'Emilia-Romagna':        [11.30, 44.49],
+    'Toscana':               [11.25, 43.77],
+    'Umbria':                [12.39, 42.93],
+    'Marche':                [13.17, 43.62],
+    'Lazio':                 [12.57, 41.90],
+    'Abruzzo':               [13.93, 42.35],
+    'Molise':                [14.55, 41.62],
+    'Campania':              [14.87, 40.83],
+    'Puglia':                [16.55, 40.79],
+    'Basilicata':            [15.97, 40.64],
+    'Calabria':              [16.55, 38.90],
+    'Sicilia':               [13.90, 37.60],
+    'Sardegna':              [ 9.10, 40.12],
+  };
+
   // ── PROVINCE / REGIONI (caricate da CSV) ────────────────────────────────────
   let PROV_NAMES  = {}; // { cod: name }
   let PROV_TO_REG = {}; // { cod: region }
@@ -834,6 +859,8 @@
         document.getElementById(`${id}-panel`).classList.remove('open');
       }
     });
+    const addrBox = document.getElementById('address-search-box');
+    if (addrBox && !addrBox.contains(e.target)) closeAddrSuggestions();
   });
 
   // ── MAPPA ────────────────────────────────────────────────────────────────────
@@ -995,8 +1022,8 @@ style: {
           ['==', ['get', 'out_of_bounds'], true], COLOR_ERR,
           COLOR_OK
         ],
-        'text-halo-color': 'rgba(0,0,0,0.75)',
-        'text-halo-width': 1.2
+        'text-halo-color': 'rgba(0,0,0,0)',
+        'text-halo-width': 0
       }
     });
 
@@ -1473,6 +1500,304 @@ style: {
   }
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeInfoModal(); });
+
+  // ── CERCA INDIRIZZO (100% PMTiles — nessuna chiamata esterna) ────────────────
+  let _addrDebounce   = null;
+  let _addrMarker     = null;
+  let _addrResults    = [];
+  let _addrHlIdx      = -1;
+  let _lastParsedAddr = null;
+
+  // Normalizza stringa per confronto fuzzy (minuscolo, senza accenti)
+  function normalizeStr(s) {
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
+
+  // Formato: "Via Roma, 50, Palermo" | "Via Roma 50, Palermo" | "Via Roma, Palermo" | "Palermo"
+  function parseItalianAddress(input) {
+    const parts = input.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 3) {
+      return { street: parts[0], housenumber: parts[1], city: parts.slice(2).join(', ') };
+    }
+    if (parts.length === 2) {
+      const m = parts[0].match(/^(.+?)\s+(\d+\w*)$/);
+      if (m) return { street: m[1].trim(), housenumber: m[2], city: parts[1] };
+      return { street: parts[0], housenumber: '', city: parts[1] };
+    }
+    return { street: '', housenumber: '', city: input };
+  }
+
+  function onAddressInput(val) {
+    document.getElementById('address-search-clear').classList.toggle('visible', val.length > 0);
+    _addrHlIdx = -1;
+    clearTimeout(_addrDebounce);
+    if (val.length < 2) { closeAddrSuggestions(); return; }
+    _addrDebounce = setTimeout(() => searchAddressInPMTiles(val), 300);
+  }
+
+  // Ricerca comune in allComuni (dati già in memoria), senza chiamate esterne
+  function searchAddressInPMTiles(input) {
+    const parsed = parseItalianAddress(input);
+    _lastParsedAddr = parsed;
+
+    if (!allComuni.length) {
+      const box = document.getElementById('address-suggestions');
+      box.innerHTML = '<div class="addr-sug-empty">Dati comuni in caricamento…</div>';
+      box.classList.add('open');
+      return;
+    }
+
+    const cityQuery = normalizeStr(parsed.city || input);
+    const matches = allComuni
+      .filter(c => {
+        const n = normalizeStr(c.nome_comune);
+        return n.startsWith(cityQuery) || n.includes(cityQuery);
+      })
+      .sort((a, b) => {
+        const aN = normalizeStr(a.nome_comune), bN = normalizeStr(b.nome_comune);
+        const aS = aN.startsWith(cityQuery), bS = bN.startsWith(cityQuery);
+        if (aS && !bS) return -1;
+        if (!aS && bS) return 1;
+        return a.nome_comune.localeCompare(b.nome_comune, 'it');
+      })
+      .slice(0, 8);
+
+    if (!matches.length) {
+      const box = document.getElementById('address-suggestions');
+      box.innerHTML = '<div class="addr-sug-empty">Nessun comune trovato — es: Piazza delle Iris, 41, Roma</div>';
+      box.classList.add('open');
+      return;
+    }
+
+    _addrResults = matches.map(c => ({
+      codice_istat: c.codice_istat,
+      nome_comune:  c.nome_comune,
+      street:       parsed.street,
+      housenumber:  parsed.housenumber,
+      label: [parsed.street, parsed.housenumber, c.nome_comune].filter(Boolean).join(', ')
+    }));
+
+    renderAddressSuggestions(_addrResults);
+  }
+
+  function renderAddressSuggestions(results) {
+    const box = document.getElementById('address-suggestions');
+    box.innerHTML = results.map((r, i) => {
+      const main = r.street
+        ? `${r.street}${r.housenumber ? ', ' + r.housenumber : ''}`
+        : r.nome_comune;
+      const sub = r.street ? r.nome_comune : '';
+      return `<div class="addr-sug-item" data-idx="${i}" onclick="selectAddress(${i})">
+        <span class="addr-sug-main">${main}</span>
+        ${sub ? `<span class="addr-sug-sub">${sub}</span>` : ''}
+      </div>`;
+    }).join('');
+    box.classList.add('open');
+  }
+
+  // Calcola il bbox del comune interrogando il source PMTiles già caricato
+  function getComuneBbox(codice_istat) {
+    const cod = parseInt(codice_istat, 10);
+    const features = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
+      .filter(f => parseInt(f.properties.pro_com_t, 10) === cod);
+    if (!features.length) return null;
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+    features.forEach(f => {
+      const rings = f.geometry.type === 'Polygon'
+        ? f.geometry.coordinates
+        : f.geometry.coordinates.flat(1);
+      rings[0].forEach(([lng, lat]) => {
+        if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+      });
+    });
+    return isFinite(minLng) ? [[minLng, minLat], [maxLng, maxLat]] : null;
+  }
+
+  // Mostra un messaggio nella barra di ricerca senza chiuderla
+  function showAddrMsg(msg) {
+    const box = document.getElementById('address-suggestions');
+    box.innerHTML = `<div class="addr-sug-empty">${msg}</div>`;
+    box.classList.add('open');
+  }
+
+  // Cerca via/civico nel source ANNCSU.
+  // Usa querySourceFeatures (ignora filtri di layer) + NOME_COMUNE per identificare
+  // il comune in modo affidabile + match esatto per parola sull'ODONIMO.
+  function searchInANNCSU(nome_comune, street, housenumber, comuneCenter) {
+    const normComune = normalizeStr(nome_comune);
+    const normStreet = normalizeStr(street || '');
+
+    // querySourceFeatures non tiene conto dei filtri di layer attivi
+    const allFeats = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' });
+
+    // Filtra per NOME_COMUNE (più affidabile di CODICE_ISTAT per il confronto)
+    const comuneFeats = allFeats.filter(f =>
+      normalizeStr(f.properties.NOME_COMUNE || '') === normComune
+    );
+
+    if (!comuneFeats.length || !street) {
+      _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+        .setLngLat(comuneCenter)
+        .addTo(map);
+      if (!comuneFeats.length)
+        showAddrMsg('Nessun civico ANNCSU caricato per questo comune — riprova dopo aver navigato nella zona.');
+      return;
+    }
+
+    // Match ODONIMO con confine di parola: "VIA ROMA" deve corrispondere a
+    // "VIA ROMA" e "VIA ROMA NUOVA", ma NON a "VIA ROMAGNA".
+    const streetFeats = comuneFeats.filter(f => {
+      const n = normalizeStr(f.properties.ODONIMO || '');
+      return n === normStreet || n.startsWith(normStreet + ' ');
+    });
+
+    if (!streetFeats.length) {
+      _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+        .setLngLat(comuneCenter)
+        .addTo(map);
+      showAddrMsg(`"${street}" non trovata in ${nome_comune} nei tiles caricati.`);
+      return;
+    }
+
+    // Calcola il bbox della via
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+    streetFeats.forEach(f => {
+      const [lng, lat] = f.geometry.coordinates;
+      if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+      if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+    });
+    const streetCenter = [(minLng + maxLng) / 2, (minLat + maxLat) / 2];
+
+    // Cerca il civico esatto se specificato
+    if (housenumber) {
+      const targetNum = housenumber.toUpperCase().trim();
+      const civic = streetFeats.find(f => {
+        const civ = (f.properties.CIVICO    || '').toString().toUpperCase().trim();
+        const esp = (f.properties.ESPONENTE || '').toString().toUpperCase().trim();
+        return civ === targetNum || (esp && `${civ}/${esp}` === targetNum);
+      });
+      if (civic) {
+        const [clon, clat] = civic.geometry.coordinates;
+        _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+          .setLngLat([clon, clat])
+          .addTo(map);
+        map.easeTo({ center: [clon, clat], zoom: 19, duration: 600 });
+        return;
+      }
+    }
+
+    // Civico non trovato (o non specificato): zoom sulla via + marker al suo centro
+    _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+      .setLngLat(streetCenter)
+      .addTo(map);
+    map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 18 });
+  }
+
+  function selectAddress(idx) {
+    const r = _addrResults[idx];
+    if (!r) return;
+
+    document.getElementById('address-search-input').value = r.label || r.nome_comune;
+    document.getElementById('address-search-clear').classList.add('visible');
+    closeAddrSuggestions();
+    if (_addrMarker) { _addrMarker.remove(); _addrMarker = null; }
+
+    const { codice_istat, nome_comune, street, housenumber } = r;
+
+    const doNavigate = () => {
+      // Determina il centroide della regione per garantire che i tiles comuni
+      // siano caricati prima di interrogare querySourceFeatures
+      const provCode  = codice_istat.slice(0, 3);
+      const regName   = PROV_TO_REG[provCode];
+      const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
+
+      // Rendi visibile il layer comuni (necessario perché MapLibre carichi i tiles)
+      const wasVisible = map.getLayoutProperty('comuni-fill', 'visibility') === 'visible';
+      if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
+
+      // Salto istantaneo (senza animazione) al centroide della regione a zoom 8:
+      // così i tiles dei confini comunali vengono richiesti e messi in cache
+      map.jumpTo({ center: regCenter, zoom: 8 });
+
+      map.once('idle', () => {
+        // I tiles sono ora caricati: ottieni il bbox del comune
+        const bbox = getComuneBbox(codice_istat);
+        if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'none');
+
+        if (!bbox) {
+          // Caso improbabile: il comune non è nei tiles caricati
+          const box = document.getElementById('address-suggestions');
+          box.innerHTML = '<div class="addr-sug-empty">Comune non trovato nei dati PMTiles.</div>';
+          box.classList.add('open');
+          return;
+        }
+
+        const comuneCenter = [
+          (bbox[0][0] + bbox[1][0]) / 2,
+          (bbox[0][1] + bbox[1][1]) / 2
+        ];
+
+        if (!street) {
+          // Solo comune → zoom al poligono + marker al centro
+          _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+            .setLngLat(comuneCenter)
+            .addTo(map);
+          map.fitBounds(bbox, { padding: 60, maxZoom: 14, duration: 1200 });
+          return;
+        }
+
+        // Vola al centro del comune a zoom 15: a questa risoluzione i tiles ANNCSU
+        // contengono TUTTI i civici della zona (tippecanoe non li rarefà a zoom 15).
+        // fitBounds a zoom 12-13 caricava tiles con features rarefatte → civici mancanti.
+        map.flyTo({ center: comuneCenter, zoom: 15, duration: 1200 });
+
+        map.once('idle', () => {
+          // Fase 2: cerca via/civico nel source ANNCSU (ignora filtri di layer)
+          searchInANNCSU(nome_comune, street, housenumber, comuneCenter);
+        });
+      });
+    };
+
+    if (map.loaded()) {
+      doNavigate();
+    } else {
+      map.once('load', doNavigate);
+    }
+  }
+
+  function clearAddressSearch() {
+    document.getElementById('address-search-input').value = '';
+    document.getElementById('address-search-clear').classList.remove('visible');
+    closeAddrSuggestions();
+    if (_addrMarker) { _addrMarker.remove(); _addrMarker = null; }
+  }
+
+  function closeAddrSuggestions() {
+    const box = document.getElementById('address-suggestions');
+    box.innerHTML = '';
+    box.classList.remove('open');
+    _addrHlIdx = -1;
+  }
+
+  function onAddressKeydown(e) {
+    const items = document.querySelectorAll('.addr-sug-item');
+    if (e.key === 'Escape') { closeAddrSuggestions(); return; }
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _addrHlIdx = Math.min(_addrHlIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _addrHlIdx = Math.max(_addrHlIdx - 1, 0);
+    } else if (e.key === 'Enter') {
+      if (_addrHlIdx >= 0) { selectAddress(_addrHlIdx); return; }
+      if (items.length === 1) { selectAddress(0); return; }
+      return;
+    } else { return; }
+    items.forEach((el, i) => el.classList.toggle('highlighted', i === _addrHlIdx));
+    if (_addrHlIdx >= 0) items[_addrHlIdx].scrollIntoView({ block: 'nearest' });
+  }
 
   // ── INIT ────────────────────────────────────────────────────────────────────
   loadProvince();
