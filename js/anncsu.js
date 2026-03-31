@@ -858,7 +858,7 @@ style: {
     zoom: MAP_ZOOM,
     minZoom: 4,
     maxZoom: 19,
-    maxBounds: [[4.5, 33.5], [20.5, 49.5]], // bounds max leggermente più grandi dell'Italia
+    maxBounds: [[-8, 25], [38, 62]], // bounds larghi per supportare zoom 4 e 5
     hash: true,
 	  dragRotate: false,       // ← blocca rotazione con mouse
   pitchWithRotate: false   // ← blocca anche l'inclinazione (pitch)
