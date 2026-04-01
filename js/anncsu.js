@@ -130,25 +130,16 @@
 
     // Zoom al poligono del comune tramite il source comuni (PMTiles)
     const doZoom = () => {
-      map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
+      // Prima salta al centroide della regione a zoom 8 per assicurare che
+      // le tiles dei confini comunali siano caricate nel viewport
+      const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
+      const wasVisible = map.getLayoutProperty('comuni-fill', 'visibility') === 'visible';
+      if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
+      map.jumpTo({ center: regCenter, zoom: 8 });
       map.once('idle', () => {
-        const cod = parseInt(codistat, 10);
-        const features = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
-          .filter(f => parseInt(f.properties.pro_com_t, 10) === cod);
-        map.setLayoutProperty('comuni-fill', 'visibility', 'none');
-        if (features.length === 0) return;
-        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-        features.forEach(f => {
-          const rings = f.geometry.type === 'Polygon'
-            ? f.geometry.coordinates
-            : f.geometry.coordinates.flat(1);
-          rings[0].forEach(([lng, lat]) => {
-            if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
-            if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
-          });
-        });
-        if (isFinite(minLng))
-          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14 });
+        const bbox = getComuneBbox(codistat);
+        if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'none');
+        if (bbox) map.fitBounds(bbox, { padding: 80, maxZoom: 14 });
       });
     };
 
@@ -1603,12 +1594,16 @@ style: {
     if (!features.length) return null;
     let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
     features.forEach(f => {
-      const rings = f.geometry.type === 'Polygon'
-        ? f.geometry.coordinates
-        : f.geometry.coordinates.flat(1);
-      rings[0].forEach(([lng, lat]) => {
-        if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
-        if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+      // Per Polygon: coordinates[0] è il ring esterno
+      // Per MultiPolygon: coordinates è array di poligoni, map(p => p[0]) prende il ring esterno di ciascuno
+      const outerRings = f.geometry.type === 'Polygon'
+        ? [f.geometry.coordinates[0]]
+        : f.geometry.coordinates.map(p => p[0]);
+      outerRings.forEach(ring => {
+        ring.forEach(([lng, lat]) => {
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
       });
     });
     return isFinite(minLng) ? [[minLng, minLat], [maxLng, maxLat]] : null;
