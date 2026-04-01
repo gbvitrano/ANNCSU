@@ -128,18 +128,23 @@
     updateComuneLabel();
     applyFilter();
 
-    // Zoom al poligono del comune tramite il source comuni (PMTiles)
+    // Zoom al comune calcolando il bbox dai civici ANNCSU (source 'anncsu', field CODICE_ISTAT)
     const doZoom = () => {
-      // Prima salta al centroide della regione a zoom 8 per assicurare che
-      // le tiles dei confini comunali siano caricate nel viewport
+      // Salta al centroide della regione a zoom 8 così le tiles anncsu vengono caricate
       const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
-      const wasVisible = map.getLayoutProperty('comuni-fill', 'visibility') === 'visible';
-      if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
       map.jumpTo({ center: regCenter, zoom: 8 });
       map.once('idle', () => {
-        const bbox = getComuneBbox(codistat);
-        if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'none');
-        if (bbox) map.fitBounds(bbox, { padding: 80, maxZoom: 14 });
+        const features = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
+          .filter(f => f.properties.CODICE_ISTAT === codistat);
+        if (!features.length) return;
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        features.forEach(f => {
+          const [lng, lat] = f.geometry.coordinates;
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
+        if (isFinite(minLng))
+          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14 });
       });
     };
 
