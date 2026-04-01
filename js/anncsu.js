@@ -55,6 +55,7 @@
   let _comuniAnalisiCtrl      = null; // istanza controllo analisi (aggiunta/rimossa dinamicamente)
   let comuniLayerVisible = false;
   let comuniLayerReady   = false;
+  let anncsuStatsMap = {}; // { cod_comune_num → { civico_geocodificato, fuori_limite_comunale, totale } }
 
   // ── HELPERS ─────────────────────────────────────────────────────────────────
   function getActiveProvCodes() {
@@ -103,6 +104,21 @@
       applyUrlParams();
     } catch(e) {
       console.warn('comuni.json non caricato:', e);
+    }
+  }
+
+  // ── CARICAMENTO STATISTICHE CIVICI ─────────────────────────────────────────
+  async function loadAnncsuStats() {
+    try {
+      const res = await fetch('dati/anncsu_stats.json');
+      const data = await res.json();
+      anncsuStatsMap = {};
+      (data.dati || []).forEach(row => {
+        const cod = parseInt(row.CODICE_ISTAT, 10);
+        if (!isNaN(cod)) anncsuStatsMap[cod] = row;
+      });
+    } catch(e) {
+      console.warn('anncsu_stats.json non caricato:', e);
     }
   }
 
@@ -1088,29 +1104,35 @@ style: {
       const nome   = feat.properties.comune || feat.properties.COMUNE || '';
       if (popup) popup.remove();
       if (!info) {
+        const statsRow = anncsuStatsMap[codNum];
+        const civHTML = statsRow
+          ? `<div class="popup-comuni-civici">
+               <span class="civ-ok">✓ ${statsRow.civico_geocodificato.toLocaleString('it-IT')}</span>
+               <span class="civ-sep"> · </span>
+               <span class="civ-err">✗ ${statsRow.fuori_limite_comunale.toLocaleString('it-IT')}</span>
+               <span class="civ-sep"> · </span>
+               <span>Tot. ${statsRow.totale.toLocaleString('it-IT')} civici</span>
+             </div>`
+          : '';
         popup = new maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
           .setLngLat(e.lngLat)
-          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>`)
+          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${civHTML}`)
           .addTo(map);
         return;
       }
       const importoFmt = info.importoTotale.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      // Conteggio civici visibili per questo comune
-      const allCivici  = map.queryRenderedFeatures({ layers: ['civici'] });
-      const civComune  = allCivici.filter(f => parseInt(f.properties.CODICE_ISTAT, 10) === codNum);
-      const civOk  = civComune.filter(f => !f.properties.out_of_bounds).length;
-      const civErr = civComune.filter(f =>  f.properties.out_of_bounds).length;
-      const civTot = civComune.length;
-      const civHTML = civTot > 0
+      // Conteggio civici totali dal file anncsu_stats.json
+      const statsRow = anncsuStatsMap[codNum];
+      const civHTML = statsRow
         ? `<div class="popup-comuni-civici">
-             <span class="civ-ok">✓ ${civOk.toLocaleString('it-IT')}</span>
+             <span class="civ-ok">✓ ${statsRow.civico_geocodificato.toLocaleString('it-IT')}</span>
              <span class="civ-sep"> · </span>
-             <span class="civ-err">✗ ${civErr.toLocaleString('it-IT')}</span>
+             <span class="civ-err">✗ ${statsRow.fuori_limite_comunale.toLocaleString('it-IT')}</span>
              <span class="civ-sep"> · </span>
-             <span>Tot. ${civTot.toLocaleString('it-IT')} civici</span>
+             <span>Tot. ${statsRow.totale.toLocaleString('it-IT')} civici</span>
            </div>`
-        : `<div class="popup-comuni-civici" style="color:var(--text-muted)">Nessun civico visibile a questo zoom</div>`;
+        : `<div class="popup-comuni-civici" style="color:var(--text-muted)">Dati civici non disponibili</div>`;
 
       const entriesHTML = info.entries.map(en => {
         const den = en.denominazione || '—';
@@ -1838,3 +1860,4 @@ style: {
   loadProvince();
   loadComuni();
   loadAggiudicatori();
+  loadAnncsuStats();
