@@ -73,3 +73,14 @@ Web app progettata e sviluppata da [@gbvitrano](https://www.linkedin.com/in/gbvi
 [![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/deed.it)
 
 I contenuti di questa applicazione sono rilasciati sotto licenza [CC BY 4.0 – Attribuzione 4.0 Internazionale](https://creativecommons.org/licenses/by/4.0/deed.it). Sei libero di condividere e adattare il materiale per qualsiasi scopo, anche commerciale, a condizione di citare adeguatamente la fonte.
+
+
+![01](https://github.com/user-attachments/assets/13335bcd-6b1e-476f-afb4-d2245ea27726) ![02](https://github.com/user-attachments/assets/d353b31d-354d-4462-9265-ba413b0b7ffe)
+
+![03](https://github.com/user-attachments/assets/5f004a17-0829-4ff6-9af5-87a449137743) ![04](https://github.com/user-attachments/assets/0cb08916-a459-43b0-9c72-3f610e03dcb9)
+
+![05](https://github.com/user-attachments/assets/d7ae7706-5401-4caf-a742-79246483222d)
+
+
+
+
