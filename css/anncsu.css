@@ -873,26 +873,27 @@
 
     /* ── Cerca indirizzo (bottom-center) ────────────────────────────────────── */
     #address-search-box {
-      display: none; /* temporaneamente disattivata */
+      display: flex;
+      flex-direction: column;
       position: absolute;
       bottom: 36px;
       left: 50%;
       transform: translateX(-50%);
-      width: 340px;
-      max-width: calc(100vw - 60px);
+      width: 420px;
+      max-width: calc(100vw - 40px);
       z-index: 5;
       background: var(--bg-panel-alpha);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 16px var(--shadow);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 20px var(--shadow);
     }
 
     #address-search-row {
       display: flex;
       align-items: center;
-      padding: 0 10px;
-      gap: 6px;
+      padding: 0 12px;
+      gap: 8px;
     }
 
     .addr-search-icon { color: var(--text-muted); flex-shrink: 0; }
@@ -902,12 +903,12 @@
       border: none;
       background: transparent;
       color: var(--text-primary);
-      font-size: 0.82rem;
-      padding: 9px 4px;
+      font-size: 0.875rem;
+      padding: 10px 4px;
       outline: none;
       min-width: 0;
     }
-    #address-search-input::placeholder { color: var(--text-faint); }
+    #address-search-input::placeholder { color: var(--text-muted); }
 
     #address-search-clear {
       background: none;
@@ -915,7 +916,7 @@
       color: var(--text-muted);
       cursor: pointer;
       padding: 4px;
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       line-height: 1;
       display: none;
     }
@@ -924,7 +925,7 @@
 
     #address-suggestions {
       border-bottom: 1px solid var(--border-color);
-      max-height: 220px;
+      max-height: 240px;
       overflow-y: auto;
       display: none;
       border-radius: 8px 8px 0 0;
@@ -932,23 +933,23 @@
     #address-suggestions.open { display: block; }
 
     .addr-sug-item {
-      padding: 7px 12px;
+      padding: 8px 14px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 2px;
     }
     .addr-sug-item:last-child { border-bottom: none; }
     .addr-sug-item:hover,
     .addr-sug-item.highlighted { background: var(--bg-btn); }
 
-    .addr-sug-main { font-size: 0.78rem; font-weight: 500; color: var(--text-item); }
-    .addr-sug-sub  { font-size: 0.68rem; color: var(--text-muted); }
+    .addr-sug-main { font-size: 0.82rem; font-weight: 500; color: var(--text-item); }
+    .addr-sug-sub  { font-size: 0.72rem; color: var(--text-muted); }
 
     .addr-sug-empty {
-      padding: 8px 12px;
-      font-size: 0.75rem;
-      color: var(--text-faint);
-      text-align: center;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      font-style: italic;
     }

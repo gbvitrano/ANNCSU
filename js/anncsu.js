@@ -1706,55 +1706,76 @@ style: {
     const { codice_istat, nome_comune, street, housenumber } = r;
 
     const doNavigate = () => {
-      // Determina il centroide della regione per garantire che i tiles comuni
-      // siano caricati prima di interrogare querySourceFeatures
       const provCode  = codice_istat.slice(0, 3);
       const regName   = PROV_TO_REG[provCode];
       const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
 
-      // Rendi visibile il layer comuni (necessario perché MapLibre carichi i tiles)
-      const wasVisible = map.getLayoutProperty('comuni-fill', 'visibility') === 'visible';
-      if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'visible');
-
-      // Salto istantaneo (senza animazione) al centroide della regione a zoom 8:
-      // così i tiles dei confini comunali vengono richiesti e messi in cache
+      // Fase 1: salta al centroide della regione a zoom 8 per caricare le tiles anncsu
       map.jumpTo({ center: regCenter, zoom: 8 });
 
       map.once('idle', () => {
-        // I tiles sono ora caricati: ottieni il bbox del comune
-        const bbox = getComuneBbox(codice_istat);
-        if (!wasVisible) map.setLayoutProperty('comuni-fill', 'visibility', 'none');
+        // Trova i civici del comune tramite CODICE_ISTAT per ricavare il bbox del comune
+        const comuneFeats = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
+          .filter(f => f.properties.CODICE_ISTAT === codice_istat);
 
-        if (!bbox) {
-          // Caso improbabile: il comune non è nei tiles caricati
-          const box = document.getElementById('address-suggestions');
-          box.innerHTML = '<div class="addr-sug-empty">Comune non trovato nei dati PMTiles.</div>';
-          box.classList.add('open');
+        if (!comuneFeats.length) {
+          showAddrMsg('Comune non trovato nei dati ANNCSU.');
           return;
         }
 
-        const comuneCenter = [
-          (bbox[0][0] + bbox[1][0]) / 2,
-          (bbox[0][1] + bbox[1][1]) / 2
-        ];
+        // Calcola bbox del comune dai civici trovati
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        comuneFeats.forEach(f => {
+          const [lng, lat] = f.geometry.coordinates;
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
+        const comuneCenter = [(minLng + maxLng) / 2, (minLat + maxLat) / 2];
 
         if (!street) {
-          // Solo comune → zoom al poligono + marker al centro
+          // Solo comune → zoom al bbox + marker al centro
           _addrMarker = new maplibregl.Marker({ color: '#e63946' })
             .setLngLat(comuneCenter)
             .addTo(map);
-          map.fitBounds(bbox, { padding: 60, maxZoom: 14, duration: 1200 });
+          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 60, maxZoom: 14, duration: 1200 });
           return;
         }
 
-        // Vola al centro del comune a zoom 15: a questa risoluzione i tiles ANNCSU
-        // contengono TUTTI i civici della zona (tippecanoe non li rarefà a zoom 15).
-        // fitBounds a zoom 12-13 caricava tiles con features rarefatte → civici mancanti.
-        map.flyTo({ center: comuneCenter, zoom: 15, duration: 1200 });
+        // Fase 2: mostra l'intero comune nel viewport (maxZoom 13 garantisce che anche
+        // grandi città come Palermo/Roma stiano nel viewport con features intermedie)
+        map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 20, maxZoom: 13 });
 
         map.once('idle', () => {
-          // Fase 2: cerca via/civico nel source ANNCSU (ignora filtri di layer)
-          searchInANNCSU(nome_comune, street, housenumber, comuneCenter);
+          // Fase 3: cerca ODONIMO nel viewport allargato — anche con features rarefatte,
+          // tippecanoe conserva almeno un civico per tratto di ogni strada
+          const normStreet = normalizeStr(street);
+          const streetFeats = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
+            .filter(f => {
+              if (f.properties.CODICE_ISTAT !== codice_istat) return false;
+              const n = normalizeStr(f.properties.ODONIMO || '');
+              return n === normStreet || n.startsWith(normStreet + ' ');
+            });
+
+          if (!streetFeats.length) {
+            _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+              .setLngLat(comuneCenter)
+              .addTo(map);
+            showAddrMsg(`"${street}" non trovata in ${nome_comune}.`);
+            return;
+          }
+
+          // Calcola il centro approssimativo della strada dai civici rarefatti
+          let sLng = 0, sLat = 0;
+          streetFeats.forEach(f => { sLng += f.geometry.coordinates[0]; sLat += f.geometry.coordinates[1]; });
+          const streetCenter = [sLng / streetFeats.length, sLat / streetFeats.length];
+
+          // Fase 4: vola al centro della strada a zoom 15 per avere TUTTI i civici
+          // (tippecanoe non rarefà a zoom 15) e cerca il numero civico esatto
+          map.flyTo({ center: streetCenter, zoom: 15, duration: 1000 });
+
+          map.once('idle', () => {
+            searchInANNCSU(nome_comune, street, housenumber, streetCenter);
+          });
         });
       });
     };
