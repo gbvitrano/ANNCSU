@@ -2,9 +2,11 @@ name: Aggiorna Statistiche ANNCSU
 
 on:
   schedule:
-    # Ogni 12 ore (mezzanotte e mezzogiorno UTC)
     - cron: '0 0,12 * * *'
-  workflow_dispatch: # Permette esecuzione manuale
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # opt-in Node.js 24 subito
 
 jobs:
   extract-stats:
@@ -20,8 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Installa dipendenze
-        run: |
-          pip install pmtiles requests
+        run: pip install pmtiles requests
 
       - name: Crea cartella dati se non esiste
         run: mkdir -p dati
