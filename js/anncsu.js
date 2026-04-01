@@ -1641,7 +1641,7 @@ style: {
         .setLngLat(comuneCenter)
         .addTo(map);
       if (!comuneFeats.length)
-        showAddrMsg('Nessun civico ANNCSU caricato per questo comune — riprova dopo aver navigato nella zona.');
+        showAddrMsg('Il civico non è ancora stato censito in ANNCSU.');
       return;
     }
 
@@ -1653,10 +1653,7 @@ style: {
     });
 
     if (!streetFeats.length) {
-      _addrMarker = new maplibregl.Marker({ color: '#e63946' })
-        .setLngLat(comuneCenter)
-        .addTo(map);
-      showAddrMsg(`"${street}" non trovata in ${nome_comune} nei tiles caricati.`);
+      showAddrMsg(`Il civico non è ancora stato censito in ANNCSU.`);
       return;
     }
 
@@ -1685,9 +1682,29 @@ style: {
         map.easeTo({ center: [clon, clat], zoom: 19, duration: 600 });
         return;
       }
+      // Via trovata ma civico non presente → trova il civico più vicino per distanza euclidea
+      const targetN = parseInt(housenumber, 10);
+      let nearest = streetFeats[0];
+      if (!isNaN(targetN)) {
+        let minDist = Infinity;
+        streetFeats.forEach(f => {
+          const n = parseInt((f.properties.CIVICO || '').toString(), 10);
+          if (!isNaN(n) && Math.abs(n - targetN) < minDist) {
+            minDist = Math.abs(n - targetN);
+            nearest = f;
+          }
+        });
+      }
+      const [nlon, nlat] = nearest.geometry.coordinates;
+      _addrMarker = new maplibregl.Marker({ color: '#e63946' })
+        .setLngLat([nlon, nlat])
+        .addTo(map);
+      map.easeTo({ center: [nlon, nlat], zoom: 19, duration: 600 });
+      showAddrMsg(`Il civico ${housenumber} non è ancora stato censito in ANNCSU.`);
+      return;
     }
 
-    // Civico non trovato (o non specificato): zoom sulla via + marker al suo centro
+    // Nessun numero civico specificato: zoom sulla via + marker al suo centro
     _addrMarker = new maplibregl.Marker({ color: '#e63946' })
       .setLngLat(streetCenter)
       .addTo(map);
@@ -1757,10 +1774,7 @@ style: {
             });
 
           if (!streetFeats.length) {
-            _addrMarker = new maplibregl.Marker({ color: '#e63946' })
-              .setLngLat(comuneCenter)
-              .addTo(map);
-            showAddrMsg(`"${street}" non trovata in ${nome_comune}.`);
+            showAddrMsg(`Il civico non è ancora stato censito in ANNCSU.`);
             return;
           }
 
