@@ -22,13 +22,13 @@ jobs:
           python-version: '3.11'
 
       - name: Installa dipendenze
-        run: pip install pmtiles requests
+        run: pip install pandas pyarrow requests
 
       - name: Crea cartella dati se non esiste
         run: mkdir -p dati
 
       - name: Esegui script di estrazione
-        run: python scripts/extract_anncsu_stats.py
+        run: python scripts/extract_parquet_stats.py
 
       - name: Commit e push dei risultati
         run: |
