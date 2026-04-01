@@ -11,6 +11,8 @@ env:
 jobs:
   extract-stats:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
