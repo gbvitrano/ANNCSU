@@ -1908,40 +1908,23 @@ style: {
   // ── MOBILE DRAWER ────────────────────────────────────────────────────────────
   function toggleMobileFilters() {
     const drawer = document.getElementById('mobile-filters-drawer');
+    const body   = document.getElementById('mobile-drawer-body');
+    const controls = document.getElementById('controls');
     const isOpen = drawer.classList.toggle('open');
-    if (isOpen) buildMobileDrawer();
-  }
-
-  function buildMobileDrawer() {
-    const body = document.getElementById('mobile-drawer-body');
-    // Clona i dropdown esistenti nel drawer
-    const cloneIds = [
-      { id: 'region-dropdown',   label: 'Regione' },
-      { id: 'province-dropdown', label: 'Provincia' },
-      { id: 'comune-dropdown',   label: 'Comune' },
-    ];
-    let html = '';
-    cloneIds.forEach(({ id, label }) => {
-      const el = document.getElementById(id);
-      if (el) html += `<div class="mobile-filter-section"><div class="mobile-filter-label">${label}</div>${el.outerHTML.replace(` id="${id}"`, ` id="${id}-mob"`)}</div>`;
-    });
-    // Bottoni tipo
-    html += `<div class="mobile-filter-section">
-      <div class="mobile-filter-label">Tipo civico</div>
-      <div id="type-filter-mob" style="display:flex;gap:6px;flex-wrap:wrap">
-        ${['all','ok','err'].map(t => {
-          const labels = {all:'Tutti', ok:'Geocodificati', err:'Fuori confine'};
-          const active = typeFilter === t ? ' active' + (t === 'err' ? ' active-err' : '') : '';
-          return `<button class="type-btn${active}" onclick="setTypeFilter('${t}');toggleMobileFilters()">${labels[t]}</button>`;
-        }).join('')}
-      </div>
-    </div>`;
-    body.innerHTML = html;
-    // Badge con numero filtri attivi
-    const activeCount = selectedRegions.size + selectedProvinces.size + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
-    const badge = document.getElementById('mobile-filters-badge');
-    badge.textContent = activeCount;
-    badge.style.display = activeCount > 0 ? 'flex' : 'none';
+    if (isOpen) {
+      // Sposta fisicamente #controls nel drawer
+      body.appendChild(controls);
+      controls.style.display = 'flex';
+      controls.style.flexDirection = 'column';
+      controls.style.gap = '12px';
+    } else {
+      // Rimette #controls nell'header
+      document.querySelector('header').appendChild(controls);
+      controls.style.display = '';
+      controls.style.flexDirection = '';
+      controls.style.gap = '';
+    }
+    updateMobileBadge();
   }
 
   function toggleMobileSearch() {
