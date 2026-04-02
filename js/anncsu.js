@@ -55,7 +55,7 @@
   let _comuniAnalisiCtrl      = null; // istanza controllo analisi (aggiunta/rimossa dinamicamente)
   let comuniLayerVisible = false;
   let comuniLayerReady   = false;
-  let anncsuStatsMap = {}; // { cod_comune_num → { civico_geocodificato, fuori_limite_comunale, totale } }
+  let anncsuStatsMap = {}; // { cod_comune_num → { civico_geocodificato, fuori_limite_comunale, totale, civici_da_altri_comuni } }
 
   // ── HELPERS ─────────────────────────────────────────────────────────────────
   function getActiveProvCodes() {
@@ -105,6 +105,34 @@
     } catch(e) {
       console.warn('comuni.json non caricato:', e);
     }
+  }
+
+  // ── POPUP CIVICI BLOCK ───────────────────────────────────────────────────────
+  function buildCiviciBlock(statsRow) {
+    if (!statsRow) return `<div class="popup-civici-block" style="color:var(--text-muted);font-size:0.75rem">Dati civici non disponibili</div>`;
+    const fmt = n => (n || 0).toLocaleString('it-IT');
+    const ospitati = statsRow.civici_da_altri_comuni || 0;
+    return `
+      <div class="popup-civici-block">
+        <div class="popup-civici-title">Numeri civici ANNCSU</div>
+        <div class="popup-civici-row">
+          <span class="civ-label">✓ Dentro il confine comunale</span>
+          <span class="civ-ok">${fmt(statsRow.civico_geocodificato)}</span>
+        </div>
+        <div class="popup-civici-row">
+          <span class="civ-label">✗ Fuori dal confine comunale</span>
+          <span class="civ-warn">${fmt(statsRow.fuori_limite_comunale)}</span>
+        </div>
+        <div class="popup-civici-row popup-civici-total">
+          <span class="civ-label">Totale civici del comune</span>
+          <span>${fmt(statsRow.totale)}</span>
+        </div>
+        ${ospitati > 0 ? `
+        <div class="popup-civici-row popup-civici-ospitati">
+          <span class="civ-label">↓ Civici di altri comuni nel territorio</span>
+          <span class="civ-err">${fmt(ospitati)}</span>
+        </div>` : ''}
+      </div>`;
   }
 
   // ── CARICAMENTO STATISTICHE CIVICI ─────────────────────────────────────────
@@ -1105,18 +1133,9 @@ style: {
       if (popup) popup.remove();
       if (!info) {
         const statsRow = anncsuStatsMap[codNum];
-        const civHTML = statsRow
-          ? `<div class="popup-comuni-civici">
-               <span class="civ-ok">✓ ${statsRow.civico_geocodificato.toLocaleString('it-IT')}</span>
-               <span class="civ-sep"> · </span>
-               <span class="civ-err">✗ ${statsRow.fuori_limite_comunale.toLocaleString('it-IT')}</span>
-               <span class="civ-sep"> · </span>
-               <span>Tot. ${statsRow.totale.toLocaleString('it-IT')} civici</span>
-             </div>`
-          : '';
-        popup = new maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
+        popup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px' })
           .setLngLat(e.lngLat)
-          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${civHTML}`)
+          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${buildCiviciBlock(statsRow)}`)
           .addTo(map);
         return;
       }
@@ -1124,15 +1143,7 @@ style: {
 
       // Conteggio civici totali dal file anncsu_stats.json
       const statsRow = anncsuStatsMap[codNum];
-      const civHTML = statsRow
-        ? `<div class="popup-comuni-civici">
-             <span class="civ-ok">✓ ${statsRow.civico_geocodificato.toLocaleString('it-IT')}</span>
-             <span class="civ-sep"> · </span>
-             <span class="civ-err">✗ ${statsRow.fuori_limite_comunale.toLocaleString('it-IT')}</span>
-             <span class="civ-sep"> · </span>
-             <span>Tot. ${statsRow.totale.toLocaleString('it-IT')} civici</span>
-           </div>`
-        : `<div class="popup-comuni-civici" style="color:var(--text-muted)">Dati civici non disponibili</div>`;
+      const civHTML = buildCiviciBlock(statsRow);
 
       const entriesHTML = info.entries.map(en => {
         const den = en.denominazione || '—';
@@ -1290,8 +1301,8 @@ style: {
     const pctErr = total > 0 ? (totalErr / total * 100).toFixed(1) : '—';
 
     document.getElementById('stats-summary').innerHTML = `
-      <div class="stat-box"><div class="stat-box-label">✓ Geocodificati</div><div class="stat-box-value">${totalOk.toLocaleString('it-IT')}</div></div>
-      <div class="stat-box"><div class="stat-box-label">✗ Fuori limite</div><div class="stat-box-value err">${totalErr.toLocaleString('it-IT')}</div></div>
+      <div class="stat-box"><div class="stat-box-label">✓ Dentro confine</div><div class="stat-box-value">${totalOk.toLocaleString('it-IT')}</div></div>
+      <div class="stat-box"><div class="stat-box-label">✗ Fuori confine</div><div class="stat-box-value err">${totalErr.toLocaleString('it-IT')}</div></div>
       <div class="stat-box"><div class="stat-box-label">% OK / Errori</div><div class="stat-box-value neutral">${pctOk}% / ${pctErr}%</div></div>`;
 
     const tbody = document.getElementById('stats-tbody');
@@ -1418,7 +1429,7 @@ style: {
 
     const dlBtn = document.getElementById('analisi-download');
     if (oob.length === 0) {
-      body.innerHTML = '<div class="ma-empty">Nessun civico fuori confine nella vista corrente</div>';
+      body.innerHTML = '<div class="ma-empty">Nessun civico fuori dal proprio confine comunale nella vista corrente</div>';
       if (dlBtn) dlBtn.disabled = true;
       return;
     }
@@ -1432,7 +1443,7 @@ style: {
     });
     const entries = Object.entries(_oobByComune).sort((a, b) => b[1].length - a[1].length);
 
-    let html = `<div class="ma-section-title">${oob.length.toLocaleString('it-IT')} civici fuori confine visibili</div>`;
+    let html = `<div class="ma-section-title">${oob.length.toLocaleString('it-IT')} civici fuori dal proprio confine comunale visibili</div>`;
     entries.forEach(([nome, feats]) => {
       const isActive = _highlightComune === nome;
       const safeName = nome.replace(/'/g, '&#39;');

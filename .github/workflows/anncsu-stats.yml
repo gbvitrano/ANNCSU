@@ -24,7 +24,7 @@ jobs:
           python-version: '3.11'
 
       - name: Installa dipendenze
-        run: pip install pandas pyarrow requests
+        run: pip install pandas pyarrow requests geopandas
 
       - name: Crea cartella dati se non esiste
         run: mkdir -p dati
@@ -36,6 +36,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add dati/
+          git add dati/anncsu_stats.csv dati/anncsu_stats.json dati/backup/
           git diff --staged --quiet || git commit -m "chore: aggiorna statistiche ANNCSU [$(date -u +'%Y-%m-%d %H:%M UTC')]"
           git push

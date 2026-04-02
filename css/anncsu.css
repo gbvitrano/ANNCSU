@@ -261,17 +261,38 @@
     .popup-agg-row strong { text-align: right; color: var(--text-primary); word-break: break-word; }
     .popup-agg-den strong { color: var(--den-color, var(--text-primary)); font-weight: 700; }
 
-    .popup-comuni-civici {
+    .popup-civici-block {
       font-size: 0.78rem;
-      margin-bottom: 6px;
-      display: flex;
-      gap: 2px;
-      align-items: center;
-      flex-wrap: wrap;
+      margin: 6px 0;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
     }
-    .civ-ok  { color: var(--accent-ok);  font-weight: 700; }
-    .civ-err { color: var(--accent-err); font-weight: 700; }
-    .civ-sep { color: var(--text-faint); }
+    .popup-civici-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .popup-civici-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 1px 0;
+    }
+    .popup-civici-row .civ-label { color: var(--text-secondary); }
+    .popup-civici-total { border-top: 1px solid var(--border); margin-top: 2px; padding-top: 3px; font-weight: 600; }
+    .popup-civici-ospitati {
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+      padding-top: 4px;
+      color: var(--text-secondary);
+    }
+    .civ-ok   { color: var(--accent-ok);  font-weight: 700; }
+    .civ-err  { color: var(--accent-err); font-weight: 700; }
+    .civ-warn { color: var(--accent-warn, #fb8500); font-weight: 700; }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {

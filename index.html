@@ -108,7 +108,7 @@
     <div id="type-filter">
       <button class="type-btn active" data-type="all" onclick="setTypeFilter('all')">Tutti</button>
       <button class="type-btn"        data-type="ok"  onclick="setTypeFilter('ok')">Geocodificati</button>
-      <button class="type-btn"        data-type="err" onclick="setTypeFilter('err')">Fuori limite</button>
+      <button class="type-btn"        data-type="err" onclick="setTypeFilter('err')">Fuori confine</button>
     </div>
 
     <!-- Pulsante info -->
@@ -149,11 +149,11 @@
         <thead>
           <tr>
             <th>Comune</th>
-            <th>✓ Geocodificati</th>
-            <th>✗ Fuori limite</th>
+            <th>✓ Dentro confine</th>
+            <th>✗ Fuori confine</th>
             <th>Totale</th>
             <th>% OK</th>
-            <th title="Analizza dove cadono i civici fuori confine">📍</th>
+            <th title="Analizza dove cadono i civici fuori confine comunale">📍</th>
           </tr>
         </thead>
         <tbody id="stats-tbody"></tbody>
@@ -209,12 +209,12 @@
   <h3>Numeri civici visibili</h3>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-ok);"></div>
-    <span class="legend-label">Civico geocodificato</span>
+    <span class="legend-label">Dentro il confine comunale</span>
     <span class="legend-count" id="count-ok">—</span>
   </div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-err);"></div>
-    <span class="legend-label">Fuori limite comunale</span>
+    <span class="legend-label">Fuori dal confine comunale</span>
     <span class="legend-count err" id="count-err">—</span>
   </div>
   <div class="legend-item" style="border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
