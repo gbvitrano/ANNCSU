@@ -338,6 +338,21 @@
     .comuni-legend-name { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
 
     /* ── Controllo layer comuni ──────────────────────────────────────────────── */
+    .comuni-ctrl-btn { height: 40px !important; display: flex; align-items: center; justify-content: center; }
+    .italia-icon {
+      display: inline-block;
+      width: 18px;
+      height: 36px;
+      background-color: currentColor;
+      -webkit-mask-image: url('../img/italy.png');
+      mask-image: url('../img/italy.png');
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+    }
     .maplibregl-ctrl button.comuni-ctrl-active { color: rgb(58,134,255); }
     .maplibregl-ctrl-home { display: flex; align-items: center; justify-content: center; }
     .maplibregl-ctrl-home:hover { background: var(--accent-ok) !important; color: #fff !important; }
