@@ -1027,7 +1027,7 @@
 
       /* Legenda compatta con pulsante chiudi */
       #legend {
-        bottom: 30px;
+        bottom: 75px;
         left: 8px;
         padding: 7px 9px;
         min-width: 0;
@@ -1074,7 +1074,7 @@
       /* Legenda aggiudicatari */
       #comuni-legend {
         right: 8px;
-        bottom: 30px;
+        bottom: 125px;
         min-width: 0;
         max-width: calc(100vw - 80px);
         max-height: 40vh;
