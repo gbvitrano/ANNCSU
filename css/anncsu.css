@@ -294,7 +294,7 @@
     }
     .civ-ok   { color: var(--accent-ok);  font-weight: 700; }
     .civ-err  { color: var(--accent-err); font-weight: 700; }
-    .civ-warn { color: var(--accent-err); font-weight: 700; }
+    .civ-warn { color: var(--accent-oob); font-weight: 700; }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {
