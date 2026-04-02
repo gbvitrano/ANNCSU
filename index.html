@@ -194,7 +194,7 @@
         <path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
         <path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8m-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.078.706.186 1.068.295.369.112.74.224 1.096.295.365.074.66.104.922.004.888-.33 1.232-1.812 1.232-2.839A7 7 0 1 0 8 15"/>
       </svg>
-      <span>Analisi della mappa</span>
+      <span class="analisi-header-text"><span class="analisi-title">Analisi della mappa</span><span class="analisi-realtime-note">aggiornata sulla vista corrente</span></span>
       <button id="analisi-refresh" onclick="refreshAnalisi()" title="Aggiorna">↺</button>
       <button id="analisi-download" onclick="downloadAnalisiCSV()" title="Scarica CSV civici fuori confine visibili" disabled>⬇ CSV</button>
       <button id="analisi-close" onclick="toggleAnalisiPanel()" title="Chiudi">✕</button>
@@ -207,6 +207,7 @@
 
 <div id="legend">
   <h3>Numeri civici visibili</h3>
+  <div class="legend-realtime-note">Aggiornati in tempo reale sulla vista corrente</div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-ok);"></div>
     <span class="legend-label">Dentro il confine comunale</span>
@@ -216,6 +217,11 @@
     <div class="legend-dot" style="background:var(--accent-err);"></div>
     <span class="legend-label">Fuori dal confine comunale</span>
     <span class="legend-count err" id="count-err">—</span>
+  </div>
+  <div class="legend-item" id="count-oob-row" style="display:none; border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
+    <div class="legend-dot" style="background:var(--accent-oob); opacity:0.5;"></div>
+    <span class="legend-label" style="font-size:0.72rem;">Propri fuori territorio</span>
+    <span class="legend-count" id="count-oob" style="color:var(--accent-oob);">—</span>
   </div>
   <div class="legend-item" style="border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
     <span class="legend-label" style="color:var(--text-secondary); font-size:0.72rem;">Totale</span>

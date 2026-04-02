@@ -17,6 +17,7 @@
       --text-item:            #ccc;
       --accent-ok:            #4c9b82;
       --accent-err:           #E63946;
+      --accent-oob:           #0066ff;
       --shadow:               rgba(0, 0, 0, 0.5);
       --shadow-heavy:         rgba(0, 0, 0, 0.6);
       --bg-row-hover:         rgba(255, 255, 255, 0.05);
@@ -46,6 +47,7 @@
       --text-item:            #2d3748;
       --accent-ok:            #4c9b82;
       --accent-err:           #E63946;
+      --accent-oob:           #0066ff;
       --shadow:               rgba(0, 0, 0, 0.12);
       --shadow-heavy:         rgba(0, 0, 0, 0.18);
       --bg-row-hover:         rgba(160, 174, 192, 0.2);
@@ -292,7 +294,7 @@
     }
     .civ-ok   { color: var(--accent-ok);  font-weight: 700; }
     .civ-err  { color: var(--accent-err); font-weight: 700; }
-    .civ-warn { color: var(--accent-warn, #fb8500); font-weight: 700; }
+    .civ-warn { color: var(--accent-err); font-weight: 700; }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {
@@ -334,7 +336,8 @@
       backdrop-filter: blur(4px);
       min-width: 230px;
     }
-    #legend h3 { font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; color: var(--text-item); }
+    #legend h3 { font-size: 0.82rem; font-weight: 600; margin-bottom: 2px; color: var(--text-item); }
+    .legend-realtime-note { font-size: 0.68rem; color: var(--text-faint); font-style: italic; margin-bottom: 8px; }
 
     .legend-item {
       display: flex;
@@ -599,7 +602,10 @@
       border-radius: 10px 10px 0 0; flex-shrink: 0;
     }
     #analisi-header svg { flex-shrink: 0; opacity: 0.85; }
-    #analisi-header span { flex: 1; font-size: 0.83rem; font-weight: 600; color: var(--text-primary); }
+    #analisi-header span { flex: 1; min-width: 0; }
+    .analisi-header-text { display: flex; flex-direction: column; min-width: 0; }
+    .analisi-title { font-size: 0.83rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .analisi-realtime-note { font-size: 0.68rem; font-weight: 400; color: var(--text-faint); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #analisi-refresh {
       background: none; border: none; color: var(--text-secondary);
       font-size: 14px; cursor: pointer; padding: 2px 5px;

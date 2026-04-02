@@ -5,6 +5,7 @@
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
   const COLOR_OK    = '#4c9b82';
   const COLOR_ERR   = '#E63946';
+  const COLOR_OOB   = '#0066ff';
   const DENOMI_PALETTE = [
     '#3a86ff','#f72585','#06d6a0','#fb8500','#8338ec',
     '#e63946','#2a9d8f','#f4a261','#06b6d4','#ffbe0b',
@@ -1183,6 +1184,18 @@ style: {
     document.getElementById('count-ok').textContent    = fmt(ok);
     document.getElementById('count-err').textContent   = fmt(err);
     document.getElementById('count-value').textContent = fmt(features.length);
+
+    // Riga "Propri fuori territorio": visibile solo se è selezionato un singolo comune
+    const oobRow = document.getElementById('count-oob-row');
+    if (selectedComune) {
+      const cod = parseInt(selectedComune.codice_istat, 10);
+      const statsRow = anncsuStatsMap[cod];
+      const fuori = statsRow?.fuori_limite_comunale ?? 0;
+      document.getElementById('count-oob').textContent = fuori.toLocaleString('it-IT');
+      oobRow.style.display = fuori > 0 ? '' : 'none';
+    } else {
+      oobRow.style.display = 'none';
+    }
   }
 
   // ── CONTROLLI MAPPA ──────────────────────────────────────────────────────────
