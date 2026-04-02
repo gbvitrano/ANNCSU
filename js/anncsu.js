@@ -930,7 +930,7 @@ style: {
     map.addControl(new AnalisiControl(), 'top-right');
     map.addControl(new ComuniControl(), 'top-right');
 
-    // ── Source e layer comuni (zoom 6-9) ──────────────────────────────────────
+    // ── Source e layer comuni (zoom 4-11) ──────────────────────────────────────
     map.addSource('comuni', {
       type: 'vector',
       url: `pmtiles://${COMUNI_PMTILES_URL}`
@@ -940,8 +940,8 @@ style: {
       type: 'fill',
       source: 'comuni',
       'source-layer': 'comuni',
-      minzoom: 6,
-      maxzoom: 9,
+      minzoom: 4,
+      maxzoom: 11,
       layout: { visibility: 'none' },
       paint: {
         'fill-color': 'rgba(150,150,150,0)',
@@ -953,8 +953,8 @@ style: {
       type: 'line',
       source: 'comuni',
       'source-layer': 'comuni',
-      minzoom: 6,
-      maxzoom: 9,
+      minzoom: 4,
+      maxzoom: 11,
       layout: { visibility: 'none' },
       paint: {
         'line-color': 'rgba(150,150,150,0.15)',
@@ -966,8 +966,8 @@ style: {
       type: 'line',
       source: 'comuni',
       'source-layer': 'comuni',
-      minzoom: 6,
-      maxzoom: 9,
+      minzoom: 4,
+      maxzoom: 11,
       layout: { visibility: 'none' },
       filter: ['==', '1', '0'],
       paint: { 'line-color': '#fff', 'line-width': 2.5, 'line-opacity': 0.95 }
