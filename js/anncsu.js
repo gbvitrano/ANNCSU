@@ -554,12 +554,26 @@
       </div>`;
     }
 
-    let html = '<h3>Aggiudicatari</h3>';
+    const isMobile = window.innerWidth <= 600;
+    const isCollapsed = el.classList.contains('legend-collapsed');
+    let html = `
+      <div class="comuni-legend-header">
+        <h3>Aggiudicatari</h3>
+        ${isMobile ? `<button class="comuni-legend-toggle" onclick="toggleComuniLegend()" title="${isCollapsed ? 'Espandi' : 'Comprimi'}">${isCollapsed ? '▲' : '✕'}</button>` : ''}
+      </div>
+      <div class="comuni-legend-content">`;
     if (nodenCount > 0)
       html += legendItem('(Senza aggiudicatario)', '#aaa', `Senza aggiudicatario (${nodenCount})`, true);
     entries.forEach(([den, color]) => { html += legendItem(den, color, den, false); });
+    html += '</div>';
     el.innerHTML = html;
     el.style.display = comuniLayerVisible ? '' : 'none';
+  }
+
+  function toggleComuniLegend() {
+    const el = document.getElementById('comuni-legend');
+    el.classList.toggle('legend-collapsed');
+    buildComuniLegend();
   }
 
   function selectAggiudicatario(den) {
@@ -1890,6 +1904,10 @@ style: {
   }
 
   // ── INIT ────────────────────────────────────────────────────────────────────
+  if (window.innerWidth <= 600) {
+    document.getElementById('legend-close').style.display = 'flex';
+  }
+
   loadProvince();
   loadComuni();
   loadAggiudicatori();

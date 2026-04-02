@@ -334,7 +334,11 @@
       max-height: 280px;
       overflow-y: auto;
     }
-    #comuni-legend h3 { font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; color: var(--text-item); }
+    .comuni-legend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    #comuni-legend h3 { font-size: 0.82rem; font-weight: 600; margin: 0; color: var(--text-item); }
+    .comuni-legend-toggle { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; padding: 2px 4px; line-height: 1; }
+    #comuni-legend.legend-collapsed .comuni-legend-content { display: none; }
+    #comuni-legend.legend-collapsed { max-height: none; }
     .comuni-legend-name { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
 
     /* ── Controllo layer comuni ──────────────────────────────────────────────── */
@@ -931,6 +935,89 @@
     }
     @media (min-width: 1100px) {
       #info-sheet { left: 20%; right: 20%; max-height: 80vh; }
+    }
+
+    /* ── Mobile ──────────────────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      /* Header compatto */
+      header { padding: 4px 8px; gap: 4px; flex-wrap: wrap; }
+      #app-title { font-size: 0.78rem; }
+      #app-subtitle { font-size: 0.62rem; }
+      #region-filter, #province-filter, #comune-filter { font-size: 0.7rem; padding: 3px 6px; }
+      .type-btn { font-size: 0.7rem; padding: 3px 6px; }
+
+      /* Legenda compatta con pulsante chiudi */
+      #legend {
+        bottom: 30px;
+        left: 8px;
+        padding: 7px 9px;
+        min-width: 0;
+        font-size: 0.72rem;
+      }
+      #legend h3 { font-size: 0.74rem; margin-bottom: 1px; }
+      .legend-realtime-note { font-size: 0.62rem; }
+      .legend-item { gap: 5px; }
+      .legend-count { font-size: 0.74rem; }
+      #legend-close {
+        display: flex !important;
+        position: absolute;
+        top: 4px; right: 6px;
+        background: none; border: none;
+        color: var(--text-muted); font-size: 14px;
+        cursor: pointer; line-height: 1; padding: 2px;
+      }
+      #legend.legend-collapsed .legend-content { display: none; }
+      #legend.legend-collapsed { padding-bottom: 4px; }
+
+      /* Pannello analisi compatto */
+      #analisi-panel {
+        bottom: 30px;
+        left: 8px;
+        width: calc(100vw - 16px);
+        max-height: 38vh;
+        font-size: 0.75rem;
+      }
+      #analisi-header { padding: 7px 10px; }
+      .analisi-title { font-size: 0.76rem; }
+      .analisi-realtime-note { font-size: 0.62rem; }
+
+      /* Stats panel full width */
+      #stats-panel { width: calc(100vw - 20px); right: 10px; left: 10px; top: 56px; font-size: 0.73rem; }
+      #stats-table th, #stats-table td { font-size: 0.68rem; padding: 3px 4px; }
+
+      /* Popup più compatti */
+      .maplibregl-popup-content { font-size: 0.8rem; padding: 10px 12px; }
+      .popup-address { font-size: 0.85rem; }
+      .popup-civici-block { font-size: 0.72rem; }
+      .popup-agg-den-name { font-size: 0.76rem; }
+      .popup-agg-row { font-size: 0.7rem; }
+
+      /* Legenda aggiudicatari */
+      #comuni-legend {
+        right: 8px;
+        bottom: 30px;
+        min-width: 0;
+        max-width: calc(100vw - 80px);
+        max-height: 40vh;
+        font-size: 0.7rem;
+        padding: 7px 9px;
+      }
+      #comuni-legend h3 { font-size: 0.75rem; }
+      .comuni-legend-name { font-size: 0.68rem; }
+
+      /* Popup comuni */
+      .maplibregl-popup-content { max-width: 85vw !important; }
+      .popup-address { font-size: 0.82rem; }
+      .popup-comune { font-size: 0.72rem; }
+      .popup-comuni-importo { font-size: 0.88rem; }
+      .popup-civici-title { font-size: 0.64rem; }
+      .popup-civici-row { font-size: 0.7rem; }
+      .popup-agg-count { font-size: 0.64rem; }
+      .popup-agg-den-name { font-size: 0.74rem; }
+      .popup-agg-row { font-size: 0.67rem; }
+
+      /* Barra ricerca indirizzo */
+      #address-search-box { width: calc(100vw - 80px); bottom: 28px; }
     }
 
     /* ── Cerca indirizzo (bottom-center) ────────────────────────────────────── */

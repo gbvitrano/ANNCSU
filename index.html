@@ -206,7 +206,9 @@
 <div id="comuni-legend" style="display:none"></div>
 
 <div id="legend">
+  <button id="legend-close" style="display:none" onclick="document.getElementById('legend').classList.toggle('legend-collapsed')" title="Comprimi">✕</button>
   <h3>Numeri civici visibili</h3>
+  <div class="legend-content">
   <div class="legend-realtime-note">Aggiornati in tempo reale sulla vista corrente</div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-ok);"></div>
@@ -227,6 +229,7 @@
     <span class="legend-label" style="color:var(--text-secondary); font-size:0.72rem;">Totale</span>
     <span class="legend-count" id="count-value" style="color:var(--text-primary);">—</span>
   </div>
+  </div><!-- /.legend-content -->
 </div>
 
   <script src="js/anncsu.js"></script>
