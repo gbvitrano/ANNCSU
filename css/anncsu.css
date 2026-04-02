@@ -937,14 +937,93 @@
       #info-sheet { left: 20%; right: 20%; max-height: 80vh; }
     }
 
+    /* ── Header mobile actions ──────────────────────────────────────────────── */
+    #header-top-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    #header-mobile-actions { display: none; gap: 6px; align-items: center; flex-shrink: 0; }
+    #mobile-search-btn, #mobile-filters-btn {
+      position: relative;
+      background: var(--bg-btn); border: 1px solid var(--border-color);
+      color: var(--text-primary); border-radius: 6px;
+      padding: 6px 8px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+    }
+    #mobile-filters-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--accent-ok); color: #fff;
+      border-radius: 50%; width: 14px; height: 14px;
+      font-size: 0.6rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Drawer filtri */
+    #mobile-filters-drawer {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-panel-full);
+      z-index: 200;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #mobile-filters-drawer.open { display: flex; }
+    #mobile-drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid var(--border-color);
+      font-weight: 600; font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    #mobile-drawer-header button {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 18px; cursor: pointer; padding: 4px;
+    }
+    #mobile-drawer-body {
+      flex: 1; overflow-y: auto; padding: 12px 16px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .mobile-filter-section { display: flex; flex-direction: column; gap: 6px; }
+    .mobile-filter-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+
+    /* Search bar mobile in header */
+    #mobile-search-bar {
+      display: flex;
+      align-items: center; gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-panel-full);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+    #mobile-search-bar svg { color: var(--text-muted); flex-shrink: 0; }
+    #mobile-search-bar input {
+      flex: 1; border: none; background: transparent;
+      color: var(--text-primary); font-size: 0.875rem; outline: none; padding: 2px 0;
+    }
+    #mobile-search-bar input::placeholder { color: var(--text-muted); }
+    #mobile-search-bar button {
+      background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px;
+    }
+    #mobile-search-wrap {
+      display: none;
+      position: absolute;
+      top: 8px; left: 8px; right: 8px;
+      z-index: 150;
+      flex-direction: column;
+    }
+    #mobile-address-suggestions {
+      background: var(--bg-panel-full);
+      border: 1px solid var(--border-color);
+      border-top: none; border-radius: 0 0 8px 8px;
+      max-height: 50vh; overflow-y: auto;
+    }
+
     /* ── Mobile ──────────────────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       /* Header compatto */
-      header { padding: 4px 8px; gap: 4px; flex-wrap: wrap; }
-      #app-title { font-size: 0.78rem; }
-      #app-subtitle { font-size: 0.62rem; }
-      #region-filter, #province-filter, #comune-filter { font-size: 0.7rem; padding: 3px 6px; }
-      .type-btn { font-size: 0.7rem; padding: 3px 6px; }
+      header { padding: 6px 10px; gap: 4px; flex-wrap: wrap; }
+      #controls { display: none; } /* nascosto: i filtri vanno nel drawer */
+      #header-mobile-actions { display: flex; }
+      /* search bar desktop nascosta su mobile */
+      #address-search-box { display: none !important; }
+      /* search wrap mobile */
+      #mobile-search-wrap.open { display: flex; }
 
       /* Legenda compatta con pulsante chiudi */
       #legend {

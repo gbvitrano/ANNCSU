@@ -903,6 +903,7 @@
     map.setFilter('civici', f);
     if (map.getLayer('civici-labels')) map.setFilter('civici-labels', f);
     updateCounter();
+    updateMobileBadge();
   }
 
   // Chiudi dropdown cliccando fuori
@@ -1646,7 +1647,8 @@ style: {
   }
 
   function renderAddressSuggestions(results) {
-    const box = document.getElementById('address-suggestions');
+    const isMobile = window.innerWidth <= 600;
+    const box = document.getElementById(isMobile ? 'mobile-address-suggestions' : 'address-suggestions');
     box.innerHTML = results.map((r, i) => {
       const main = r.street
         ? `${r.street}${r.housenumber ? ', ' + r.housenumber : ''}`
@@ -1901,6 +1903,65 @@ style: {
     } else { return; }
     items.forEach((el, i) => el.classList.toggle('highlighted', i === _addrHlIdx));
     if (_addrHlIdx >= 0) items[_addrHlIdx].scrollIntoView({ block: 'nearest' });
+  }
+
+  // ── MOBILE DRAWER ────────────────────────────────────────────────────────────
+  function toggleMobileFilters() {
+    const drawer = document.getElementById('mobile-filters-drawer');
+    const isOpen = drawer.classList.toggle('open');
+    if (isOpen) buildMobileDrawer();
+  }
+
+  function buildMobileDrawer() {
+    const body = document.getElementById('mobile-drawer-body');
+    // Clona i dropdown esistenti nel drawer
+    const cloneIds = [
+      { id: 'region-dropdown',   label: 'Regione' },
+      { id: 'province-dropdown', label: 'Provincia' },
+      { id: 'comune-dropdown',   label: 'Comune' },
+    ];
+    let html = '';
+    cloneIds.forEach(({ id, label }) => {
+      const el = document.getElementById(id);
+      if (el) html += `<div class="mobile-filter-section"><div class="mobile-filter-label">${label}</div>${el.outerHTML.replace(` id="${id}"`, ` id="${id}-mob"`)}</div>`;
+    });
+    // Bottoni tipo
+    html += `<div class="mobile-filter-section">
+      <div class="mobile-filter-label">Tipo civico</div>
+      <div id="type-filter-mob" style="display:flex;gap:6px;flex-wrap:wrap">
+        ${['all','ok','err'].map(t => {
+          const labels = {all:'Tutti', ok:'Geocodificati', err:'Fuori confine'};
+          const active = typeFilter === t ? ' active' + (t === 'err' ? ' active-err' : '') : '';
+          return `<button class="type-btn${active}" onclick="setTypeFilter('${t}');toggleMobileFilters()">${labels[t]}</button>`;
+        }).join('')}
+      </div>
+    </div>`;
+    body.innerHTML = html;
+    // Badge con numero filtri attivi
+    const activeCount = selectedRegions.size + selectedProvinces.size + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
+    const badge = document.getElementById('mobile-filters-badge');
+    badge.textContent = activeCount;
+    badge.style.display = activeCount > 0 ? 'flex' : 'none';
+  }
+
+  function toggleMobileSearch() {
+    const wrap = document.getElementById('mobile-search-wrap');
+    const isOpen = wrap.classList.toggle('open');
+    if (isOpen) {
+      document.getElementById('mobile-search-input').focus();
+    } else {
+      clearAddressSearch();
+      document.getElementById('mobile-address-suggestions').innerHTML = '';
+    }
+  }
+
+  // Sincronizza il badge filtri dopo ogni cambio filtro
+  function updateMobileBadge() {
+    if (window.innerWidth > 600) return;
+    const activeCount = selectedRegions.size + selectedProvinces.size + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
+    const badge = document.getElementById('mobile-filters-badge');
+    badge.textContent = activeCount;
+    badge.style.display = activeCount > 0 ? 'flex' : 'none';
   }
 
   // ── INIT ────────────────────────────────────────────────────────────────────
