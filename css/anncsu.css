@@ -334,6 +334,8 @@
       max-width: 300px;
       max-height: 280px;
       overflow-y: auto;
+	  z-index:8;
+	  
     }
     .comuni-legend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     #comuni-legend h3 { font-size: 0.82rem; font-weight: 600; margin: 0; color: var(--text-item); }
@@ -514,6 +516,7 @@
       flex-direction: column;
       backdrop-filter: blur(6px);
       box-shadow: 0 8px 32px var(--shadow-heavy);
+	  z-index: 8;
     }
     #comuni-analisi-panel.open { display: flex; }
     #comuni-analisi-panel-header {
@@ -526,7 +529,7 @@
       font-size: 16px; cursor: pointer; line-height: 1; padding: 2px 4px;
     }
     #comuni-analisi-panel-header button:hover { color: var(--text-primary); }
-    #comuni-analisi-body { overflow-y: auto; flex: 1; padding: 0 0 10px; }
+    #comuni-analisi-body { overflow-y: auto; flex: 1; padding: 0 0 10px;}
 
     #can-summary {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
@@ -960,7 +963,7 @@
       display: none;
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--bg-panel-full);
-      z-index: 200;
+      z-index: 9999;
       flex-direction: column;
       overflow: hidden;
     }
