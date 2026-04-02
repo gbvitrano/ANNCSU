@@ -101,6 +101,7 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+      margin-left: auto;
     }
 
     /* Dropdown */
@@ -1024,7 +1025,7 @@
     @media (max-width: 600px) {
       /* Header compatto */
       header { padding: 6px 10px; gap: 4px; flex-wrap: wrap; }
-      #controls { display: none; } /* nascosto: i filtri vanno nel drawer */
+      #controls { display: none; margin-left: 0; } /* nascosto: i filtri vanno nel drawer */
       #header-mobile-actions { display: flex; }
       /* search bar desktop nascosta su mobile */
       #address-search-box { display: none !important; }
