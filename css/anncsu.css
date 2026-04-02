@@ -238,11 +238,31 @@
     .popup-warning { font-size: 0.75rem; color: var(--accent-err); margin-top: 6px; font-style: italic; }
     .popup-comuni-importo { font-size: 1rem; font-weight: 700; color: var(--accent-ok); margin: 4px 0 8px; }
 
+    .popup-agg-header {
+      border-top: 1px solid var(--border-color);
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+    .popup-agg-count {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
     .popup-agg-entry {
       border-top: 1px solid var(--border-color);
-      padding-top: 7px;
+      padding-top: 6px;
       margin-top: 5px;
     }
+    .popup-agg-den-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .popup-agg-num { font-size: 0.72rem; color: var(--text-muted); flex-shrink: 0; }
+    .popup-agg-den-name { font-size: 0.82rem; color: var(--den-color, var(--text-primary)); font-weight: 700; word-break: break-word; }
     .popup-agg-label {
       font-size: 0.67rem;
       font-weight: 700;

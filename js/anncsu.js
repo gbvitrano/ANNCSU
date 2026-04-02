@@ -1146,18 +1146,26 @@ style: {
       const statsRow = anncsuStatsMap[codNum];
       const civHTML = buildCiviciBlock(statsRow);
 
-      const entriesHTML = info.entries.map(en => {
-        const den = en.denominazione || '—';
-        const denColor = denominazioniColorMap[en.denominazione] || 'var(--text-muted)';
-        return `
-          <div class="popup-agg-entry">
-            <div class="popup-agg-label">Aggiudicatario</div>
-            <div class="popup-agg-row"><span>CIG</span><strong>${en.CIG || '—'}</strong></div>
-            <div class="popup-agg-row popup-agg-den" style="--den-color:${denColor}"><span>Denominazione</span><strong>${den}</strong></div>
-            <div class="popup-agg-row"><span>Ruolo</span><strong>${en.ruolo || '—'}</strong></div>
-            <div class="popup-agg-row"><span>Cod. Fiscale</span><strong>${en.codice_fiscale || '—'}</strong></div>
-          </div>`;
-      }).join('');
+      const n = info.entries.length;
+      const entriesHTML = `
+        <div class="popup-agg-header">
+          <span class="popup-agg-count">${n} aggiudicatar${n === 1 ? 'io' : 'i'}</span>
+        </div>
+        ${info.entries.map((en, i) => {
+          const den = en.denominazione || '—';
+          const denColor = denominazioniColorMap[en.denominazione] || 'var(--text-muted)';
+          return `
+            <div class="popup-agg-entry">
+              <div class="popup-agg-den-row" style="--den-color:${denColor}">
+                <span class="popup-agg-num">${i + 1}.</span>
+                <strong class="popup-agg-den-name">${den}</strong>
+              </div>
+              <div class="popup-agg-row"><span>CIG</span><strong>${en.CIG || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Ruolo</span><strong>${en.ruolo || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Cod. Fiscale</span><strong>${en.codice_fiscale || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Importo</span><strong>€ ${(en.importo || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+            </div>`;
+        }).join('')}`;
       popup = new maplibregl.Popup({ closeButton: true, maxWidth: '340px' })
         .setLngLat(e.lngLat)
         .setHTML(`
