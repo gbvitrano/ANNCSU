@@ -57,8 +57,9 @@ def aggregate(df: pd.DataFrame) -> list[dict]:
     df[oob_col]   = df[oob_col].astype(bool)
 
     grouped = df.groupby(istat_col)[oob_col]
-    civico    = (~grouped.apply(lambda s: s)).groupby(level=0).sum().rename("civico_geocodificato")
-    fuori     = grouped.sum().rename("fuori_limite_comunale")
+    fuori  = grouped.sum().astype(int).rename("fuori_limite_comunale")
+    totale = grouped.count().astype(int).rename("totale_rows")
+    civico = (totale - fuori).rename("civico_geocodificato")
 
     result = pd.concat([civico, fuori], axis=1).fillna(0).astype(int)
     result.index.name = "CODICE_ISTAT"

@@ -1,6 +1,6 @@
 {
-  "aggiornato_il": "2026-04-02T05:39:48.211298+00:00",
-  "fonte": "https://github.com/anncsu-open/anncsu-viewer/raw/refs/heads/main/data/anncsu-indirizzi.parquet",
+  "aggiornato_il": "2026-04-02T06:07:32.291085+00:00",
+  "fonte": "locale: F:/TEMP/anncsu-indirizzi.parquet",
   "dati": [
     {
       "CODICE_ISTAT": "001003",
