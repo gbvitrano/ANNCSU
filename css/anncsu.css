@@ -244,6 +244,7 @@
     .popup-comune  { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
     .popup-warning { font-size: 0.75rem; color: var(--accent-err); margin-top: 6px; font-style: italic; }
     .popup-comuni-importo { font-size: 1rem; font-weight: 700; color: var(--accent-ok); margin: 4px 0 8px; }
+    .popup-importo-note { font-size: 0.68rem; color: var(--text-muted); font-style: italic; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 6px; line-height: 1.4; }
 
     .popup-agg-header {
       border-top: 1px solid var(--border-color);

@@ -247,11 +247,10 @@
             comune:       cols[iComune]?.trim() || '',
             provincia:    cols[iProv]?.trim()   || '',
             regione:      cols[iReg]?.trim()    || '',
-            importoTotale: 0,
+            importoTotale: importo,
             entries:      []
           };
         }
-        aggiudicatoriMap[cod].importoTotale += importo;
         const den = cols[iDen]?.trim() || '';
         const cf  = cols[iCF]?.trim()  || '';
         aggiudicatoriMap[cod].entries.push({
@@ -1207,6 +1206,7 @@ style: {
           <div class="popup-comuni-importo">€ ${importoFmt}</div>
           ${civHTML}
           ${entriesHTML}
+          <div class="popup-importo-note">* Importi al netto di IVA, riferiti alle trattative di affidamento; i valori delle determine di affidamento potrebbero differire.</div>
         `)
         .addTo(map);
     });
