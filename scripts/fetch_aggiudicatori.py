@@ -49,6 +49,7 @@ AGGIUDICAZIONI_ZIP_URL_FULL = (
 )
 
 OUTPUT_DIR = "dati"
+ANAC_LOCAL_DIR = os.path.join("dati", "anac")   # file ZIP scaricati manualmente
 BASE_NAME = "aggiudicatori"
 MAX_BACKUPS = 1
 # ─────────────────────────────────────────────────────────────────────────────
@@ -264,13 +265,36 @@ def step2_cup_to_cig(df: pd.DataFrame) -> pd.DataFrame:
     return merged
 
 
-# ─── Helper download con fallback ────────────────────────────────────────────
+# ─── Helper: file locale e download con fallback ─────────────────────────────
+
+def _local_path(url: str) -> str | None:
+    """
+    Restituisce il path se il file esiste in dati/anac/, altrimenti None.
+    Esempio: .../cup_csv.zip -> dati/anac/cup_csv.zip
+    """
+    filename = url.split("/")[-1]
+    path = os.path.join(ANAC_LOCAL_DIR, filename)
+    return path if os.path.exists(path) else None
+
 
 def _download_and_filter(urls: list, filter_col_hints: list, filter_values: set) -> pd.DataFrame:
     """
-    Prova ogni URL in sequenza finché uno funziona.
-    Restituisce il DataFrame filtrato dal primo download riuscito.
+    Priorità: file locale in dati/anac/ > download da ANAC.
+    1. Cerca ogni URL come file locale (nessun download, nessun cleanup).
+    2. Se nessun file locale trovato, prova i download in sequenza.
     """
+    # ── 1. File locali ────────────────────────────────────────────────────────
+    for url in urls:
+        local = _local_path(url)
+        if local:
+            size_mb = os.path.getsize(local) / 1_048_576
+            log(f"  File locale: {local} ({size_mb:.1f} MB)")
+            try:
+                return stream_filter_zip(local, filter_col_hints, filter_values)
+            except Exception as e:
+                log(f"  Errore lettura file locale ({local}): {e}")
+
+    # ── 2. Download da ANAC ───────────────────────────────────────────────────
     last_error = None
     for url in urls:
         try:
@@ -280,8 +304,9 @@ def _download_and_filter(urls: list, filter_col_hints: list, filter_values: set)
             finally:
                 os.unlink(zip_path)
         except Exception as e:
-            log(f"  Tentativo fallito ({url}): {e}")
+            log(f"  Download fallito ({url}): {e}")
             last_error = e
+
     log(f"  Tutti i tentativi falliti. Ultimo errore: {last_error}")
     return pd.DataFrame()
 
