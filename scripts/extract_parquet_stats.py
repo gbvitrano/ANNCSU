@@ -28,7 +28,7 @@ PARQUET_URL = (
 GEOJSON_PATH = os.path.join("dati", "comuni.geojson")
 OUTPUT_DIR   = "dati"
 BASE_NAME    = "anncsu_stats"
-MAX_BACKUPS  = 5
+MAX_BACKUPS  = 1
 # ─────────────────────────────────────────────────────────────────────────────
 
 
