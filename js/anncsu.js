@@ -594,7 +594,9 @@
       const color = isNoDen ? '#aaa' : (denominazioniColorMap[den] || '#aaa');
       if (map.getLayer('comuni-selected')) {
         map.setFilter('comuni-selected', ['in', ['to-number', ['get', 'pro_com_t']], ['literal', codes]]);
-        map.setPaintProperty('comuni-selected', 'line-color', color);
+        map.setPaintProperty('comuni-selected', 'line-color', '#000000');
+        map.setPaintProperty('comuni-selected', 'line-width', 2);
+        map.setPaintProperty('comuni-selected', 'line-opacity', 0.75);
       }
     }
     // Sync UI
