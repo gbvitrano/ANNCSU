@@ -1360,10 +1360,11 @@ style: {
 
     const tbody = document.getElementById('stats-tbody');
     tbody.innerHTML = '';
-    rows.forEach(([nome, v]) => {
+    rows.forEach(([nome, v], rowIdx) => {
       const tot = v.ok + v.err;
       const pct = (v.ok / tot * 100).toFixed(1);
       const tr = document.createElement('tr');
+      if (rowIdx % 2 === 1) tr.classList.add('tr-stripe');
       tr.innerHTML = `
         <td>${nome}</td>
         <td class="td-ok">${v.ok.toLocaleString('it-IT')}</td>

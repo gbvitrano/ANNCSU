@@ -489,8 +489,8 @@
     #stats-table thead th:first-child { text-align: left; }
     #stats-table td { padding: 5px 10px; border-bottom: 1px solid var(--bg-faintest); text-align: right; color: var(--text-item); }
     #stats-table td:first-child { text-align: left; color: var(--text-primary); }
-    #stats-table tbody tr:nth-child(odd)  td { background: var(--bg-panel-full); }
-    #stats-table tbody tr:nth-child(even) td { background: var(--bg-stripe); }
+    #stats-table tbody tr td { background: var(--bg-panel-full); }
+    #stats-table tbody tr.tr-stripe td { background: var(--bg-stripe); }
     #stats-table tr:hover td { background: var(--bg-row-hover) !important; }
     .td-ok  { color: var(--accent-ok); font-weight: 600; }
     .td-err { color: var(--accent-err); font-weight: 600; }
