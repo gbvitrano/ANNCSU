@@ -13,6 +13,7 @@ import glob
 import io
 import os
 import shutil
+import subprocess
 import tempfile
 import zipfile
 from datetime import datetime, timezone
@@ -45,29 +46,69 @@ def log(msg: str):
     print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S')} UTC] {msg}", flush=True)
 
 
+UA = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
+
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": UA,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
     "Referer": "https://dati.anticorruzione.it/opendata",
 }
 
+COOKIE_JAR = tempfile.NamedTemporaryFile(delete=False, suffix=".cookies").name
+
+
+def _init_session():
+    """Visita il portale ANAC per ottenere i cookie di sessione."""
+    portal = "https://dati.anticorruzione.it/opendata"
+    log(f"Init sessione ANAC: {portal}")
+    subprocess.run(
+        [
+            "wget", "--quiet", "--save-cookies", COOKIE_JAR,
+            "--keep-session-cookies", "--spider",
+            f"--user-agent={UA}",
+            portal,
+        ],
+        timeout=30,
+        check=False,
+    )
+
 
 def download_to_temp(url: str) -> str:
-    """Scarica in streaming su file temporaneo, restituisce il path."""
+    """Scarica tramite wget con cookie jar, restituisce il path del file temp."""
     log(f"Download: {url}")
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
-    with requests.get(url, stream=True, timeout=600, headers=HEADERS) as r:
-        r.raise_for_status()
-        total = 0
-        for chunk in r.iter_content(chunk_size=2 * 1024 * 1024):
-            tmp.write(chunk)
-            total += len(chunk)
     tmp.close()
-    log(f"  {total / 1_048_576:.1f} MB → {tmp.name}")
+
+    cmd = [
+        "wget",
+        "--quiet",
+        "--load-cookies", COOKIE_JAR,
+        "--save-cookies", COOKIE_JAR,
+        "--keep-session-cookies",
+        f"--user-agent={UA}",
+        "--header=Accept: application/octet-stream,*/*;q=0.8",
+        "--header=Accept-Language: it-IT,it;q=0.9",
+        "--header=Referer: https://dati.anticorruzione.it/opendata",
+        "--timeout=600",
+        "--tries=3",
+        "--waitretry=10",
+        "-O", tmp.name,
+        url,
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=660)
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"wget fallito (exit {result.returncode}) per {url}\n{result.stderr}"
+        )
+
+    size = os.path.getsize(tmp.name)
+    if size == 0:
+        raise RuntimeError(f"File scaricato vuoto: {url}")
+    log(f"  {size / 1_048_576:.1f} MB → {tmp.name}")
     return tmp.name
 
 
@@ -305,6 +346,7 @@ def backup_and_save(df: pd.DataFrame):
 
 if __name__ == "__main__":
     log(f"=== Avvio pipeline aggiudicatori ANNCSU 1.3.1 — {datetime.now(timezone.utc).isoformat()} ===")
+    _init_session()
     df = step1_candidature()
     df = step2_cup_to_cig(df)
     df = step3_aggiudicatari(df)
