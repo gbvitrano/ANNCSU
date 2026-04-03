@@ -546,6 +546,7 @@
       padding: 10px 14px; border-bottom: 1px solid var(--border-color);
     }
     .can-section { padding: 10px 14px 0; }
+    .can-importo-note { font-size: 0.68rem; color: var(--text-muted); font-style: italic; margin: 12px 14px 6px; line-height: 1.4; }
     .can-title {
       font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
       margin-bottom: 6px; display: flex; align-items: baseline; gap: 6px;

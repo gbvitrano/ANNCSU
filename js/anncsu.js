@@ -856,7 +856,8 @@
         </div>
       </div>`;
 
-    body.innerHTML = summaryHTML + denHTML + regHTML + statoHTML + finHTML;
+    const noteHTML = `<div class="can-importo-note">* Importi al netto di IVA, riferiti alle trattative di affidamento; i valori delle determine di affidamento potrebbero differire.</div>`;
+    body.innerHTML = summaryHTML + denHTML + regHTML + statoHTML + finHTML + noteHTML;
   }
 
   function toggleComuniLayer() {
