@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Pipeline: Candidature finanziate ANNCSU Misura 1.3.1
-1. Scarica candidature da PA Digitale 2026, filtra ANNCSU → CUP
-2. ANAC cup_csv.zip: CUP → CIG (streaming, nessuna estrazione)
-3. ANAC aggiudicatari_csv.zip: CIG → denominazione, CF, ruolo
-4. ANAC aggiudicazioni_csv.zip: CIG → importo aggiudicazione
+1. Scarica candidature da PA Digitale 2026, filtra ANNCSU -> CUP
+2. ANAC cup_csv.zip: CUP -> CIG (streaming, nessuna estrazione)
+3. ANAC aggiudicatari_csv.zip: CIG -> denominazione, CF, ruolo
+4. ANAC aggiudicazioni_csv.zip: CIG -> importo aggiudicazione
 5. Salva dati/aggiudicatori.csv, backup in dati/backup/
 """
+
+import sys
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import csv
 import glob
@@ -78,7 +82,7 @@ def _init_session():
             "curl", "-s", "-L",
             "-c", COOKIE_JAR,
             "-A", UA,
-            "-o", "/dev/null",
+            "-o", os.devnull,
             portal,
         ],
         timeout=30,
@@ -140,7 +144,7 @@ def download_to_temp(url: str) -> str:
             f"Contenuto: {snippet}"
         )
 
-    log(f"  {size / 1_048_576:.1f} MB → {tmp.name}")
+    log(f"  {size / 1_048_576:.1f} MB -> {tmp.name}")
     return tmp.name
 
 
@@ -171,7 +175,11 @@ def stream_filter_zip(zip_path: str, filter_col_hints: list, filter_values: set)
             text = io.TextIOWrapper(raw, encoding="utf-8", errors="replace")
             first_line = text.readline()
             delimiter = _detect_delimiter(first_line)
-            header = [h.strip().upper() for h in first_line.strip().split(delimiter)]
+            # Usa csv.reader per gestire correttamente i campi quotati ("CIG";"CUP")
+            header = [
+                h.strip().strip('"').strip("'").upper()
+                for h in next(csv.reader([first_line], delimiter=delimiter))
+            ]
             log(f"  Delimiter='{delimiter}', colonne={len(header)}")
 
             # Trova indice colonna di filtro
@@ -225,7 +233,7 @@ def step1_candidature() -> pd.DataFrame:
 # ─── Step 2 ──────────────────────────────────────────────────────────────────
 
 def step2_cup_to_cig(df: pd.DataFrame) -> pd.DataFrame:
-    log("=== STEP 2: CUP → CIG (ANAC cup dataset) ===")
+    log("=== STEP 2: CUP -> CIG (ANAC cup dataset) ===")
     cups = set(df["codice_cup"].dropna().str.strip().str.upper())
     log(f"  CUP unici: {len(cups):,}")
 
