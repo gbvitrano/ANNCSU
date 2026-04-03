@@ -961,8 +961,10 @@ style: {
     maxBounds: [[-8, 25], [38, 62]], // bounds larghi per supportare zoom 4 e 5
     hash: true,
 	  dragRotate: false,       // ← blocca rotazione con mouse
-  pitchWithRotate: false   // ← blocca anche l'inclinazione (pitch)
+  pitchWithRotate: false,   // ← blocca anche l'inclinazione (pitch)
+  attributionControl: false
   });
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
   function resetToItaly() {
     map.flyTo({ center: MAP_CENTER, zoom: MAP_ZOOM, duration: 800 });
@@ -985,6 +987,10 @@ style: {
   let popup = null;
 
   map.on('load', () => {
+    // Forza attribution chiusa di default
+    document.querySelectorAll('.maplibregl-ctrl-attrib').forEach(el => {
+      el.classList.remove('maplibregl-compact-show');
+    });
     document.getElementById('loading').classList.add('hidden');
     if (pendingTheme) { map.getSource('carto').setTiles(pendingTheme); pendingTheme = null; }
     map.addControl(new StatsControl(), 'top-right');
