@@ -1,0 +1,11 @@
+Apri un terminale nella cartella del progetto e lancia
+
+
+python datianacaggiorna.py
+Se usi VS Code puoi anche aprire il file datianacaggiorna.py e premere il tasto Run (▶) in alto a destra.
+
+Quando finisce (circa 5 minuti), puoi fare push
+
+
+git add datiaggiudicatori.csv datibackup
+git push
