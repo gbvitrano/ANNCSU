@@ -85,6 +85,10 @@
 
     header h1 { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
     header p  { font-size: 0.75rem; color: var(--text-muted); }
+
+    #header-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #header-logos { display: flex; align-items: center; flex-shrink: 0; }
+    #logo-palermohub { height: 36px; width: auto; display: block; }
     #ods-logo {
       position: absolute;
       bottom:80px;
@@ -1028,6 +1032,10 @@
     @media (max-width: 600px) {
       /* Header compatto */
       header { padding: 6px 10px; gap: 4px; flex-wrap: wrap; }
+      #header-brand { gap: 6px; min-width: 0; flex: 1; }
+      #logo-palermohub { height: 28px; }
+      #header-brand h1 { font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      #header-brand p  { display: none; }
       #controls { display: none; margin-left: 0; } /* nascosto: i filtri vanno nel drawer */
       #header-mobile-actions { display: flex; }
       /* search bar desktop nascosta su mobile */
