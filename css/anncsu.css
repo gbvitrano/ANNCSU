@@ -23,6 +23,7 @@
       --bg-row-hover:         rgba(255, 255, 255, 0.05);
       --bg-subtle:            rgba(255, 255, 255, 0.04);
       --bg-faintest:          rgba(255, 255, 255, 0.03);
+      --bg-stripe:            rgba(255, 255, 255, 0.07);
       --popup-tip:            #212121;
       --oob-strip-bg:         rgba(0, 0, 0, 0.3);
       --oob-row-border:       rgba(255, 255, 255, 0.06);
@@ -53,6 +54,7 @@
       --bg-row-hover:         rgba(160, 174, 192, 0.2);
       --bg-subtle:            rgba(160, 174, 192, 0.15);
       --bg-faintest:          rgba(160, 174, 192, 0.1);
+      --bg-stripe:            #edf2f7;
       --popup-tip:            #ffffff;
       --oob-strip-bg:         rgba(0, 0, 0, 0.05);
       --oob-row-border:       rgba(0, 0, 0, 0.06);
@@ -487,7 +489,9 @@
     #stats-table thead th:first-child { text-align: left; }
     #stats-table td { padding: 5px 10px; border-bottom: 1px solid var(--bg-faintest); text-align: right; color: var(--text-item); }
     #stats-table td:first-child { text-align: left; color: var(--text-primary); }
-    #stats-table tr:hover td { background: var(--bg-row-hover); }
+    #stats-table tbody tr:nth-child(odd)  td { background: var(--bg-panel-full); }
+    #stats-table tbody tr:nth-child(even) td { background: var(--bg-stripe); }
+    #stats-table tr:hover td { background: var(--bg-row-hover) !important; }
     .td-ok  { color: var(--accent-ok); font-weight: 600; }
     .td-err { color: var(--accent-err); font-weight: 600; }
     .td-pct { color: var(--text-secondary); }
@@ -562,7 +566,7 @@
     }
     .can-table td:first-child { text-align: left; white-space: normal; color: var(--text-primary); }
     .can-table tbody tr:nth-child(odd)  td { background: var(--bg-panel-full); }
-    .can-table tbody tr:nth-child(even) td { background: var(--bg-faintest); }
+    .can-table tbody tr:nth-child(even) td { background: var(--bg-stripe); }
     .can-table tr:hover td { background: var(--bg-row-hover) !important; }
     .can-dot {
       display: inline-block; width: 8px; height: 8px;
