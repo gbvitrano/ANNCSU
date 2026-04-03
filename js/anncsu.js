@@ -231,6 +231,7 @@
       const iCF     = headers.indexOf('codice_fiscale');
       const iStato  = headers.indexOf('stato_candidatura');
       const iFin    = headers.indexOf('numero_finestra_temporale');
+      const iImportoAgg = headers.indexOf('importo_aggiudicazione');
 
       lines.slice(1).forEach(line => {
         if (!line.trim()) return;
@@ -253,6 +254,7 @@
         aggiudicatoriMap[cod].importoTotale += importo;
         aggiudicatoriMap[cod].entries.push({
           importo,
+          importo_aggiudicazione: parseFloat(cols[iImportoAgg]) || 0,
           CIG:            cols[iCIG]?.trim()    || '',
           denominazione:  cols[iDen]?.trim()    || '',
           ruolo:          cols[iRuolo]?.trim()  || '',
@@ -1178,7 +1180,8 @@ style: {
               <div class="popup-agg-row"><span>CIG</span><strong>${en.CIG || '—'}</strong></div>
               <div class="popup-agg-row"><span>Ruolo</span><strong>${en.ruolo || '—'}</strong></div>
               <div class="popup-agg-row"><span>Cod. Fiscale</span><strong>${en.codice_fiscale || '—'}</strong></div>
-              <div class="popup-agg-row"><span>Importo</span><strong>€ ${(en.importo || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+              <div class="popup-agg-row"><span>Importo finanziamento</span><strong>€ ${(en.importo || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+              ${en.importo_aggiudicazione ? `<div class="popup-agg-row"><span>Importo aggiudicato</span><strong>€ ${en.importo_aggiudicazione.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>` : ''}
             </div>`;
         }).join('')}`;
       popup = new maplibregl.Popup({ closeButton: true, maxWidth: '340px' })
