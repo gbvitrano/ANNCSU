@@ -511,7 +511,7 @@
       width: 480px;
       min-width: 300px;
       max-width: calc(100vw - 60px);
-      max-height: calc(100% - 20px);
+      max-height: calc(100% - 90px);
       background: var(--bg-panel-full);
       border: 1px solid var(--border-color);
       border-radius: 10px;
