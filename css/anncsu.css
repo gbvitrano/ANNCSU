@@ -547,7 +547,7 @@
     .can-hint { font-size: 0.65rem; font-weight: 400; color: var(--text-faint); }
     .can-table-wrap { overflow-x: auto; margin-bottom: 4px; }
     .can-table {
-      width: 100%; border-collapse: collapse; font-size: 0.73rem;
+      min-width: 100%; border-collapse: collapse; font-size: 0.73rem;
     }
     .can-table thead th {
       position: sticky; top: 0; background: var(--bg-btn); color: var(--text-secondary);
