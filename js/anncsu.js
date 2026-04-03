@@ -252,13 +252,15 @@
           };
         }
         aggiudicatoriMap[cod].importoTotale += importo;
+        const den = cols[iDen]?.trim() || '';
+        const cf  = cols[iCF]?.trim()  || '';
         aggiudicatoriMap[cod].entries.push({
           importo,
           importo_aggiudicazione: parseFloat(cols[iImportoAgg]) || 0,
           CIG:            cols[iCIG]?.trim()    || '',
-          denominazione:  cols[iDen]?.trim()    || '',
+          denominazione:  den || cf,
           ruolo:          cols[iRuolo]?.trim()  || '',
-          codice_fiscale: cols[iCF]?.trim()     || '',
+          codice_fiscale: cf,
           stato:          cols[iStato]?.trim()  || '',
           finestra:       cols[iFin]?.trim()    || ''
         });
