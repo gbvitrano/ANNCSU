@@ -15,7 +15,8 @@
       "Bash(node -e \":*)",
       "Bash(curl -s -r 0-5000 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://anncsu.open.agenziaentrate.gov.it/\" \"https://anncsu.open.agenziaentrate.gov.it/age-inspire/opendata/anncsu/getds.php?INDIR_SICI\" -o \"$TEMP/anncsu_sample.zip\")",
       "Read(//f/TEMP/QGISWebExporter_Viewer/**)",
-      "Bash(gh run:*)"
+      "Bash(gh run:*)",
+      "Bash(python dati/anac/aggiorna.py)"
     ]
   }
 }
