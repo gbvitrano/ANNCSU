@@ -29,10 +29,18 @@ CANDIDATURE_URL = (
 CUP_ZIP_URL = (
     "https://dati.anticorruzione.it/opendata/download/dataset/cup/filesystem/cup_csv.zip"
 )
-AGGIUDICATARI_ZIP_URL = (
+# File datati (snapshot mensile, molto più piccoli): tentativo primario
+# Fallback al full dump se il file datato non copre tutti i CIG cercati
+AGGIUDICATARI_ZIP_URL_DATED = (
+    "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicatari/filesystem/20260401-aggiudicatari_csv.zip"
+)
+AGGIUDICATARI_ZIP_URL_FULL = (
     "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicatari/filesystem/aggiudicatari_csv.zip"
 )
-AGGIUDICAZIONI_ZIP_URL = (
+AGGIUDICAZIONI_ZIP_URL_DATED = (
+    "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicazioni/filesystem/20260401-aggiudicazioni_csv.zip"
+)
+AGGIUDICAZIONI_ZIP_URL_FULL = (
     "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicazioni/filesystem/aggiudicazioni_csv.zip"
 )
 
@@ -62,14 +70,15 @@ COOKIE_JAR = tempfile.NamedTemporaryFile(delete=False, suffix=".cookies").name
 
 
 def _init_session():
-    """Visita il portale ANAC per ottenere i cookie di sessione."""
+    """Visita il portale ANAC con curl per ottenere i cookie di sessione."""
     portal = "https://dati.anticorruzione.it/opendata"
     log(f"Init sessione ANAC: {portal}")
     subprocess.run(
         [
-            "wget", "--quiet", "--save-cookies", COOKIE_JAR,
-            "--keep-session-cookies", "--spider",
-            f"--user-agent={UA}",
+            "curl", "-s", "-L",
+            "-c", COOKIE_JAR,
+            "-A", UA,
+            "-o", "/dev/null",
             portal,
         ],
         timeout=30,
@@ -77,37 +86,60 @@ def _init_session():
     )
 
 
+def _curl_head(url: str) -> str:
+    """Esegue HEAD request e restituisce le prime righe degli header per diagnosi."""
+    result = subprocess.run(
+        ["curl", "-sI", "-L", "-A", UA,
+         "-H", "Referer: https://dati.anticorruzione.it/opendata",
+         "--max-time", "15", url],
+        capture_output=True, text=True, timeout=20, check=False,
+    )
+    return (result.stdout + result.stderr)[:800]
+
+
 def download_to_temp(url: str) -> str:
-    """Scarica tramite wget con cookie jar, restituisce il path del file temp."""
+    """Scarica tramite curl con cookie jar, restituisce il path del file temp."""
     log(f"Download: {url}")
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
     tmp.close()
 
     cmd = [
-        "wget",
-        "--quiet",
-        "--load-cookies", COOKIE_JAR,
-        "--save-cookies", COOKIE_JAR,
-        "--keep-session-cookies",
-        f"--user-agent={UA}",
-        "--header=Accept: application/octet-stream,*/*;q=0.8",
-        "--header=Accept-Language: it-IT,it;q=0.9",
-        "--header=Referer: https://dati.anticorruzione.it/opendata",
-        "--timeout=600",
-        "--tries=3",
-        "--waitretry=10",
-        "-O", tmp.name,
+        "curl", "-L", "--fail",
+        "-b", COOKIE_JAR, "-c", COOKIE_JAR,
+        "-A", UA,
+        "-H", "Accept: application/octet-stream,*/*;q=0.8",
+        "-H", "Accept-Language: it-IT,it;q=0.9,en;q=0.8",
+        "-H", "Referer: https://dati.anticorruzione.it/opendata",
+        "--compressed",
+        "--connect-timeout", "30",
+        "--max-time", "600",
+        "--retry", "3",
+        "--retry-delay", "10",
+        "-o", tmp.name,
         url,
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=660)
+
     if result.returncode != 0:
+        # Diagnosi: mostra gli header HTTP effettivi
+        log(f"  curl fallito (exit {result.returncode}). Diagnosi HEAD request:")
+        log(_curl_head(url))
         raise RuntimeError(
-            f"wget fallito (exit {result.returncode}) per {url}\n{result.stderr}"
+            f"Download fallito (curl exit {result.returncode}) per {url}\n"
+            f"stderr: {result.stderr[:400]}"
         )
 
     size = os.path.getsize(tmp.name)
-    if size == 0:
-        raise RuntimeError(f"File scaricato vuoto: {url}")
+    if size < 1024:
+        # File troppo piccolo — probabilmente una pagina di errore HTML
+        with open(tmp.name, "rb") as f:
+            snippet = f.read(300).decode("utf-8", errors="replace")
+        os.unlink(tmp.name)
+        raise RuntimeError(
+            f"File scaricato sospetto ({size} byte) per {url}.\n"
+            f"Contenuto: {snippet}"
+        )
+
     log(f"  {size / 1_048_576:.1f} MB → {tmp.name}")
     return tmp.name
 
@@ -197,12 +229,11 @@ def step2_cup_to_cig(df: pd.DataFrame) -> pd.DataFrame:
     cups = set(df["codice_cup"].dropna().str.strip().str.upper())
     log(f"  CUP unici: {len(cups):,}")
 
-    zip_path = download_to_temp(CUP_ZIP_URL)
-    try:
-        df_cup = stream_filter_zip(zip_path, ["CUP", "CODICE_CUP"], cups)
-    finally:
-        os.unlink(zip_path)
-
+    df_cup = _download_and_filter(
+        urls=[CUP_ZIP_URL],
+        filter_col_hints=["CUP", "CODICE_CUP"],
+        filter_values=cups,
+    )
     if df_cup.empty:
         log("  ATTENZIONE: nessun CIG trovato. Il CSV avrà CIG vuoto.")
         return df.assign(CIG="")
@@ -225,6 +256,28 @@ def step2_cup_to_cig(df: pd.DataFrame) -> pd.DataFrame:
     return merged
 
 
+# ─── Helper download con fallback ────────────────────────────────────────────
+
+def _download_and_filter(urls: list, filter_col_hints: list, filter_values: set) -> pd.DataFrame:
+    """
+    Prova ogni URL in sequenza finché uno funziona.
+    Restituisce il DataFrame filtrato dal primo download riuscito.
+    """
+    last_error = None
+    for url in urls:
+        try:
+            zip_path = download_to_temp(url)
+            try:
+                return stream_filter_zip(zip_path, filter_col_hints, filter_values)
+            finally:
+                os.unlink(zip_path)
+        except Exception as e:
+            log(f"  Tentativo fallito ({url}): {e}")
+            last_error = e
+    log(f"  Tutti i tentativi falliti. Ultimo errore: {last_error}")
+    return pd.DataFrame()
+
+
 # ─── Step 3 ──────────────────────────────────────────────────────────────────
 
 def step3_aggiudicatari(df: pd.DataFrame) -> pd.DataFrame:
@@ -236,12 +289,11 @@ def step3_aggiudicatari(df: pd.DataFrame) -> pd.DataFrame:
         log("  Nessun CIG, step saltato.")
         return df.assign(ruolo="", codice_fiscale="", denominazione="")
 
-    zip_path = download_to_temp(AGGIUDICATARI_ZIP_URL)
-    try:
-        df_agg = stream_filter_zip(zip_path, ["CIG", "CODICE_CIG"], cigs)
-    finally:
-        os.unlink(zip_path)
-
+    df_agg = _download_and_filter(
+        urls=[AGGIUDICATARI_ZIP_URL_DATED, AGGIUDICATARI_ZIP_URL_FULL],
+        filter_col_hints=["CIG", "CODICE_CIG"],
+        filter_values=cigs,
+    )
     if df_agg.empty:
         log("  Nessun aggiudicatario trovato.")
         return df.assign(ruolo="", codice_fiscale="", denominazione="")
@@ -278,12 +330,11 @@ def step4_aggiudicazioni(df: pd.DataFrame) -> pd.DataFrame:
         log("  Nessun CIG, step saltato.")
         return df.assign(importo_aggiudicazione="")
 
-    zip_path = download_to_temp(AGGIUDICAZIONI_ZIP_URL)
-    try:
-        df_agz = stream_filter_zip(zip_path, ["CIG", "CODICE_CIG", "CIG_ACCORDO_QUADRO"], cigs)
-    finally:
-        os.unlink(zip_path)
-
+    df_agz = _download_and_filter(
+        urls=[AGGIUDICAZIONI_ZIP_URL_DATED, AGGIUDICAZIONI_ZIP_URL_FULL],
+        filter_col_hints=["CIG", "CODICE_CIG", "CIG_ACCORDO_QUADRO"],
+        filter_values=cigs,
+    )
     if df_agz.empty:
         log("  Nessuna aggiudicazione trovata.")
         return df.assign(importo_aggiudicazione="")
