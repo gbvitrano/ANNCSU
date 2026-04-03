@@ -1,11 +1,5 @@
-# Dataset ANAC – file grandi (>100 MB, richiedono Git LFS)
-# cup_csv.zip (~75 MB) e i file datati mensili possono essere committati normalmente
-dati/anac/aggiudicatari_csv.zip
-dati/anac/aggiudicazioni_csv.zip
-dati/anac/cup_json.zip
-dati/anac/aggiudicatari_ttl.zip
-dati/anac/aggiudicazioni_ttl.zip
-dati/anac/aggiudicazioni_json.zip
+# Cartella ANAC – solo locale, non va su GitHub
+dati/anac/
 
 # Python
 __pycache__/
