@@ -703,11 +703,11 @@
     }
 
     // ── Aggregazione ──────────────────────────────────────────────────────────
-    const byDen  = {}; // den → { comuni:Set, province:Set, regioni:Set, importo, color }
-    const byReg  = {}; // regione → { comuni:Set, importo }
-    const byStato = {}; // stato → { nComuni:Set, importo }
-    const byFin  = {}; // finestra → { nComuni:Set, importo }
-    let totalImporto = 0;
+    const byDen  = {}; // den → { comuni:Set, province:Set, regioni:Set, importo, importo_agg, color }
+    const byReg  = {}; // regione → { comuni:Set, importo, importo_agg }
+    const byStato = {}; // stato → { comuni:Set, importo, importo_agg }
+    const byFin  = {}; // finestra → { comuni:Set, importo, importo_agg }
+    let totalImporto = 0, totalImportoAgg = 0;
     const allProvince = new Set(), allRegioni = new Set();
 
     Object.entries(aggiudicatoriMap).forEach(([, info]) => {
@@ -718,27 +718,33 @@
       info.entries.forEach(en => {
         const den = en.denominazione || '(Senza aggiudicatario)';
         if (!byDen[den]) byDen[den] = {
-          comuni: new Set(), province: new Set(), regioni: new Set(), importo: 0,
+          comuni: new Set(), province: new Set(), regioni: new Set(), importo: 0, importo_agg: 0,
           color: denominazioniColorMap[en.denominazione] || '#aaa'
         };
         byDen[den].comuni.add(info.comune);
         byDen[den].province.add(info.provincia);
         byDen[den].regioni.add(info.regione);
         byDen[den].importo += en.importo;
+        byDen[den].importo_agg += en.importo_aggiudicazione || 0;
 
-        if (!byReg[info.regione]) byReg[info.regione] = { comuni: new Set(), importo: 0 };
+        if (!byReg[info.regione]) byReg[info.regione] = { comuni: new Set(), importo: 0, importo_agg: 0 };
         byReg[info.regione].comuni.add(info.comune);
         byReg[info.regione].importo += en.importo;
+        byReg[info.regione].importo_agg += en.importo_aggiudicazione || 0;
 
         const stato = en.stato || '—';
-        if (!byStato[stato]) byStato[stato] = { comuni: new Set(), importo: 0 };
+        if (!byStato[stato]) byStato[stato] = { comuni: new Set(), importo: 0, importo_agg: 0 };
         byStato[stato].comuni.add(info.comune);
         byStato[stato].importo += en.importo;
+        byStato[stato].importo_agg += en.importo_aggiudicazione || 0;
 
         const fin = en.finestra || '—';
-        if (!byFin[fin]) byFin[fin] = { comuni: new Set(), importo: 0 };
+        if (!byFin[fin]) byFin[fin] = { comuni: new Set(), importo: 0, importo_agg: 0 };
         byFin[fin].comuni.add(info.comune);
         byFin[fin].importo += en.importo;
+        byFin[fin].importo_agg += en.importo_aggiudicazione || 0;
+
+        totalImportoAgg += en.importo_aggiudicazione || 0;
       });
     });
 
@@ -749,7 +755,8 @@
     const summaryHTML = `
       <div id="can-summary">
         <div class="stat-box"><div class="stat-box-label">Comuni finanziati</div><div class="stat-box-value">${nComuni.toLocaleString('it-IT')}</div></div>
-        <div class="stat-box"><div class="stat-box-label">Importo totale</div><div class="stat-box-value neutral" style="font-size:0.8rem">${fmtEur(totalImporto)}</div></div>
+        <div class="stat-box"><div class="stat-box-label">Importo finanziato</div><div class="stat-box-value neutral" style="font-size:0.8rem">${fmtEur(totalImporto)}</div></div>
+        <div class="stat-box"><div class="stat-box-label">Importo aggiudicato</div><div class="stat-box-value neutral" style="font-size:0.8rem">${fmtEur(totalImportoAgg)}</div></div>
         <div class="stat-box"><div class="stat-box-label">Aggiudicatari</div><div class="stat-box-value">${nAgg.toLocaleString('it-IT')}</div></div>
         <div class="stat-box"><div class="stat-box-label">Province coinvolte</div><div class="stat-box-value neutral">${allProvince.size}</div></div>
         <div class="stat-box"><div class="stat-box-label">Regioni coinvolte</div><div class="stat-box-value neutral">${allRegioni.size}</div></div>
@@ -767,6 +774,7 @@
           <td>${d.province.size}</td>
           <td>${d.regioni.size}</td>
           <td>${fmtEur(d.importo)}</td>
+          <td>${d.importo_agg > 0 ? fmtEur(d.importo_agg) : '—'}</td>
           <td>${pct}%</td>
         </tr>`;
       }).join('');
@@ -779,7 +787,7 @@
             tr.style.display=tr.dataset.den.toLowerCase().includes(q)?'':'none')">
         <div class="can-table-wrap">
           <table class="can-table">
-            <thead><tr><th>Denominazione</th><th>Comuni</th><th>Prov.</th><th>Reg.</th><th>Importo</th><th>%</th></tr></thead>
+            <thead><tr><th>Denominazione</th><th>Comuni</th><th>Prov.</th><th>Reg.</th><th>Imp. finanziato</th><th>Imp. aggiudicato</th><th>%</th></tr></thead>
             <tbody>${denRows}</tbody>
           </table>
         </div>
@@ -792,13 +800,14 @@
         <td>${reg}</td>
         <td>${d.comuni.size.toLocaleString('it-IT')}</td>
         <td>${fmtEur(d.importo)}</td>
+        <td>${d.importo_agg > 0 ? fmtEur(d.importo_agg) : '—'}</td>
       </tr>`).join('');
     const regHTML = `
       <div class="can-section">
         <h4 class="can-title">Per regione <span class="can-hint">ordinato per n. comuni</span></h4>
         <div class="can-table-wrap">
           <table class="can-table">
-            <thead><tr><th>Regione</th><th>Comuni</th><th>Importo</th></tr></thead>
+            <thead><tr><th>Regione</th><th>Comuni</th><th>Imp. finanziato</th><th>Imp. aggiudicato</th></tr></thead>
             <tbody>${regRows}</tbody>
           </table>
         </div>
@@ -811,13 +820,14 @@
         <td>${statoLabel(s)}</td>
         <td>${d.comuni.size.toLocaleString('it-IT')}</td>
         <td>${fmtEur(d.importo)}</td>
+        <td>${d.importo_agg > 0 ? fmtEur(d.importo_agg) : '—'}</td>
       </tr>`).join('');
     const statoHTML = `
       <div class="can-section">
         <h4 class="can-title">Stato candidatura</h4>
         <div class="can-table-wrap">
           <table class="can-table">
-            <thead><tr><th>Stato</th><th>Comuni</th><th>Importo</th></tr></thead>
+            <thead><tr><th>Stato</th><th>Comuni</th><th>Imp. finanziato</th><th>Imp. aggiudicato</th></tr></thead>
             <tbody>${statoRows}</tbody>
           </table>
         </div>
@@ -830,13 +840,14 @@
         <td>Finestra ${fin}</td>
         <td>${d.comuni.size.toLocaleString('it-IT')}</td>
         <td>${fmtEur(d.importo)}</td>
+        <td>${d.importo_agg > 0 ? fmtEur(d.importo_agg) : '—'}</td>
       </tr>`).join('');
     const finHTML = `
       <div class="can-section">
         <h4 class="can-title">Per finestra temporale</h4>
         <div class="can-table-wrap">
           <table class="can-table">
-            <thead><tr><th>Finestra</th><th>Comuni</th><th>Importo</th></tr></thead>
+            <thead><tr><th>Finestra</th><th>Comuni</th><th>Imp. finanziato</th><th>Imp. aggiudicato</th></tr></thead>
             <tbody>${finRows}</tbody>
           </table>
         </div>
