@@ -218,7 +218,7 @@
       const res  = await fetch('dati/aggiudicatori.csv');
       const text = await res.text();
       const lines   = text.trim().split('\n');
-      const headers = lines[0].split(',');
+      const headers = lines[0].split(',').map(h => h.trim());
       const iCod    = headers.indexOf('cod_comune');
       const iEnte   = headers.indexOf('ente');
       const iComune = headers.indexOf('comune');
