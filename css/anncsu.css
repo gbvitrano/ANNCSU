@@ -561,7 +561,9 @@
       text-align: right; color: var(--text-item); white-space: nowrap;
     }
     .can-table td:first-child { text-align: left; white-space: normal; color: var(--text-primary); }
-    .can-table tr:hover td { background: var(--bg-row-hover); }
+    .can-table tbody tr:nth-child(odd)  td { background: var(--bg-panel-full); }
+    .can-table tbody tr:nth-child(even) td { background: var(--bg-faintest); }
+    .can-table tr:hover td { background: var(--bg-row-hover) !important; }
     .can-dot {
       display: inline-block; width: 8px; height: 8px;
       border-radius: 2px; margin-right: 6px; flex-shrink: 0; vertical-align: middle;
