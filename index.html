@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <title>Analisi Numeri Civici ANNCSU – Italia</title>
   <meta name="description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
   <meta name="author" content="Giovan Battista Vitrano per OpenDataSicilia.it">
@@ -12,7 +12,7 @@
     <meta name="creation_Date" content="31/03/2026>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-      <link rel="icon" href="favicon.png" type="image/png"/> 
+      <link rel="icon" href="favicon.png" type="image/png"/>
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
   <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pmtiles@4/dist/pmtiles.js"></script>
@@ -27,20 +27,30 @@
       gtag('js', new Date());
       gtag('config', 'UA-87653723-4');
     </script>
-	
+
 	    <!-- Meta tags per social sharing pen Graph Protocol -->
    <meta property="og:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Analisi Numeri Civici ANNCSU – Italia">
     <meta property="og:description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
-    <meta property="og:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg"> 
+    <meta property="og:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
 	<!-- twitter -->
      <meta name="twitter:card" content="summary_large_image">
     <meta property="twitter:domain" content="palermohub.opendatasicilia.it">
     <meta property="twitter:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
     <meta name="twitter:title" content="Analisi Numeri Civici ANNCSU – Italia">
     <meta name="twitter:description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
-    <meta name="twitter:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg"> 
+    <meta name="twitter:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
+
+	<!-- Chart.js per Chart Builder -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+	<!-- Plugin etichette valori sui grafici -->
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+	<script>Chart.register(ChartDataLabels);</script>
+	<!-- Font Awesome per icone -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<!-- CSS Chart Builder -->
+	<link rel="stylesheet" href="css/chart-builder.css">
 
 </head>
 
@@ -155,6 +165,14 @@
 </header>
 
 <div id="map">
+  <!-- Pulsante DataViz: disabled finché i dati non sono pronti -->
+  <button class="chart-builder-trigger loading" id="chart-builder-trigger"
+          title="Caricamento dati in corso..." disabled>
+    <span class="pulse-ring1"></span>
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Caricamento...</span>
+  </button>
+
   <div id="loading">Caricamento mappa...</div>
 
   <!-- Search bar mobile (overlay sulla mappa) -->
@@ -270,6 +288,8 @@
   </div><!-- /.legend-content -->
 </div>
 
+  <!-- Usa il clone anncsu_dataviz.js che importa anncsu.js e espone i dati -->
+  <script src="js/anncsu_dataviz.js"></script>
   <script src="js/anncsu.js"></script>
 
 <!-- Modal info – bottom sheet -->
@@ -284,6 +304,7 @@
   <div id="info-tabs">
     <button class="info-tab active" data-tab="come-funziona" onclick="switchInfoTab('come-funziona')">Come funziona</button>
     <button class="info-tab"        data-tab="fonti"         onclick="switchInfoTab('fonti')">Fonti dati</button>
+    <button class="info-tab"        data-tab="dataviz"       onclick="switchInfoTab('dataviz')">DataViz</button>
     <button class="info-tab"        data-tab="credits"       onclick="switchInfoTab('credits')">Credits</button>
   </div>
 
@@ -368,12 +389,319 @@
     <div class="info-source">
      Un ringraziamento speciale a <b>Federico Cortese</b> per i preziosi suggerimenti sul trattamento dei dati: l'aggiunta di un fallback sul nome del comune per i comuni privi di codice ISTAT (tra cui i comuni sardi), e la segnalazione del caso in cui il dataset ANAC riporta solo il codice fiscale dell'aggiudicatario senza la denominazione, causando la perdita del campo nel join.</p>
     </div>
-	
-	
+
+
 
   </div>
-  
-    <!-- Tab: Credits -->
+
+  <!-- Tab: DataViz -->
+  <div class="info-tab-body" id="info-tab-dataviz">
+
+    <p>Il pulsante <strong>Crea il tuo DataViz</strong> in cima alla mappa apre il costruttore di grafici e tabelle. I dati vengono caricati in autonomia, indipendentemente dalla mappa: il pulsante si attiva automaticamente quando tutto è pronto.</p>
+
+    <h3>1 · Scegli il tipo di grafico</h3>
+    <p>Nella prima sezione seleziona la forma del grafico: <strong>Barre</strong>, <strong>Linea</strong>, <strong>Area</strong>, <strong>Torta</strong>, <strong>Ciambella</strong>, <strong>Radar</strong>, <strong>Polare</strong>, <strong>Scatter</strong>, <strong>Bubble</strong> o <strong>Mixed</strong> (barre + linea sullo stesso asse). L'orientamento orizzontale/verticale e il limite di voci visualizzate si impostano nella sezione <em>Configurazione Dati</em>.</p>
+
+    <h3>2 · Dimensione e metrica</h3>
+    <p>La <strong>Dimensione</strong> definisce le etichette sull'asse X (cosa raggruppi), la <strong>Metrica</strong> definisce il valore sull'asse Y (cosa misuri). Le opzioni sono organizzate in tre gruppi:</p>
+
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#ff9900,#e68800)">C</span>
+        <div>
+          <strong>Civici ANNCSU</strong>
+          <p>Una riga per comune, incrociata con il primo aggiudicatore PNRR assegnato. Dimensioni disponibili: Regione, Provincia, Comune, Aggiudicatore, Tipologia Ente, Misura PNRR. Metriche: <em>Totale Civici</em>, <em>N. Comuni</em>, <em>Qualità OK/ERR/Totale</em>.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">P</span>
+        <div>
+          <strong>Aggiudicatori PNRR</strong>
+          <p>Una riga per contratto PNRR. Dimensioni: Denominazione, Tipologia Ente, Tipologia Appalto, Misura, Avviso, Stato Candidatura. Metriche: <em>N. Contratti</em>, <em>Importo Finanziamento</em>, <em>Importo Aggiudicazione</em>.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#10b981,#059669)">J</span>
+        <div>
+          <strong>Join — Contratti × Civici</strong>
+          <p>Una riga per contratto arricchita con le statistiche civici del comune corrispondente (collegamento tramite codice ISTAT). Permette combinazioni come <em>"Tipologia Ente → Totale Civici"</em> o <em>"Misura PNRR → Qualità geocodifica"</em>. Le dimensioni Join si riconoscono dal prefisso <code>j_</code> nel selettore.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>3 · Filtri geografici</h3>
+    <p>I filtri si trovano nella sezione <em>Filtri Geografici</em> del pannello sinistro. Usa i <strong>radio button</strong> per scegliere il livello attivo: Regione, Provincia, Comune o <strong>Aggiudicatore</strong>. I filtri sono a <strong>cascata</strong>: seleziona prima una regione, poi passa a Provincia per vedere solo le province di quella regione. Il pulsante <strong>Tutte/Tutti</strong> seleziona in un click tutte le opzioni visibili. I filtri si combinano in AND: puoi filtrare per regione e aggiudicatore contemporaneamente. Il tasto <strong>Reset</strong> azzera tutto.</p>
+
+    <h3>4 · Generare il grafico</h3>
+    <p>Premi <strong>Genera Grafico</strong>. Se hai scelto una Dimensione dal gruppo <em>Tabelle Dettaglio</em> viene creata direttamente una tabella multi-colonna senza passare per il grafico.</p>
+
+    <h3>5 · Vista Grafico / Tabella</h3>
+    <p>Dopo la generazione compare il toggle <strong>Grafico | Tabella</strong> in cima all'area di anteprima. La tabella mostra gli stessi dati aggregati del grafico (con totali in fondo). Per le <em>Tabelle Dettaglio</em> le colonne si espandono su più campi e la tabella è scorrevole orizzontalmente.</p>
+
+    <h3>6 · Download</h3>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#3b82f6,#2563eb);font-size:11px">PNG</span>
+        <div>
+          <strong>Scarica immagine</strong>
+          <p>Esporta il grafico corrente come immagine PNG ad alta risoluzione, con titolo, legenda e nota sulla fonte.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#10b981,#059669);font-size:11px">CSV</span>
+        <div>
+          <strong>Scarica dati</strong>
+          <p>Esporta i dati visibili nella tabella in formato CSV con codifica UTF-8 + BOM, compatibile con Excel. I filtri geografici attivi vengono rispettati: il file contiene solo le righe effettivamente visualizzate.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>7 · Tabelle dettaglio</h3>
+    <p>Nel selettore Dimensione, in fondo all'elenco, ci sono due opzioni speciali:</p>
+    <ul style="margin:8px 0 0 16px;line-height:1.8;font-size:13px;color:#374151;">
+      <li><strong>Aggiudicatori per Regione / Provincia / Comune</strong> — tabella completa con Regione, Provincia, Comune, Aggiudicatore, Tipologia Ente, Misura PNRR, Totale Civici, OK, Fuori Limite, % OK, Importo Finanziamento.</li>
+      <li><strong>Tutti i Comuni (Civici + PNRR)</strong> — una riga per comune con le statistiche civici e il primo aggiudicatore assegnato.</li>
+    </ul>
+    <p style="margin-top:8px;">Entrambe le tabelle rispettano i filtri geografici attivi e possono essere scaricate in CSV.</p>
+
+    <h3>Esempi di grafici</h3>
+    <p style="margin-bottom:14px;font-size:13px;color:#6b7280;">Alcuni grafici pronti da replicare in pochi clic.</p>
+
+    <div class="dv-examples-grid">
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-chart-bar"></i></span>
+          <span class="dv-example-title">Qualità civici per regione</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Confronta le 20 regioni italiane in base alla percentuale di civici geocodificati correttamente e quelli fuori confine.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Regione</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>OK / ERR / Totale</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-chart-bar"></i></span>
+          <span class="dv-example-title">Top 10 province per civici totali</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Le province con il maggior numero di indirizzi civici registrati in ANNCSU.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre orizzontali</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Provincia</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-sliders-h"></i> Limite: 10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-chart-pie"></i></span>
+          <span class="dv-example-title">Civici per tipologia ente PNRR</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Quanti civici italiani ricadono in comuni gestiti da un Comune singolo, un'Unione di Comuni, una Provincia o altri enti?</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-pie"></i> Ciambella</span>
+            <span class="dv-tag dv-tag-join">Dimensione: <strong>Tipologia Ente → Civici</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-euro-sign"></i></span>
+          <span class="dv-example-title">Top aggiudicatori per importo</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Le aziende e i professionisti che hanno ricevuto il maggior finanziamento PNRR per aggiornare i dati ANNCSU.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre</span>
+            <span class="dv-tag dv-tag-pnrr">Dimensione: <strong>Denominazione Aggiudicatore</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Importo Finanziamento (€)</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-sliders-h"></i> Limite: 10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-map-marker-alt"></i></span>
+          <span class="dv-example-title">Comuni di una regione: qualità civici</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Zoom su una singola regione: quali comuni hanno il maggior numero di civici fuori confine?</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Comune</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>OK / ERR / Totale</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: Regione = <em>es. Sicilia</em></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-sliders-h"></i> Limite: 20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-layer-group"></i></span>
+          <span class="dv-example-title">Misure PNRR e civici interessati</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Per ciascuna misura del PNRR, quanti civici italiani ricadono nei comuni coperti? Utilizza il join per combinare i dati contrattuali con le statistiche degli indirizzi.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre</span>
+            <span class="dv-tag dv-tag-join">Dimensione: <strong>Misura PNRR → Civici</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-building"></i></span>
+          <span class="dv-example-title">Comuni di un aggiudicatore</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Seleziona un aggiudicatore nel filtro e visualizza tutti i comuni che gestisce, con il numero di civici di ciascuno.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-chart-bar"></i> Barre</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Comune</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: <strong>Aggiudicatore</strong> = <em>nome azienda</em></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header">
+          <span class="dv-example-icon"><i class="fas fa-table"></i></span>
+          <span class="dv-example-title">Tabella aggiudicatori per regione</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Esporta in CSV la lista completa degli aggiudicatori con i comuni assegnati, la qualità geocodifica e gli importi PNRR, filtrata per la regione di interesse.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-table"></i> Tabella Dettaglio</span>
+            <span class="dv-tag dv-tag-join">Dimensione: <strong>Aggiudicatori × Comuni</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: Regione = <em>es. Sicilia</em></span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dv-examples-grid -->
+
+    <h3>Esempi con Mixed e Radar</h3>
+    <p style="margin-bottom:14px;font-size:13px;color:#6b7280;">Grafici combinati e polari per analisi multi-variabile.</p>
+
+    <div class="dv-examples-grid">
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
+          <span class="dv-example-icon"><i class="fas fa-layer-group"></i></span>
+          <span class="dv-example-title">Volume e qualità per regione (Mixed)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Barre per i civici geocodificati correttamente (OK) e fuori confine (ERR), con la terza serie Totale resa come linea sovrapposta. Confronto immediato tra volume assoluto e distribuzione degli errori.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-layer-group"></i> Mixed (Barre + Linea)</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Regione</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>OK / ERR / Totale</strong></span>
+            <span class="dv-tag" style="background:#f5f3ff;color:#5b21b6">Config Mixed: OK+ERR → Barre · Totale → Linea</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
+          <span class="dv-example-icon"><i class="fas fa-layer-group"></i></span>
+          <span class="dv-example-title">Importo PNRR e contratti per regione (Mixed)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Barre per l'importo totale di finanziamento ricevuto da ciascuna regione, linea per il numero di contratti. Evidenzia se le regioni con più contratti ricevono proporzionalmente più o meno fondi.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-layer-group"></i> Mixed (Barre + Linea)</span>
+            <span class="dv-tag dv-tag-pnrr">Dimensione: <strong>Regione (contratti)</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Importo Finanziamento</strong></span>
+            <span class="dv-tag" style="background:#f5f3ff;color:#5b21b6">Seconda serie: N. Contratti → Linea</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#0891b2,#0e7490)">
+          <span class="dv-example-icon"><i class="fas fa-spider"></i></span>
+          <span class="dv-example-title">Profilo civici per provincia (Radar)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Seleziona una regione nel filtro e usa il Radar per confrontare le province su una metrica comune. La forma del poligono rivela subito le province più "forti" o più "deboli" su quel valore.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-spider"></i> Radar</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Provincia</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: Regione = <em>es. Lombardia</em></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#0891b2,#0e7490)">
+          <span class="dv-example-icon"><i class="fas fa-spider"></i></span>
+          <span class="dv-example-title">Tipologie ente a confronto (Radar)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Radar sulle tipologie ente PNRR (Comune, Unione, Provincia…) con metrica Qualità OK/ERR/Totale. I tre vertici del poligono mostrano immediatamente quale tipologia gestisce più civici in assoluto e con quale qualità.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-spider"></i> Radar</span>
+            <span class="dv-tag dv-tag-join">Dimensione: <strong>Tipologia Ente → Civici</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>OK / ERR / Totale</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
+          <span class="dv-example-icon"><i class="fas fa-layer-group"></i></span>
+          <span class="dv-example-title">Top comuni per civici e qualità (Mixed)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>I 15 comuni più grandi di una provincia con le barre che mostrano OK e ERR, e la linea che sovrappone il totale. Permette di vedere se i comuni con più civici hanno anche una qualità proporzionalmente migliore o peggiore.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-layer-group"></i> Mixed (Barre + Linea)</span>
+            <span class="dv-tag dv-tag-dim">Dimensione: <strong>Comune</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>OK / ERR / Totale</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: Provincia = <em>es. Milano</em></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-sliders-h"></i> Limite: 15</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-example-card">
+        <div class="dv-example-header" style="background:linear-gradient(135deg,#0891b2,#0e7490)">
+          <span class="dv-example-icon"><i class="fas fa-spider"></i></span>
+          <span class="dv-example-title">Aggiudicatori di una regione (Radar)</span>
+        </div>
+        <div class="dv-example-body">
+          <p>Filtra per una regione e visualizza gli aggiudicatori PNRR attivi con il Radar. Ogni asse è un aggiudicatore, il valore è il numero di civici dei comuni che gestisce: la forma mostra chi ha in carico il territorio più grande.</p>
+          <div class="dv-example-tags">
+            <span class="dv-tag dv-tag-type"><i class="fas fa-spider"></i> Radar</span>
+            <span class="dv-tag dv-tag-join">Dimensione: <strong>Aggiudicatore → Civici</strong></span>
+            <span class="dv-tag dv-tag-metric">Metrica: <strong>Totale Civici</strong></span>
+            <span class="dv-tag dv-tag-filter"><i class="fas fa-filter"></i> Filtro: Regione = <em>es. Sicilia</em></span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dv-examples-grid mixed+radar -->
+
+  </div>
+
+  <!-- Tab: Credits -->
   <div class="info-tab-body" id="info-tab-credits">
     <h3>Sviluppo tecnico</h3>
     <p>Web app progettata e sviluppata da <a class="info-credit-link" href="https://www.linkedin.com/in/gbvitrano/" target="_blank" rel="noopener">@gbvitrano</a> in collaborazione con <a class="info-credit-link" href="https://claude.ai" target="_blank" rel="noopener">Claude AI</a> (Anthropic), che ha affiancato le scelte architetturali, l'ottimizzazione del codice e lo sviluppo delle funzionalità di visualizzazione geospaziale.</p>
@@ -388,7 +716,574 @@
 
   </div>
 </div>
+
+<!-- CHART BUILDER MODAL -->
+<div class="chart-builder-modal" id="chart-builder-modal">
+  <div class="chart-builder-content">
+
+    <!-- Header -->
+    <div class="chart-builder-header">
+      <div class="chart-builder-title">
+        <i class="fas fa-chart-line"></i>
+        <h2>Crea il tuo grafico personalizzato</h2>
+      </div>
+      <button class="chart-builder-close" id="chart-builder-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Nota esempi -->
+    <div class="chart-builder-tip">
+      <i class="fas fa-lightbulb"></i>
+      <span>Hai bisogno di ispirazione? Nel tab <strong>DataViz</strong> del pannello informazioni trovi esempi pronti su come creare grafici e tabelle.</span>
+      <button class="chart-builder-tip-btn" onclick="closeChartBuilder(); openInfoModal(); setTimeout(()=>switchInfoTab('dataviz'),150)">
+        <i class="fas fa-external-link-alt"></i> Vedi esempi
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="chart-builder-body">
+
+      <!-- ====================================== -->
+      <!-- LEFT PANEL - Configurazione -->
+      <!-- ====================================== -->
+      <div class="chart-builder-config">
+
+        <!-- SEZIONE 1: Tipo di Grafico -->
+        <div class="config-section">
+          <h3><i class="fas fa-chart-bar"></i> Tipo di Grafico</h3>
+          <div class="chart-type-grid">
+            <button class="chart-type-btn active" data-type="bar">
+              <i class="fas fa-chart-bar"></i><span>Barre</span>
+            </button>
+            <button class="chart-type-btn" data-type="line">
+              <i class="fas fa-chart-line"></i><span>Linea</span>
+            </button>
+            <button class="chart-type-btn" data-type="pie">
+              <i class="fas fa-chart-pie"></i><span>Torta</span>
+            </button>
+            <button class="chart-type-btn" data-type="doughnut">
+              <i class="fas fa-circle-notch"></i><span>Ciambella</span>
+            </button>
+            <button class="chart-type-btn" data-type="radar">
+              <i class="fas fa-atom"></i><span>Radar</span>
+            </button>
+            <button class="chart-type-btn" data-type="polarArea">
+              <i class="fas fa-bullseye"></i><span>Polare</span>
+            </button>
+            <button class="chart-type-btn" data-type="scatter">
+              <i class="fas fa-braille"></i><span>Scatter</span>
+            </button>
+            <button class="chart-type-btn" data-type="bubble">
+              <i class="fas fa-circle"></i><span>Bubble</span>
+            </button>
+            <button class="chart-type-btn" data-type="mixed" title="Grafico Combinato">
+              <i class="fas fa-layer-group"></i><span>Mixed</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SEZIONE 2: Configurazione Dati -->
+        <div class="config-section">
+          <h3><i class="fas fa-database"></i> Configurazione Dati</h3>
+
+          <div class="config-group">
+            <label class="config-label"><i class="fas fa-chart-bar"></i> Dimensione Principale</label>
+            <select id="dimension-select" class="config-select">
+              <option value="">Seleziona dimensione...</option>
+              <optgroup label="── Civici ANNCSU ──">
+                <option value="regione">Regione</option>
+                <option value="provincia">Provincia</option>
+                <option value="comune">Comune</option>
+                <option value="aggiudicatore">Aggiudicatore PNRR</option>
+                <option value="tipologiaEnte">Tipologia Ente (civici)</option>
+                <option value="misura">Misura PNRR (civici)</option>
+                <option value="avviso">Avviso / Bando (civici)</option>
+                <option value="statoCandidatura">Stato Candidatura (civici)</option>
+              </optgroup>
+              <optgroup label="── Aggiudicatori PNRR ──">
+                <option value="ag_denominazione">Denominazione Aggiudicatore</option>
+                <option value="ag_regione">Regione (contratti)</option>
+                <option value="ag_tipologiaEnte">Tipologia Ente (contratti)</option>
+                <option value="ag_tipologiaAppalto">Tipologia Appalto</option>
+                <option value="ag_statoCandidatura">Stato Candidatura (contratti)</option>
+                <option value="ag_misura">Misura PNRR (contratti)</option>
+                <option value="ag_avviso">Avviso / Bando (contratti)</option>
+                <option value="ag_ente">Ente Beneficiario</option>
+              </optgroup>
+              <optgroup label="── Join: Contratti PNRR × Civici ──">
+                <option value="j_tipologiaEnte">Tipologia Ente → civici del comune</option>
+                <option value="j_tipologiaAppalto">Tipologia Appalto → civici del comune</option>
+                <option value="j_misura">Misura PNRR → civici del comune</option>
+                <option value="j_avviso">Avviso / Bando → civici del comune</option>
+                <option value="j_statoCandidatura">Stato Candidatura → civici del comune</option>
+                <option value="j_aggiudicatore">Aggiudicatore → civici del comune</option>
+                <option value="j_regione">Regione (join)</option>
+              </optgroup>
+              <optgroup label="── Tabelle Dettaglio ──">
+                <option value="_detail_join">📋 Aggiudicatori per Regione / Provincia / Comune</option>
+                <option value="_detail_civici">📋 Tutti i Comuni (Civici + PNRR)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="config-group">
+            <label class="config-label"><i class="fas fa-heading"></i> Titolo Personalizzato (opzionale)</label>
+            <input type="text" id="custom-title-input" class="config-select"
+              placeholder="Lascia vuoto per usare la dimensione" maxlength="100"
+              style="padding:10px;border-radius:6px;border:1px solid var(--border-light);">
+            <div class="info-box" style="margin-top:8px;padding:6px 8px;font-size:10px;">
+              <i class="fas fa-info-circle"></i>
+              <span>Se lasci vuoto, verrà usata la dimensione selezionata.</span>
+            </div>
+          </div>
+
+          <div class="config-group">
+            <label class="config-label"><i class="fas fa-calculator"></i> Metrica</label>
+            <select id="metric-select" class="config-select">
+              <optgroup label="── Civici / Join ──" id="metric-civici-group">
+                <option value="totale_civici">Totale Civici</option>
+                <option value="count">N. Comuni / Contratti</option>
+                <option value="tipo">Qualità: OK / ERR / Totale</option>
+              </optgroup>
+              <optgroup label="── PNRR / Join ──" id="metric-ag-group">
+                <option value="ag_count">N. Contratti</option>
+                <option value="ag_importo_finanziamento">Importo Finanziamento (€)</option>
+                <option value="ag_importo_aggiudicazione">Importo Aggiudicazione (€)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Selezione Tipi (visibile solo con metric=tipo) -->
+          <div class="config-group" id="tipologie-group" style="display:none;">
+            <label class="config-label"><i class="fas fa-check-square"></i> Seleziona Tipi da Visualizzare</label>
+            <div class="tipologie-checkboxes">
+              <div class="tipologia-checkbox">
+                <input type="checkbox" id="tipo-ok" value="ok">
+                <label for="tipo-ok">
+                  <span class="tipologia-icon" style="color:#10b981;">●</span> Geocodificati (OK)
+                </label>
+              </div>
+              <div class="tipologia-checkbox">
+                <input type="checkbox" id="tipo-err" value="err">
+                <label for="tipo-err">
+                  <span class="tipologia-icon" style="color:#ef4444;">●</span> Fuori Confine (ERR)
+                </label>
+              </div>
+              <div class="tipologia-checkbox">
+                <input type="checkbox" id="tipo-total" value="TOTAL">
+                <label for="tipo-total">
+                  <span class="tipologia-icon" style="color:#3b82f6;">●</span> Totale
+                </label>
+              </div>
+            </div>
+            <div class="info-box" style="margin-top:10px;padding:8px 10px;font-size:10px;">
+              <i class="fas fa-info-circle"></i>
+              <span>Se nessun tipo è selezionato, verranno mostrati tutti (incluso totale)</span>
+            </div>
+          </div>
+
+          <!-- Configurazione Mixed — visibile solo con tipo=mixed -->
+          <div id="mixed-config-group" class="config-group mixed-config-section" style="display:none;">
+            <label class="config-label"><i class="fas fa-layer-group"></i> Configurazione Grafico Combinato</label>
+
+            <div class="config-row">
+              <div class="config-col-half">
+                <label class="sub-label"><i class="fas fa-chart-bar" style="color:#ff9900"></i> Serie 1 — tipo</label>
+                <select id="mixed-primary-type" class="config-select">
+                  <option value="bar" selected>📊 Barre</option>
+                  <option value="line">📈 Linea</option>
+                  <option value="area">📉 Area</option>
+                  <option value="scatter">🔵 Scatter</option>
+                </select>
+              </div>
+              <div class="config-col-half">
+                <label class="sub-label"><i class="fas fa-chart-line" style="color:#3b82f6"></i> Serie 2 — tipo</label>
+                <select id="mixed-secondary-type" class="config-select">
+                  <option value="line" selected>📈 Linea</option>
+                  <option value="bar">📊 Barre</option>
+                  <option value="area">📉 Area</option>
+                  <option value="scatter">🔵 Scatter</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Seconda metrica — solo con metriche singole (nascosta con metric=tipo) -->
+            <div id="mixed-second-metric-group" style="margin-top:10px;">
+              <label class="sub-label"><i class="fas fa-calculator" style="color:#3b82f6"></i> Serie 2 — metrica (asse destro)</label>
+              <select id="mixed-second-metric" class="config-select">
+                <option value="">— nessuna seconda metrica —</option>
+                <option value="totale_civici">Totale Civici</option>
+                <option value="count">N. Comuni / Contratti</option>
+                <option value="ag_count">N. Contratti PNRR</option>
+                <option value="ag_importo_finanziamento">Importo Finanziamento (€)</option>
+                <option value="ag_importo_aggiudicazione">Importo Aggiudicazione (€)</option>
+              </select>
+            </div>
+
+            <div class="info-box" style="margin-top:10px;">
+              <i class="fas fa-info-circle"></i>
+              <small>
+                <strong>Metrica singola + Serie 2:</strong> la Serie 1 usa il tipo primario sull'asse sinistro, la Serie 2 usa il tipo secondario sull'asse destro.<br>
+                <strong>Metrica OK/ERR/Totale:</strong> OK e ERR → Serie 1 (tipo primario); Totale → Serie 2 (tipo secondario, asse destro).
+              </small>
+            </div>
+          </div>
+
+          <div class="config-group">
+            <label class="config-label"><i class="fas fa-list-ol"></i> Limita Risultati</label>
+            <select id="limit-select" class="config-select">
+              <option value="0">Tutti</option>
+              <option value="5">Top 5</option>
+              <option value="10" selected>Top 10</option>
+              <option value="15">Top 15</option>
+              <option value="20">Top 20</option>
+              <option value="25">Top 25</option>
+            </select>
+          </div>
+
+          <div class="config-group" id="orientation-group" style="display:none;">
+            <label class="config-label"><i class="fas fa-arrows-alt-h"></i> Orientamento</label>
+            <select id="orientation-select" class="config-select">
+              <option value="vertical">Verticale</option>
+              <option value="horizontal">Orizzontale</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SEZIONE 3: Filtri Geografici (a cascata: regione → provincia → comune) -->
+        <div class="config-section">
+          <h3>
+            <i class="fas fa-map-pin"></i> Filtri Geografici
+            <button class="btn-reset-geo-filters" id="btn-reset-geo-filters" title="Rimuovi tutti i filtri geografici">
+              <i class="fas fa-times"></i> Reset
+            </button>
+          </h3>
+
+          <!-- Radio: livello geografico attivo -->
+          <div class="geo-level-selector">
+            <label class="geo-level-option">
+              <input type="radio" name="geo-level" value="regione" id="geo-level-regione" checked>
+              <span><i class="fas fa-map"></i> Regione</span>
+            </label>
+            <label class="geo-level-option">
+              <input type="radio" name="geo-level" value="provincia" id="geo-level-provincia">
+              <span><i class="fas fa-map-marker-alt"></i> Provincia</span>
+            </label>
+            <label class="geo-level-option">
+              <input type="radio" name="geo-level" value="comune" id="geo-level-comune">
+              <span><i class="fas fa-city"></i> Comune</span>
+            </label>
+            <label class="geo-level-option">
+              <input type="radio" name="geo-level" value="aggiudicatore" id="geo-level-aggiudicatore">
+              <span><i class="fas fa-building"></i> Aggiudicatore</span>
+            </label>
+          </div>
+
+          <!-- 1. Regioni -->
+          <div class="config-group geo-panel" id="geo-panel-regione">
+            <label class="config-label">
+              <i class="fas fa-map"></i> Regione
+              <span class="geo-filter-count" id="regioni-sel-count"></span>
+              <button class="btn-sel-all" id="btn-sel-all-regione" title="Seleziona tutte le regioni">
+                <i class="fas fa-check-double"></i> Tutte
+              </button>
+            </label>
+            <select id="filter-regione" class="geo-filter-select" multiple size="5">
+            </select>
+          </div>
+
+          <!-- 2. Province (cascade da regione) -->
+          <div class="config-group geo-panel" id="geo-panel-provincia" style="display:none;">
+            <label class="config-label">
+              <i class="fas fa-map-marker-alt"></i> Provincia
+              <span class="geo-filter-count" id="province-sel-count"></span>
+              <button class="btn-sel-all" id="btn-sel-all-provincia" title="Seleziona tutte le province visibili">
+                <i class="fas fa-check-double"></i> Tutte
+              </button>
+            </label>
+            <input type="text" id="search-provincia" class="geo-search-input"
+              placeholder="Cerca provincia..." autocomplete="off">
+            <select id="filter-provincia" class="geo-filter-select" multiple size="5">
+            </select>
+          </div>
+
+          <!-- 3. Comuni (cascade da regione+provincia) -->
+          <div class="config-group geo-panel" id="geo-panel-comune" style="display:none;">
+            <label class="config-label">
+              <i class="fas fa-city"></i> Comune
+              <span class="geo-filter-count" id="comuni-sel-count"></span>
+              <button class="btn-sel-all" id="btn-sel-all-comune" title="Seleziona tutti i comuni visibili">
+                <i class="fas fa-check-double"></i> Tutti
+              </button>
+            </label>
+            <input type="text" id="search-comune" class="geo-search-input"
+              placeholder="Cerca comune..." autocomplete="off">
+            <select id="filter-comune" class="geo-filter-select" multiple size="5">
+            </select>
+          </div>
+
+          <!-- 4. Aggiudicatori PNRR -->
+          <div class="config-group geo-panel" id="geo-panel-aggiudicatore" style="display:none;">
+            <label class="config-label">
+              <i class="fas fa-building"></i> Aggiudicatore PNRR
+              <span class="geo-filter-count" id="aggiudicatori-sel-count"></span>
+              <button class="btn-sel-all" id="btn-sel-all-aggiudicatore" title="Seleziona tutti gli aggiudicatori visibili">
+                <i class="fas fa-check-double"></i> Tutti
+              </button>
+            </label>
+            <input type="text" id="search-aggiudicatore" class="geo-search-input"
+              placeholder="Cerca aggiudicatore..." autocomplete="off">
+            <select id="filter-aggiudicatore" class="geo-filter-select" multiple size="5">
+            </select>
+          </div>
+
+          <div class="info-box" style="margin-top:8px;">
+            <i class="fas fa-info-circle"></i>
+            <span>Scegli il livello con i radio button. I filtri si combinano: puoi selezionare prima <strong>Regione</strong>, poi <strong>Aggiudicatore</strong> per vedere solo i contratti PNRR di quella regione. <strong>Ctrl+Click</strong> per selezione multipla.</span>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4: Colori (dopo filtri geo) -->
+        <div class="config-section">
+          <h3><i class="fas fa-palette"></i> Colori</h3>
+          <div class="config-group color-mode-group">
+            <label class="config-label"><i class="fas fa-swatchbook"></i> Modalità Colore</label>
+            <select id="color-mode-select" class="config-select">
+              <option value="auto">Automatico</option>
+              <option value="single">Colore Singolo</option>
+              <option value="gradient">Gradiente</option>
+            </select>
+          </div>
+          <div id="single-color-group" style="display:none;">
+            <div class="color-input-wrapper">
+              <label>Colore Primario</label>
+              <input type="color" id="primary-color" value="#3b82f6">
+            </div>
+          </div>
+          <div id="gradient-color-group" style="display:none;">
+            <div class="color-picker-grid">
+              <div class="color-input-wrapper">
+                <label>Inizio</label>
+                <input type="color" id="primary-color-gradient" value="#3b82f6">
+              </div>
+              <div class="color-input-wrapper">
+                <label>Fine</label>
+                <input type="color" id="secondary-color" value="#8b5cf6">
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="config-group">
+            <label class="config-label"><i class="fas fa-font"></i> Colore Testo e Assi</label>
+            <div class="color-input-wrapper">
+              <label>Colore Etichette, Assi e Titoli</label>
+              <input type="color" id="text-color" value="#1f2937">
+            </div>
+          </div>
+          <div class="info-box" style="margin-top:12px;">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Automatico:</strong> usa i colori predefiniti del tema</span>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4: Stile e Dimensioni -->
+        <div class="config-section">
+          <h3><i class="fas fa-paint-brush"></i> Stile e Dimensioni</h3>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Spessore Bordi</span>
+              <span class="range-value" id="border-width-value">2</span>
+            </div>
+            <input type="range" id="border-width" min="0" max="10" step="0.5" value="2">
+          </div>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Opacità</span>
+              <span class="range-value" id="opacity-value">0.8</span>
+            </div>
+            <input type="range" id="opacity" min="0" max="1" step="0.05" value="0.8">
+          </div>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Dimensione Testo</span>
+              <span class="range-value" id="font-size-value">12px</span>
+            </div>
+            <input type="range" id="font-size" min="8" max="20" step="1" value="12">
+          </div>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Dimensione Titolo</span>
+              <span class="range-value" id="title-size-value">16px</span>
+            </div>
+            <input type="range" id="title-size" min="12" max="32" step="1" value="16">
+          </div>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Dimensione Legenda</span>
+              <span class="range-value" id="legend-size-value">12px</span>
+            </div>
+            <input type="range" id="legend-size" min="8" max="18" step="1" value="12">
+          </div>
+          <div class="range-group">
+            <div class="range-label">
+              <span class="range-label-text">Opacità Griglia</span>
+              <span class="range-value" id="grid-opacity-value">0.1</span>
+            </div>
+            <input type="range" id="grid-opacity" min="0" max="1" step="0.05" value="0.1">
+          </div>
+          <div class="divider"></div>
+          <div class="range-group" id="tension-group" style="display:none;">
+            <div class="range-label">
+              <span class="range-label-text">Curvatura Linee</span>
+              <span class="range-value" id="tension-value">0.4</span>
+            </div>
+            <input type="range" id="tension" min="0" max="1" step="0.1" value="0.4">
+          </div>
+          <div class="range-group" id="point-group" style="display:none;">
+            <div class="range-label">
+              <span class="range-label-text">Dimensione Punti</span>
+              <span class="range-value" id="point-radius-value">3px</span>
+            </div>
+            <input type="range" id="point-radius" min="0" max="10" step="1" value="3">
+          </div>
+          <div class="divider"></div>
+          <label class="config-label"><i class="fas fa-magic"></i> Preset Rapidi</label>
+          <div class="preset-buttons">
+            <button class="preset-btn apply-preset" data-preset="minimal"><i class="fas fa-compress"></i> Minimal</button>
+            <button class="preset-btn apply-preset" data-preset="default"><i class="fas fa-check"></i> Default</button>
+            <button class="preset-btn apply-preset" data-preset="bold"><i class="fas fa-bold"></i> Bold</button>
+            <button class="preset-btn apply-preset" data-preset="clean"><i class="fas fa-eraser"></i> Clean</button>
+          </div>
+        </div>
+
+        <!-- SEZIONE 5: Varianti e Opzioni -->
+        <div class="config-section">
+          <h3><i class="fas fa-sliders-h"></i> Varianti e Opzioni</h3>
+          <div id="stacked-group" style="display:none;">
+            <div class="checkbox-group">
+              <input type="checkbox" id="stacked-variant">
+              <label for="stacked-variant">Grafico Impilato (Stacked)</label>
+            </div>
+          </div>
+          <div id="horizontal-group" style="display:none;">
+            <div class="checkbox-group">
+              <input type="checkbox" id="horizontal-variant">
+              <label for="horizontal-variant">Orientamento Orizzontale</label>
+            </div>
+          </div>
+          <div id="fill-group" style="display:none;">
+            <div class="checkbox-group">
+              <input type="checkbox" id="fill-area" checked>
+              <label for="fill-area">Riempi Area sotto la Linea</label>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="show-values" checked>
+            <label for="show-values">Mostra Valori sul Grafico</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="show-grid" checked>
+            <label for="show-grid">Mostra Griglia</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="show-legend" checked>
+            <label for="show-legend">Mostra Legenda</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="animation" checked>
+            <label for="animation">Abilita Animazioni</label>
+          </div>
+        </div>
+
+        <!-- Filtri Attivi -->
+        <div class="config-section">
+          <h3><i class="fas fa-filter"></i> Dati Caricati</h3>
+          <div class="active-filters-box" id="custom-chart-filters">
+            <span class="no-filters">In attesa di dati...</span>
+          </div>
+        </div>
+
+        <!-- Pulsanti Azione -->
+        <div class="config-actions">
+          <button class="btn-generate" id="btn-generate-chart">
+            <i class="fas fa-magic"></i> Genera Grafico
+          </button>
+          <button class="btn-reset-builder" id="btn-reset-builder">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+        <div class="info-box">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <strong>Suggerimento:</strong> Seleziona una dimensione e clicca "Genera Grafico".
+            Le etichette si posizionano intelligentemente dentro/fuori in base allo spazio.
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================== -->
+      <!-- RIGHT PANEL - Anteprima Grafico -->
+      <!-- ====================================== -->
+      <div class="chart-builder-preview">
+        <div class="preview-header">
+          <h3><i class="fas fa-eye"></i> Anteprima</h3>
+          <div class="preview-header-actions">
+            <!-- Toggle Grafico / Tabella -->
+            <div class="view-toggle" id="view-toggle" style="display:none;">
+              <button class="view-toggle-btn active" id="btn-view-chart" title="Visualizza grafico">
+                <i class="fas fa-chart-bar"></i> Grafico
+              </button>
+              <button class="view-toggle-btn" id="btn-view-table" title="Visualizza tabella">
+                <i class="fas fa-table"></i> Tabella
+              </button>
+            </div>
+            <!-- Download -->
+            <button class="btn-download-chart" id="btn-download-custom-chart" title="Scarica grafico come PNG">
+              <i class="fas fa-download"></i> PNG
+            </button>
+            <button class="btn-download-csv" id="btn-download-csv" title="Scarica dati come CSV" style="display:none;">
+              <i class="fas fa-file-csv"></i> CSV
+            </button>
+          </div>
+        </div>
+        <div class="preview-container" id="preview-container">
+          <div class="preview-placeholder" id="preview-placeholder">
+            <i class="fas fa-chart-area"></i>
+            <p>Il tuo grafico apparirà qui</p>
+            <small>Seleziona le opzioni e clicca "Genera Grafico"</small>
+          </div>
+          <!-- Vista grafico -->
+          <div class="chart-wrapper-custom" id="chart-wrapper-custom">
+            <canvas id="custom-chart-canvas"></canvas>
+          </div>
+          <!-- Vista tabella -->
+          <div class="table-wrapper-custom" id="table-wrapper-custom" style="display:none;">
+            <table class="data-table" id="data-table">
+              <thead id="data-table-head"></thead>
+              <tbody id="data-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer con statistiche -->
+    <div class="chart-builder-footer">
+      <div class="footer-stat">
+        <i class="fas fa-database"></i>
+        <span id="custom-chart-total">0 civici</span>
+      </div>
+      <div class="footer-stat">
+        <i class="fas fa-calendar"></i>
+        <span id="custom-chart-period">ANNCSU</span>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script src="js/chart-builder-anncsu.js"></script>
 
 </body>
 </html>

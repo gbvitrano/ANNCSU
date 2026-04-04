@@ -16,7 +16,13 @@
       "Bash(curl -s -r 0-5000 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" -H \"Referer: https://anncsu.open.agenziaentrate.gov.it/\" \"https://anncsu.open.agenziaentrate.gov.it/age-inspire/opendata/anncsu/getds.php?INDIR_SICI\" -o \"$TEMP/anncsu_sample.zip\")",
       "Read(//f/TEMP/QGISWebExporter_Viewer/**)",
       "Bash(gh run:*)",
-      "Bash(python dati/anac/aggiorna.py)"
+      "Bash(python dati/anac/aggiorna.py)",
+      "Read(//d/GitHub - Clone/SiciliaHub/Palermo-Incidenti/**)",
+      "Bash(node -c js/anncsu_dataviz.js)",
+      "Bash(node -c js/chart-builder-anncsu.js)",
+      "Bash(node -e ':*)",
+      "Bash(node -c \"d:/GitHub - Clone/gbvitrano/ANNCSU/js/anncsu_dataviz.js\")",
+      "Bash(node -c \"d:/GitHub - Clone/gbvitrano/ANNCSU/js/chart-builder-anncsu.js\")"
     ]
   }
 }
