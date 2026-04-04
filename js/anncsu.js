@@ -1210,7 +1210,7 @@ style: {
         .setHTML(`
           <div class="popup-address">${info.ente || nome}</div>
           <div class="popup-comune">Provincia : (${info.provincia})</div>
-          <div class="popup-comuni-importo">Importo finanziamento ; € ${importoFmt}</div>
+          <div class="popup-comuni-importo">Importo finanziamento : € ${importoFmt}</div>
           ${civHTML}
           ${entriesHTML}
           <div class="popup-importo-note">* Importi al netto di IVA, riferiti alle trattative di affidamento; i valori delle determine di affidamento potrebbero differire.</div>
