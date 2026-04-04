@@ -1198,19 +1198,19 @@ style: {
                 <span class="popup-agg-num">${i + 1}.</span>
                 <strong class="popup-agg-den-name">${den}</strong>
               </div>
-              <div class="popup-agg-row"><span>CIG</span><strong>${en.CIG || '—'}</strong></div>
-              <div class="popup-agg-row"><span>Ruolo</span><strong>${en.ruolo || '—'}</strong></div>
-              <div class="popup-agg-row"><span>Cod. Fiscale</span><strong>${en.codice_fiscale || '—'}</strong></div>
-              <div class="popup-agg-row"><span>Importo finanziamento</span><strong>€ ${(en.importo || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
-              ${en.importo_aggiudicazione ? `<div class="popup-agg-row"><span>Importo aggiudicato</span><strong>€ ${en.importo_aggiudicazione.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>` : ''}
+              <div class="popup-agg-row"><span>CIG :</span><strong>${en.CIG || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Ruolo :</span><strong>${en.ruolo || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Cod. Fiscale :</span><strong>${en.codice_fiscale || '—'}</strong></div>
+              <div class="popup-agg-row"><span>Importo finanziamento :</span><strong>€ ${(en.importo || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+              ${en.importo_aggiudicazione ? `<div class="popup-agg-row"><span>Importo aggiudicato :</span><strong>€ ${en.importo_aggiudicazione.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>` : ''}
             </div>`;
         }).join('')}`;
       popup = new maplibregl.Popup({ closeButton: true, maxWidth: '340px' })
         .setLngLat(e.lngLat)
         .setHTML(`
           <div class="popup-address">${info.ente || nome}</div>
-          <div class="popup-comune">${info.provincia}</div>
-          <div class="popup-comuni-importo">€ ${importoFmt}</div>
+          <div class="popup-comune">Provincia : (${info.provincia})</div>
+          <div class="popup-comuni-importo">Importo finanziamento ; € ${importoFmt}</div>
           ${civHTML}
           ${entriesHTML}
           <div class="popup-importo-note">* Importi al netto di IVA, riferiti alle trattative di affidamento; i valori delle determine di affidamento potrebbero differire.</div>
