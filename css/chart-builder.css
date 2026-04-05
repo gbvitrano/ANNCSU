@@ -1109,6 +1109,7 @@ input[type="range"]::-moz-range-thumb {
         padding: 10px 14px;
         font-size: 12px;
         gap: 0;
+        z-index: 8;
     }
 
     .chart-builder-trigger span:not(.pulse-ring1) {
