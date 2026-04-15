@@ -1,9 +1,11 @@
   // ── CONFIGURAZIONE ──────────────────────────────────────────────────────────
-  const _PMTILES_FALLBACK = 'https://media.githubusercontent.com/media/PalermoHub/ANNCUS/main/data/anncsu-indirizzi.pmtiles';
-  const _manifestPromise = fetch('https://raw.githubusercontent.com/PalermoHub/ANNCUS/main/data/manifest.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : null)
-    .then(m => (m && m.pmtiles_url) ? m.pmtiles_url : _PMTILES_FALLBACK)
-    .catch(() => _PMTILES_FALLBACK);
+//  const _PMTILES_FALLBACK = 'https://media.githubusercontent.com/media/PalermoHub/ANNCUS/main/data/anncsu-indirizzi.pmtiles';
+  // const _manifestPromise = fetch('https://raw.githubusercontent.com/PalermoHub/ANNCUS/main/data/manifest.json', { cache: 'no-store' })
+  //  .then(r => r.ok ? r.json() : null)
+  //  .then(m => (m && m.pmtiles_url) ? m.pmtiles_url : _PMTILES_FALLBACK)
+   // .catch(() => _PMTILES_FALLBACK);
+   
+  const PMTILES_URL = 'https://media.githubusercontent.com/media/PalermoHub/ANNCUS/main/data/anncsu-indirizzi.pmtiles';
   const MAP_CENTER  = [12.5, 42.0];
   const MAP_ZOOM    = 6;
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
