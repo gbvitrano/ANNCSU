@@ -1,5 +1,5 @@
 {
-  "aggiornato_il": "2026-04-16T04:14:15.037484+00:00",
+  "aggiornato_il": "2026-04-16T08:47:47.296140+00:00",
   "fonte": "https://github.com/PalermoHub/ANNCUS/raw/refs/heads/main/data/anncsu-indirizzi.parquet",
   "dati": [
     {
@@ -536,9 +536,9 @@
     },
     {
       "CODICE_ISTAT": "001159",
-      "civico_geocodificato": 517,
+      "civico_geocodificato": 519,
       "fuori_limite_comunale": 0,
-      "totale": 517,
+      "totale": 519,
       "civici_da_altri_comuni": 0
     },
     {
@@ -774,9 +774,9 @@
     },
     {
       "CODICE_ISTAT": "001228",
-      "civico_geocodificato": 1480,
+      "civico_geocodificato": 1481,
       "fuori_limite_comunale": 0,
-      "totale": 1480,
+      "totale": 1481,
       "civici_da_altri_comuni": 0
     },
     {
@@ -872,9 +872,9 @@
     },
     {
       "CODICE_ISTAT": "001254",
-      "civico_geocodificato": 1605,
+      "civico_geocodificato": 1610,
       "fuori_limite_comunale": 0,
-      "totale": 1605,
+      "totale": 1610,
       "civici_da_altri_comuni": 0
     },
     {
@@ -2573,9 +2573,9 @@
     },
     {
       "CODICE_ISTAT": "004152",
-      "civico_geocodificato": 97,
+      "civico_geocodificato": 99,
       "fuori_limite_comunale": 0,
-      "totale": 97,
+      "totale": 99,
       "civici_da_altri_comuni": 2
     },
     {
@@ -3126,9 +3126,9 @@
     },
     {
       "CODICE_ISTAT": "005030",
-      "civico_geocodificato": 653,
+      "civico_geocodificato": 654,
       "fuori_limite_comunale": 0,
-      "totale": 653,
+      "totale": 654,
       "civici_da_altri_comuni": 3
     },
     {
@@ -3609,9 +3609,9 @@
     },
     {
       "CODICE_ISTAT": "006029",
-      "civico_geocodificato": 1467,
+      "civico_geocodificato": 1468,
       "fuori_limite_comunale": 5,
-      "totale": 1472,
+      "totale": 1473,
       "civici_da_altri_comuni": 50
     },
     {
@@ -3938,9 +3938,9 @@
     },
     {
       "CODICE_ISTAT": "006114",
-      "civico_geocodificato": 7844,
+      "civico_geocodificato": 7845,
       "fuori_limite_comunale": 0,
-      "totale": 7844,
+      "totale": 7845,
       "civici_da_altri_comuni": 74
     },
     {
@@ -4225,9 +4225,9 @@
     },
     {
       "CODICE_ISTAT": "006174",
-      "civico_geocodificato": 5639,
+      "civico_geocodificato": 5640,
       "fuori_limite_comunale": 0,
-      "totale": 5639,
+      "totale": 5640,
       "civici_da_altri_comuni": 48
     },
     {
@@ -4421,9 +4421,9 @@
     },
     {
       "CODICE_ISTAT": "007054",
-      "civico_geocodificato": 2269,
+      "civico_geocodificato": 2270,
       "fuori_limite_comunale": 0,
-      "totale": 2269,
+      "totale": 2270,
       "civici_da_altri_comuni": 0
     },
     {
@@ -4491,9 +4491,9 @@
     },
     {
       "CODICE_ISTAT": "008011",
-      "civico_geocodificato": 2057,
+      "civico_geocodificato": 2058,
       "fuori_limite_comunale": 2,
-      "totale": 2059,
+      "totale": 2060,
       "civici_da_altri_comuni": 3
     },
     {
@@ -5100,9 +5100,9 @@
     },
     {
       "CODICE_ISTAT": "010013",
-      "civico_geocodificato": 1329,
+      "civico_geocodificato": 1330,
       "fuori_limite_comunale": 0,
-      "totale": 1329,
+      "totale": 1330,
       "civici_da_altri_comuni": 9
     },
     {
@@ -5828,9 +5828,9 @@
     },
     {
       "CODICE_ISTAT": "012119",
-      "civico_geocodificato": 5950,
+      "civico_geocodificato": 5951,
       "fuori_limite_comunale": 0,
-      "totale": 5950,
+      "totale": 5951,
       "civici_da_altri_comuni": 5
     },
     {
@@ -5968,9 +5968,9 @@
     },
     {
       "CODICE_ISTAT": "013011",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 728,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 728,
       "civici_da_altri_comuni": 0
     },
     {
@@ -5989,9 +5989,9 @@
     },
     {
       "CODICE_ISTAT": "013021",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 289,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 289,
       "civici_da_altri_comuni": 0
     },
     {
@@ -5999,6 +5999,13 @@
       "civico_geocodificato": 235,
       "fuori_limite_comunale": 0,
       "totale": 235,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "013026",
+      "civico_geocodificato": 398,
+      "fuori_limite_comunale": 0,
+      "totale": 398,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6045,9 +6052,9 @@
     },
     {
       "CODICE_ISTAT": "013040",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 427,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 427,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6073,9 +6080,9 @@
     },
     {
       "CODICE_ISTAT": "013046",
-      "civico_geocodificato": 1128,
+      "civico_geocodificato": 1130,
       "fuori_limite_comunale": 1,
-      "totale": 1129,
+      "totale": 1131,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6094,9 +6101,9 @@
     },
     {
       "CODICE_ISTAT": "013062",
-      "civico_geocodificato": 6,
+      "civico_geocodificato": 348,
       "fuori_limite_comunale": 0,
-      "totale": 6,
+      "totale": 348,
       "civici_da_altri_comuni": 1
     },
     {
@@ -6115,37 +6122,44 @@
     },
     {
       "CODICE_ISTAT": "013071",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 569,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 569,
       "civici_da_altri_comuni": 2
+    },
+    {
+      "CODICE_ISTAT": "013074",
+      "civico_geocodificato": 326,
+      "fuori_limite_comunale": 0,
+      "totale": 326,
+      "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "013075",
       "civico_geocodificato": 13619,
       "fuori_limite_comunale": 0,
       "totale": 13619,
-      "civici_da_altri_comuni": 15
+      "civici_da_altri_comuni": 16
     },
     {
       "CODICE_ISTAT": "013077",
-      "civico_geocodificato": 6,
+      "civico_geocodificato": 616,
       "fuori_limite_comunale": 0,
-      "totale": 6,
+      "totale": 616,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "013083",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 775,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 775,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "013087",
-      "civico_geocodificato": 2,
-      "fuori_limite_comunale": 0,
-      "totale": 2,
+      "civico_geocodificato": 591,
+      "fuori_limite_comunale": 2,
+      "totale": 593,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6154,6 +6168,13 @@
       "fuori_limite_comunale": 59,
       "totale": 1625,
       "civici_da_altri_comuni": 3
+    },
+    {
+      "CODICE_ISTAT": "013092",
+      "civico_geocodificato": 85,
+      "fuori_limite_comunale": 0,
+      "totale": 85,
+      "civici_da_altri_comuni": 2
     },
     {
       "CODICE_ISTAT": "013095",
@@ -6192,9 +6213,9 @@
     },
     {
       "CODICE_ISTAT": "013107",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 886,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 886,
       "civici_da_altri_comuni": 60
     },
     {
@@ -6290,9 +6311,9 @@
     },
     {
       "CODICE_ISTAT": "013145",
-      "civico_geocodificato": 15,
+      "civico_geocodificato": 2616,
       "fuori_limite_comunale": 0,
-      "totale": 15,
+      "totale": 2616,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6325,9 +6346,9 @@
     },
     {
       "CODICE_ISTAT": "013160",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 493,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 493,
       "civici_da_altri_comuni": 20
     },
     {
@@ -6359,6 +6380,13 @@
       "civici_da_altri_comuni": 1
     },
     {
+      "CODICE_ISTAT": "013184",
+      "civico_geocodificato": 543,
+      "fuori_limite_comunale": 0,
+      "totale": 543,
+      "civici_da_altri_comuni": 2
+    },
+    {
       "CODICE_ISTAT": "013186",
       "civico_geocodificato": 458,
       "fuori_limite_comunale": 0,
@@ -6367,9 +6395,9 @@
     },
     {
       "CODICE_ISTAT": "013187",
-      "civico_geocodificato": 6,
+      "civico_geocodificato": 530,
       "fuori_limite_comunale": 0,
-      "totale": 6,
+      "totale": 530,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6381,9 +6409,9 @@
     },
     {
       "CODICE_ISTAT": "013189",
-      "civico_geocodificato": 20,
+      "civico_geocodificato": 1918,
       "fuori_limite_comunale": 0,
-      "totale": 20,
+      "totale": 1918,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6409,9 +6437,9 @@
     },
     {
       "CODICE_ISTAT": "013204",
-      "civico_geocodificato": 46,
+      "civico_geocodificato": 1208,
       "fuori_limite_comunale": 0,
-      "totale": 46,
+      "totale": 1208,
       "civici_da_altri_comuni": 2
     },
     {
@@ -6423,23 +6451,23 @@
     },
     {
       "CODICE_ISTAT": "013207",
-      "civico_geocodificato": 12,
+      "civico_geocodificato": 471,
       "fuori_limite_comunale": 0,
-      "totale": 12,
+      "totale": 471,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "013216",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 1270,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 1270,
       "civici_da_altri_comuni": 7
     },
     {
       "CODICE_ISTAT": "013218",
-      "civico_geocodificato": 370,
+      "civico_geocodificato": 373,
       "fuori_limite_comunale": 0,
-      "totale": 370,
+      "totale": 373,
       "civici_da_altri_comuni": 1
     },
     {
@@ -6451,9 +6479,9 @@
     },
     {
       "CODICE_ISTAT": "013223",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 421,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 421,
       "civici_da_altri_comuni": 1
     },
     {
@@ -6479,16 +6507,16 @@
     },
     {
       "CODICE_ISTAT": "013233",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 185,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 185,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "013234",
-      "civico_geocodificato": 15,
+      "civico_geocodificato": 2322,
       "fuori_limite_comunale": 0,
-      "totale": 15,
+      "totale": 2322,
       "civici_da_altri_comuni": 10
     },
     {
@@ -6500,9 +6528,9 @@
     },
     {
       "CODICE_ISTAT": "013239",
-      "civico_geocodificato": 19,
+      "civico_geocodificato": 1437,
       "fuori_limite_comunale": 0,
-      "totale": 19,
+      "totale": 1437,
       "civici_da_altri_comuni": 11
     },
     {
@@ -6514,9 +6542,9 @@
     },
     {
       "CODICE_ISTAT": "013248",
-      "civico_geocodificato": 43,
+      "civico_geocodificato": 1938,
       "fuori_limite_comunale": 0,
-      "totale": 43,
+      "totale": 1938,
       "civici_da_altri_comuni": 3
     },
     {
@@ -6545,13 +6573,13 @@
       "civico_geocodificato": 923,
       "fuori_limite_comunale": 0,
       "totale": 923,
-      "civici_da_altri_comuni": 5
+      "civici_da_altri_comuni": 6
     },
     {
       "CODICE_ISTAT": "013254",
-      "civico_geocodificato": 11,
-      "fuori_limite_comunale": 0,
-      "totale": 11,
+      "civico_geocodificato": 3065,
+      "fuori_limite_comunale": 1,
+      "totale": 3066,
       "civici_da_altri_comuni": 1
     },
     {
@@ -6570,9 +6598,9 @@
     },
     {
       "CODICE_ISTAT": "014001",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 221,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 221,
       "civici_da_altri_comuni": 43
     },
     {
@@ -6591,16 +6619,16 @@
     },
     {
       "CODICE_ISTAT": "014004",
-      "civico_geocodificato": 76,
+      "civico_geocodificato": 1391,
       "fuori_limite_comunale": 0,
-      "totale": 76,
+      "totale": 1391,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "014006",
-      "civico_geocodificato": 4,
+      "civico_geocodificato": 222,
       "fuori_limite_comunale": 0,
-      "totale": 4,
+      "totale": 222,
       "civici_da_altri_comuni": 4
     },
     {
@@ -6678,7 +6706,7 @@
       "civico_geocodificato": 1257,
       "fuori_limite_comunale": 1,
       "totale": 1258,
-      "civici_da_altri_comuni": 2
+      "civici_da_altri_comuni": 4
     },
     {
       "CODICE_ISTAT": "014023",
@@ -6689,9 +6717,9 @@
     },
     {
       "CODICE_ISTAT": "014024",
-      "civico_geocodificato": 7,
+      "civico_geocodificato": 2508,
       "fuori_limite_comunale": 0,
-      "totale": 7,
+      "totale": 2508,
       "civici_da_altri_comuni": 1
     },
     {
@@ -6759,9 +6787,9 @@
     },
     {
       "CODICE_ISTAT": "014038",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 314,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 314,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6772,24 +6800,31 @@
       "civici_da_altri_comuni": 0
     },
     {
+      "CODICE_ISTAT": "014040",
+      "civico_geocodificato": 822,
+      "fuori_limite_comunale": 0,
+      "totale": 822,
+      "civici_da_altri_comuni": 0
+    },
+    {
       "CODICE_ISTAT": "014043",
-      "civico_geocodificato": 2,
-      "fuori_limite_comunale": 1,
-      "totale": 3,
+      "civico_geocodificato": 1179,
+      "fuori_limite_comunale": 35,
+      "totale": 1214,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "014045",
-      "civico_geocodificato": 7,
-      "fuori_limite_comunale": 0,
-      "totale": 7,
+      "civico_geocodificato": 5489,
+      "fuori_limite_comunale": 2,
+      "totale": 5491,
       "civici_da_altri_comuni": 2
     },
     {
       "CODICE_ISTAT": "014048",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 1231,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 1231,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6829,23 +6864,23 @@
     },
     {
       "CODICE_ISTAT": "014062",
-      "civico_geocodificato": 4,
+      "civico_geocodificato": 258,
       "fuori_limite_comunale": 0,
-      "totale": 4,
+      "totale": 258,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "014063",
-      "civico_geocodificato": 5,
+      "civico_geocodificato": 1752,
       "fuori_limite_comunale": 0,
-      "totale": 5,
+      "totale": 1752,
       "civici_da_altri_comuni": 2
     },
     {
       "CODICE_ISTAT": "014064",
-      "civico_geocodificato": 7,
+      "civico_geocodificato": 421,
       "fuori_limite_comunale": 0,
-      "totale": 7,
+      "totale": 421,
       "civici_da_altri_comuni": 15
     },
     {
@@ -6885,16 +6920,16 @@
     },
     {
       "CODICE_ISTAT": "014074",
-      "civico_geocodificato": 6,
+      "civico_geocodificato": 862,
       "fuori_limite_comunale": 0,
-      "totale": 6,
+      "totale": 862,
       "civici_da_altri_comuni": 9
     },
     {
       "CODICE_ISTAT": "014077",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 637,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 637,
       "civici_da_altri_comuni": 0
     },
     {
@@ -6927,9 +6962,9 @@
     },
     {
       "CODICE_ISTAT": "015014",
-      "civico_geocodificato": 571,
+      "civico_geocodificato": 572,
       "fuori_limite_comunale": 16,
-      "totale": 587,
+      "totale": 588,
       "civici_da_altri_comuni": 0
     },
     {
@@ -7018,9 +7053,9 @@
     },
     {
       "CODICE_ISTAT": "015060",
-      "civico_geocodificato": 2041,
+      "civico_geocodificato": 2108,
       "fuori_limite_comunale": 51,
-      "totale": 2092,
+      "totale": 2159,
       "civici_da_altri_comuni": 0
     },
     {
@@ -7179,9 +7214,9 @@
     },
     {
       "CODICE_ISTAT": "015125",
-      "civico_geocodificato": 1815,
+      "civico_geocodificato": 1821,
       "fuori_limite_comunale": 0,
-      "totale": 1815,
+      "totale": 1821,
       "civici_da_altri_comuni": 1
     },
     {
@@ -7221,9 +7256,9 @@
     },
     {
       "CODICE_ISTAT": "015146",
-      "civico_geocodificato": 696,
+      "civico_geocodificato": 66041,
       "fuori_limite_comunale": 0,
-      "totale": 696,
+      "totale": 66041,
       "civici_da_altri_comuni": 56
     },
     {
@@ -7291,9 +7326,9 @@
     },
     {
       "CODICE_ISTAT": "015175",
-      "civico_geocodificato": 2868,
+      "civico_geocodificato": 2908,
       "fuori_limite_comunale": 0,
-      "totale": 2868,
+      "totale": 2908,
       "civici_da_altri_comuni": 13
     },
     {
@@ -7396,9 +7431,9 @@
     },
     {
       "CODICE_ISTAT": "015219",
-      "civico_geocodificato": 49,
+      "civico_geocodificato": 50,
       "fuori_limite_comunale": 0,
-      "totale": 49,
+      "totale": 50,
       "civici_da_altri_comuni": 4
     },
     {
@@ -7620,9 +7655,9 @@
     },
     {
       "CODICE_ISTAT": "016043",
-      "civico_geocodificato": 1895,
+      "civico_geocodificato": 1899,
       "fuori_limite_comunale": 3,
-      "totale": 1898,
+      "totale": 1902,
       "civici_da_altri_comuni": 0
     },
     {
@@ -7788,9 +7823,9 @@
     },
     {
       "CODICE_ISTAT": "016078",
-      "civico_geocodificato": 17,
+      "civico_geocodificato": 806,
       "fuori_limite_comunale": 0,
-      "totale": 17,
+      "totale": 806,
       "civici_da_altri_comuni": 0
     },
     {
@@ -7962,6 +7997,13 @@
       "civici_da_altri_comuni": 25
     },
     {
+      "CODICE_ISTAT": "016134",
+      "civico_geocodificato": 163,
+      "fuori_limite_comunale": 0,
+      "totale": 163,
+      "civici_da_altri_comuni": 1
+    },
+    {
       "CODICE_ISTAT": "016136",
       "civico_geocodificato": 156,
       "fuori_limite_comunale": 0,
@@ -8068,16 +8110,16 @@
     },
     {
       "CODICE_ISTAT": "016161",
-      "civico_geocodificato": 12,
+      "civico_geocodificato": 1046,
       "fuori_limite_comunale": 0,
-      "totale": 12,
+      "totale": 1046,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "016163",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 358,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 358,
       "civici_da_altri_comuni": 0
     },
     {
@@ -8194,9 +8236,9 @@
     },
     {
       "CODICE_ISTAT": "016195",
-      "civico_geocodificato": 7,
+      "civico_geocodificato": 1088,
       "fuori_limite_comunale": 0,
-      "totale": 7,
+      "totale": 1088,
       "civici_da_altri_comuni": 0
     },
     {
@@ -8663,9 +8705,9 @@
     },
     {
       "CODICE_ISTAT": "017052",
-      "civico_geocodificato": 8622,
+      "civico_geocodificato": 8858,
       "fuori_limite_comunale": 0,
-      "totale": 8622,
+      "totale": 8858,
       "civici_da_altri_comuni": 0
     },
     {
@@ -9804,9 +9846,9 @@
     },
     {
       "CODICE_ISTAT": "018100",
-      "civico_geocodificato": 1995,
+      "civico_geocodificato": 1998,
       "fuori_limite_comunale": 3,
-      "totale": 1998,
+      "totale": 2001,
       "civici_da_altri_comuni": 2
     },
     {
@@ -10329,9 +10371,9 @@
     },
     {
       "CODICE_ISTAT": "019035",
-      "civico_geocodificato": 14111,
+      "civico_geocodificato": 14113,
       "fuori_limite_comunale": 0,
-      "totale": 14111,
+      "totale": 14113,
       "civici_da_altri_comuni": 3
     },
     {
@@ -10840,9 +10882,9 @@
     },
     {
       "CODICE_ISTAT": "020027",
-      "civico_geocodificato": 2912,
+      "civico_geocodificato": 3814,
       "fuori_limite_comunale": 0,
-      "totale": 2912,
+      "totale": 3814,
       "civici_da_altri_comuni": 0
     },
     {
@@ -10875,9 +10917,9 @@
     },
     {
       "CODICE_ISTAT": "020035",
-      "civico_geocodificato": 2911,
+      "civico_geocodificato": 3318,
       "fuori_limite_comunale": 0,
-      "totale": 2911,
+      "totale": 3318,
       "civici_da_altri_comuni": 5
     },
     {
@@ -10959,9 +11001,9 @@
     },
     {
       "CODICE_ISTAT": "020056",
-      "civico_geocodificato": 1465,
+      "civico_geocodificato": 1477,
       "fuori_limite_comunale": 0,
-      "totale": 1465,
+      "totale": 1477,
       "civici_da_altri_comuni": 0
     },
     {
@@ -10994,9 +11036,9 @@
     },
     {
       "CODICE_ISTAT": "020065",
-      "civico_geocodificato": 6920,
+      "civico_geocodificato": 8491,
       "fuori_limite_comunale": 0,
-      "totale": 6920,
+      "totale": 8491,
       "civici_da_altri_comuni": 3
     },
     {
@@ -11078,9 +11120,9 @@
     },
     {
       "CODICE_ISTAT": "021008",
-      "civico_geocodificato": 14,
+      "civico_geocodificato": 11912,
       "fuori_limite_comunale": 0,
-      "totale": 14,
+      "totale": 11912,
       "civici_da_altri_comuni": 9
     },
     {
@@ -11575,9 +11617,9 @@
     },
     {
       "CODICE_ISTAT": "021094",
-      "civico_geocodificato": 726,
+      "civico_geocodificato": 731,
       "fuori_limite_comunale": 0,
-      "totale": 726,
+      "totale": 731,
       "civici_da_altri_comuni": 0
     },
     {
@@ -12338,9 +12380,9 @@
     },
     {
       "CODICE_ISTAT": "023030",
-      "civico_geocodificato": 39,
-      "fuori_limite_comunale": 0,
-      "totale": 39,
+      "civico_geocodificato": 3160,
+      "fuori_limite_comunale": 2,
+      "totale": 3162,
       "civici_da_altri_comuni": 0
     },
     {
@@ -12355,7 +12397,7 @@
       "civico_geocodificato": 3328,
       "fuori_limite_comunale": 0,
       "totale": 3328,
-      "civici_da_altri_comuni": 0
+      "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "023037",
@@ -12408,9 +12450,9 @@
     },
     {
       "CODICE_ISTAT": "023046",
-      "civico_geocodificato": 1837,
+      "civico_geocodificato": 1838,
       "fuori_limite_comunale": 0,
-      "totale": 1837,
+      "totale": 1838,
       "civici_da_altri_comuni": 0
     },
     {
@@ -12555,9 +12597,9 @@
     },
     {
       "CODICE_ISTAT": "023089",
-      "civico_geocodificato": 86,
+      "civico_geocodificato": 7146,
       "fuori_limite_comunale": 0,
-      "totale": 86,
+      "totale": 7146,
       "civici_da_altri_comuni": 14
     },
     {
@@ -12569,9 +12611,9 @@
     },
     {
       "CODICE_ISTAT": "023091",
-      "civico_geocodificato": 1110,
+      "civico_geocodificato": 52992,
       "fuori_limite_comunale": 0,
-      "totale": 1110,
+      "totale": 52992,
       "civici_da_altri_comuni": 119
     },
     {
@@ -12656,7 +12698,7 @@
       "civico_geocodificato": 2,
       "fuori_limite_comunale": 0,
       "totale": 2,
-      "civici_da_altri_comuni": 57
+      "civici_da_altri_comuni": 58
     },
     {
       "CODICE_ISTAT": "024018",
@@ -12723,9 +12765,9 @@
     },
     {
       "CODICE_ISTAT": "024034",
-      "civico_geocodificato": 57,
-      "fuori_limite_comunale": 0,
-      "totale": 57,
+      "civico_geocodificato": 4735,
+      "fuori_limite_comunale": 5,
+      "totale": 4740,
       "civici_da_altri_comuni": 39
     },
     {
@@ -12765,9 +12807,9 @@
     },
     {
       "CODICE_ISTAT": "024046",
-      "civico_geocodificato": 4,
+      "civico_geocodificato": 3964,
       "fuori_limite_comunale": 0,
-      "totale": 4,
+      "totale": 3964,
       "civici_da_altri_comuni": 4
     },
     {
@@ -12807,9 +12849,9 @@
     },
     {
       "CODICE_ISTAT": "024057",
-      "civico_geocodificato": 69,
+      "civico_geocodificato": 6693,
       "fuori_limite_comunale": 0,
-      "totale": 69,
+      "totale": 6693,
       "civici_da_altri_comuni": 43
     },
     {
@@ -13010,16 +13052,16 @@
     },
     {
       "CODICE_ISTAT": "024107",
-      "civico_geocodificato": 34,
+      "civico_geocodificato": 2944,
       "fuori_limite_comunale": 0,
-      "totale": 34,
+      "totale": 2944,
       "civici_da_altri_comuni": 28
     },
     {
       "CODICE_ISTAT": "024108",
-      "civico_geocodificato": 3283,
+      "civico_geocodificato": 6050,
       "fuori_limite_comunale": 0,
-      "totale": 3283,
+      "totale": 6050,
       "civici_da_altri_comuni": 11
     },
     {
@@ -13031,10 +13073,10 @@
     },
     {
       "CODICE_ISTAT": "024111",
-      "civico_geocodificato": 10939,
+      "civico_geocodificato": 10940,
       "fuori_limite_comunale": 0,
-      "totale": 10939,
-      "civici_da_altri_comuni": 11
+      "totale": 10940,
+      "civici_da_altri_comuni": 15
     },
     {
       "CODICE_ISTAT": "024112",
@@ -13080,9 +13122,9 @@
     },
     {
       "CODICE_ISTAT": "024121",
-      "civico_geocodificato": 434,
+      "civico_geocodificato": 435,
       "fuori_limite_comunale": 1,
-      "totale": 435,
+      "totale": 436,
       "civici_da_altri_comuni": 1
     },
     {
@@ -13486,9 +13528,9 @@
     },
     {
       "CODICE_ISTAT": "026030",
-      "civico_geocodificato": 2106,
+      "civico_geocodificato": 2108,
       "fuori_limite_comunale": 0,
-      "totale": 2106,
+      "totale": 2108,
       "civici_da_altri_comuni": 0
     },
     {
@@ -13507,9 +13549,9 @@
     },
     {
       "CODICE_ISTAT": "026033",
-      "civico_geocodificato": 9,
+      "civico_geocodificato": 2963,
       "fuori_limite_comunale": 0,
-      "totale": 9,
+      "totale": 2963,
       "civici_da_altri_comuni": 0
     },
     {
@@ -13766,9 +13808,9 @@
     },
     {
       "CODICE_ISTAT": "026081",
-      "civico_geocodificato": 3488,
+      "civico_geocodificato": 3489,
       "fuori_limite_comunale": 17,
-      "totale": 3505,
+      "totale": 3506,
       "civici_da_altri_comuni": 2
     },
     {
@@ -13891,6 +13933,13 @@
       "civici_da_altri_comuni": 0
     },
     {
+      "CODICE_ISTAT": "027010",
+      "civico_geocodificato": 2146,
+      "fuori_limite_comunale": 0,
+      "totale": 2146,
+      "civici_da_altri_comuni": 0
+    },
+    {
       "CODICE_ISTAT": "027011",
       "civico_geocodificato": 5094,
       "fuori_limite_comunale": 0,
@@ -13913,9 +13962,9 @@
     },
     {
       "CODICE_ISTAT": "027014",
-      "civico_geocodificato": 3,
-      "fuori_limite_comunale": 0,
-      "totale": 3,
+      "civico_geocodificato": 3679,
+      "fuori_limite_comunale": 5,
+      "totale": 3684,
       "civici_da_altri_comuni": 4
     },
     {
@@ -14088,9 +14137,9 @@
     },
     {
       "CODICE_ISTAT": "028001",
-      "civico_geocodificato": 7254,
+      "civico_geocodificato": 7256,
       "fuori_limite_comunale": 0,
-      "totale": 7254,
+      "totale": 7256,
       "civici_da_altri_comuni": 137
     },
     {
@@ -14116,9 +14165,9 @@
     },
     {
       "CODICE_ISTAT": "028006",
-      "civico_geocodificato": 10,
+      "civico_geocodificato": 1126,
       "fuori_limite_comunale": 0,
-      "totale": 10,
+      "totale": 1126,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14144,9 +14193,9 @@
     },
     {
       "CODICE_ISTAT": "028011",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 1288,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 1288,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14347,9 +14396,9 @@
     },
     {
       "CODICE_ISTAT": "028056",
-      "civico_geocodificato": 48,
+      "civico_geocodificato": 4395,
       "fuori_limite_comunale": 0,
-      "totale": 48,
+      "totale": 4395,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14361,9 +14410,9 @@
     },
     {
       "CODICE_ISTAT": "028058",
-      "civico_geocodificato": 3410,
+      "civico_geocodificato": 3413,
       "fuori_limite_comunale": 0,
-      "totale": 3410,
+      "totale": 3413,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14445,9 +14494,9 @@
     },
     {
       "CODICE_ISTAT": "028072",
-      "civico_geocodificato": 6527,
+      "civico_geocodificato": 6564,
       "fuori_limite_comunale": 0,
-      "totale": 6527,
+      "totale": 6564,
       "civici_da_altri_comuni": 6
     },
     {
@@ -14669,9 +14718,9 @@
     },
     {
       "CODICE_ISTAT": "029013",
-      "civico_geocodificato": 1601,
+      "civico_geocodificato": 1602,
       "fuori_limite_comunale": 0,
-      "totale": 1601,
+      "totale": 1602,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14777,7 +14826,7 @@
       "civico_geocodificato": 8660,
       "fuori_limite_comunale": 0,
       "totale": 8660,
-      "civici_da_altri_comuni": 1
+      "civici_da_altri_comuni": 6
     },
     {
       "CODICE_ISTAT": "029036",
@@ -14816,9 +14865,9 @@
     },
     {
       "CODICE_ISTAT": "029041",
-      "civico_geocodificato": 19462,
+      "civico_geocodificato": 19466,
       "fuori_limite_comunale": 0,
-      "totale": 19462,
+      "totale": 19466,
       "civici_da_altri_comuni": 17
     },
     {
@@ -14837,9 +14886,9 @@
     },
     {
       "CODICE_ISTAT": "029045",
-      "civico_geocodificato": 12,
-      "fuori_limite_comunale": 0,
-      "totale": 12,
+      "civico_geocodificato": 1811,
+      "fuori_limite_comunale": 5,
+      "totale": 1816,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14879,16 +14928,23 @@
     },
     {
       "CODICE_ISTAT": "029052",
-      "civico_geocodificato": 8073,
+      "civico_geocodificato": 8143,
       "fuori_limite_comunale": 0,
-      "totale": 8073,
+      "totale": 8143,
       "civici_da_altri_comuni": 39
     },
     {
-      "CODICE_ISTAT": "030003",
-      "civico_geocodificato": 1,
+      "CODICE_ISTAT": "030002",
+      "civico_geocodificato": 605,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 605,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "030003",
+      "civico_geocodificato": 1255,
+      "fuori_limite_comunale": 1,
+      "totale": 1256,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14907,9 +14963,9 @@
     },
     {
       "CODICE_ISTAT": "030015",
-      "civico_geocodificato": 9,
+      "civico_geocodificato": 1001,
       "fuori_limite_comunale": 0,
-      "totale": 9,
+      "totale": 1001,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14917,6 +14973,13 @@
       "civico_geocodificato": 4849,
       "fuori_limite_comunale": 0,
       "totale": 4849,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "030019",
+      "civico_geocodificato": 1401,
+      "fuori_limite_comunale": 0,
+      "totale": 1401,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14928,9 +14991,9 @@
     },
     {
       "CODICE_ISTAT": "030021",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 828,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 828,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14942,37 +15005,44 @@
     },
     {
       "CODICE_ISTAT": "030028",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 1215,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 1215,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030031",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 2283,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 2283,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030032",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 1397,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 1397,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030035",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 978,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 978,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030037",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 3533,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 3533,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "030039",
+      "civico_geocodificato": 841,
+      "fuori_limite_comunale": 0,
+      "totale": 841,
       "civici_da_altri_comuni": 0
     },
     {
@@ -14984,9 +15054,9 @@
     },
     {
       "CODICE_ISTAT": "030043",
-      "civico_geocodificato": 7,
+      "civico_geocodificato": 5860,
       "fuori_limite_comunale": 0,
-      "totale": 7,
+      "totale": 5860,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15005,9 +15075,9 @@
     },
     {
       "CODICE_ISTAT": "030053",
-      "civico_geocodificato": 18,
+      "civico_geocodificato": 3350,
       "fuori_limite_comunale": 0,
-      "totale": 18,
+      "totale": 3350,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15019,51 +15089,58 @@
     },
     {
       "CODICE_ISTAT": "030063",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 1241,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 1241,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030064",
-      "civico_geocodificato": 13,
+      "civico_geocodificato": 1289,
       "fuori_limite_comunale": 0,
-      "totale": 13,
+      "totale": 1289,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030065",
-      "civico_geocodificato": 21,
+      "civico_geocodificato": 1885,
       "fuori_limite_comunale": 0,
-      "totale": 21,
+      "totale": 1885,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030066",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 1486,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 1486,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "030070",
+      "civico_geocodificato": 2409,
+      "fuori_limite_comunale": 0,
+      "totale": 2409,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030075",
-      "civico_geocodificato": 9,
+      "civico_geocodificato": 1385,
       "fuori_limite_comunale": 0,
-      "totale": 9,
+      "totale": 1385,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030084",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 327,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 327,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030087",
-      "civico_geocodificato": 25,
+      "civico_geocodificato": 1843,
       "fuori_limite_comunale": 0,
-      "totale": 25,
+      "totale": 1843,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15089,16 +15166,16 @@
     },
     {
       "CODICE_ISTAT": "030099",
-      "civico_geocodificato": 5,
+      "civico_geocodificato": 6163,
       "fuori_limite_comunale": 0,
-      "totale": 5,
+      "totale": 6163,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030100",
-      "civico_geocodificato": 1,
+      "civico_geocodificato": 3043,
       "fuori_limite_comunale": 0,
-      "totale": 1,
+      "totale": 3043,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15110,16 +15187,16 @@
     },
     {
       "CODICE_ISTAT": "030106",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 1008,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 1008,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030111",
-      "civico_geocodificato": 4,
+      "civico_geocodificato": 403,
       "fuori_limite_comunale": 0,
-      "totale": 4,
+      "totale": 403,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15131,16 +15208,16 @@
     },
     {
       "CODICE_ISTAT": "030116",
-      "civico_geocodificato": 2879,
+      "civico_geocodificato": 2890,
       "fuori_limite_comunale": 0,
-      "totale": 2879,
+      "totale": 2890,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030118",
-      "civico_geocodificato": 51,
+      "civico_geocodificato": 4891,
       "fuori_limite_comunale": 0,
-      "totale": 51,
+      "totale": 4891,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15152,9 +15229,9 @@
     },
     {
       "CODICE_ISTAT": "030126",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 1106,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 1106,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15173,23 +15250,30 @@
     },
     {
       "CODICE_ISTAT": "030130",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 1773,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 1773,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "030132",
+      "civico_geocodificato": 647,
+      "fuori_limite_comunale": 0,
+      "totale": 647,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030135",
-      "civico_geocodificato": 5,
+      "civico_geocodificato": 553,
       "fuori_limite_comunale": 0,
-      "totale": 5,
+      "totale": 553,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "030137",
-      "civico_geocodificato": 17,
+      "civico_geocodificato": 1554,
       "fuori_limite_comunale": 0,
-      "totale": 17,
+      "totale": 1554,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15204,6 +15288,13 @@
       "civico_geocodificato": 665,
       "fuori_limite_comunale": 0,
       "totale": 665,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "031004",
+      "civico_geocodificato": 295,
+      "fuori_limite_comunale": 0,
+      "totale": 295,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15698,9 +15789,9 @@
     },
     {
       "CODICE_ISTAT": "034051",
-      "civico_geocodificato": 4305,
+      "civico_geocodificato": 4307,
       "fuori_limite_comunale": 24,
-      "totale": 4329,
+      "totale": 4331,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15740,9 +15831,9 @@
     },
     {
       "CODICE_ISTAT": "035006",
-      "civico_geocodificato": 2378,
+      "civico_geocodificato": 2538,
       "fuori_limite_comunale": 0,
-      "totale": 2378,
+      "totale": 2538,
       "civici_da_altri_comuni": 1
     },
     {
@@ -15824,9 +15915,9 @@
     },
     {
       "CODICE_ISTAT": "035020",
-      "civico_geocodificato": 6222,
+      "civico_geocodificato": 10139,
       "fuori_limite_comunale": 0,
-      "totale": 6222,
+      "totale": 10139,
       "civici_da_altri_comuni": 3
     },
     {
@@ -15845,23 +15936,23 @@
     },
     {
       "CODICE_ISTAT": "035023",
-      "civico_geocodificato": 3984,
+      "civico_geocodificato": 4566,
       "fuori_limite_comunale": 0,
-      "totale": 3984,
+      "totale": 4566,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "035024",
-      "civico_geocodificato": 5389,
+      "civico_geocodificato": 6977,
       "fuori_limite_comunale": 0,
-      "totale": 5389,
+      "totale": 6977,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "035026",
-      "civico_geocodificato": 3722,
+      "civico_geocodificato": 3865,
       "fuori_limite_comunale": 0,
-      "totale": 3722,
+      "totale": 3865,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15873,9 +15964,9 @@
     },
     {
       "CODICE_ISTAT": "035028",
-      "civico_geocodificato": 5191,
+      "civico_geocodificato": 5644,
       "fuori_limite_comunale": 0,
-      "totale": 5191,
+      "totale": 5644,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15894,9 +15985,9 @@
     },
     {
       "CODICE_ISTAT": "035032",
-      "civico_geocodificato": 4814,
+      "civico_geocodificato": 5009,
       "fuori_limite_comunale": 0,
-      "totale": 4814,
+      "totale": 5009,
       "civici_da_altri_comuni": 0
     },
     {
@@ -15908,9 +15999,9 @@
     },
     {
       "CODICE_ISTAT": "035034",
-      "civico_geocodificato": 2305,
+      "civico_geocodificato": 2307,
       "fuori_limite_comunale": 0,
-      "totale": 2305,
+      "totale": 2307,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16006,58 +16097,58 @@
     },
     {
       "CODICE_ISTAT": "036003",
-      "civico_geocodificato": 6759,
+      "civico_geocodificato": 6977,
       "fuori_limite_comunale": 0,
-      "totale": 6759,
+      "totale": 6977,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036004",
-      "civico_geocodificato": 1424,
+      "civico_geocodificato": 1575,
       "fuori_limite_comunale": 0,
-      "totale": 1424,
+      "totale": 1575,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036005",
-      "civico_geocodificato": 20252,
+      "civico_geocodificato": 31840,
       "fuori_limite_comunale": 0,
-      "totale": 20252,
-      "civici_da_altri_comuni": 9
+      "totale": 31840,
+      "civici_da_altri_comuni": 12
     },
     {
       "CODICE_ISTAT": "036006",
-      "civico_geocodificato": 10576,
+      "civico_geocodificato": 13271,
       "fuori_limite_comunale": 0,
-      "totale": 10576,
+      "totale": 13271,
       "civici_da_altri_comuni": 5
     },
     {
       "CODICE_ISTAT": "036007",
-      "civico_geocodificato": 3944,
+      "civico_geocodificato": 5305,
       "fuori_limite_comunale": 0,
-      "totale": 3944,
+      "totale": 5305,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036008",
-      "civico_geocodificato": 3615,
+      "civico_geocodificato": 6379,
       "fuori_limite_comunale": 0,
-      "totale": 3615,
+      "totale": 6379,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036009",
-      "civico_geocodificato": 2685,
+      "civico_geocodificato": 3202,
       "fuori_limite_comunale": 0,
-      "totale": 2685,
+      "totale": 3202,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036010",
-      "civico_geocodificato": 4794,
+      "civico_geocodificato": 5763,
       "fuori_limite_comunale": 0,
-      "totale": 4794,
+      "totale": 5763,
       "civici_da_altri_comuni": 4
     },
     {
@@ -16069,30 +16160,37 @@
     },
     {
       "CODICE_ISTAT": "036012",
-      "civico_geocodificato": 6025,
+      "civico_geocodificato": 7234,
       "fuori_limite_comunale": 0,
-      "totale": 6025,
+      "totale": 7234,
       "civici_da_altri_comuni": 4
     },
     {
+      "CODICE_ISTAT": "036013",
+      "civico_geocodificato": 6362,
+      "fuori_limite_comunale": 4,
+      "totale": 6366,
+      "civici_da_altri_comuni": 0
+    },
+    {
       "CODICE_ISTAT": "036015",
-      "civico_geocodificato": 28,
+      "civico_geocodificato": 10613,
       "fuori_limite_comunale": 0,
-      "totale": 28,
-      "civici_da_altri_comuni": 1
+      "totale": 10613,
+      "civici_da_altri_comuni": 5
     },
     {
       "CODICE_ISTAT": "036016",
-      "civico_geocodificato": 226,
+      "civico_geocodificato": 2927,
       "fuori_limite_comunale": 0,
-      "totale": 226,
+      "totale": 2927,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036017",
-      "civico_geocodificato": 2344,
-      "fuori_limite_comunale": 5,
-      "totale": 2349,
+      "civico_geocodificato": 3370,
+      "fuori_limite_comunale": 8,
+      "totale": 3378,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16104,23 +16202,23 @@
     },
     {
       "CODICE_ISTAT": "036019",
-      "civico_geocodificato": 515,
+      "civico_geocodificato": 9215,
       "fuori_limite_comunale": 0,
-      "totale": 515,
+      "totale": 9215,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036020",
-      "civico_geocodificato": 2050,
+      "civico_geocodificato": 2101,
       "fuori_limite_comunale": 0,
-      "totale": 2050,
+      "totale": 2101,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036021",
-      "civico_geocodificato": 2797,
+      "civico_geocodificato": 3085,
       "fuori_limite_comunale": 0,
-      "totale": 2797,
+      "totale": 3085,
       "civici_da_altri_comuni": 1
     },
     {
@@ -16138,10 +16236,17 @@
       "civici_da_altri_comuni": 1
     },
     {
-      "CODICE_ISTAT": "036026",
-      "civico_geocodificato": 6240,
+      "CODICE_ISTAT": "036025",
+      "civico_geocodificato": 1716,
       "fuori_limite_comunale": 0,
-      "totale": 6240,
+      "totale": 1716,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "036026",
+      "civico_geocodificato": 6259,
+      "fuori_limite_comunale": 0,
+      "totale": 6259,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16153,9 +16258,16 @@
     },
     {
       "CODICE_ISTAT": "036028",
-      "civico_geocodificato": 5143,
-      "fuori_limite_comunale": 10,
-      "totale": 5153,
+      "civico_geocodificato": 6743,
+      "fuori_limite_comunale": 13,
+      "totale": 6756,
+      "civici_da_altri_comuni": 0
+    },
+    {
+      "CODICE_ISTAT": "036029",
+      "civico_geocodificato": 2417,
+      "fuori_limite_comunale": 0,
+      "totale": 2417,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16181,9 +16293,9 @@
     },
     {
       "CODICE_ISTAT": "036033",
-      "civico_geocodificato": 78,
+      "civico_geocodificato": 2421,
       "fuori_limite_comunale": 0,
-      "totale": 78,
+      "totale": 2421,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16209,37 +16321,37 @@
     },
     {
       "CODICE_ISTAT": "036037",
-      "civico_geocodificato": 4048,
+      "civico_geocodificato": 4834,
       "fuori_limite_comunale": 1,
-      "totale": 4049,
+      "totale": 4835,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036038",
-      "civico_geocodificato": 1596,
+      "civico_geocodificato": 2021,
       "fuori_limite_comunale": 0,
-      "totale": 1596,
+      "totale": 2021,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "036039",
-      "civico_geocodificato": 2035,
+      "civico_geocodificato": 2531,
       "fuori_limite_comunale": 0,
-      "totale": 2035,
+      "totale": 2531,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036040",
-      "civico_geocodificato": 139,
+      "civico_geocodificato": 17222,
       "fuori_limite_comunale": 0,
-      "totale": 139,
+      "totale": 17222,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036041",
-      "civico_geocodificato": 2548,
+      "civico_geocodificato": 3277,
       "fuori_limite_comunale": 0,
-      "totale": 2548,
+      "totale": 3277,
       "civici_da_altri_comuni": 4
     },
     {
@@ -16258,58 +16370,58 @@
     },
     {
       "CODICE_ISTAT": "036044",
-      "civico_geocodificato": 5428,
+      "civico_geocodificato": 5601,
       "fuori_limite_comunale": 0,
-      "totale": 5428,
+      "totale": 5601,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036045",
-      "civico_geocodificato": 4117,
+      "civico_geocodificato": 4948,
       "fuori_limite_comunale": 0,
-      "totale": 4117,
+      "totale": 4948,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036046",
-      "civico_geocodificato": 5634,
+      "civico_geocodificato": 6210,
       "fuori_limite_comunale": 0,
-      "totale": 5634,
+      "totale": 6210,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "036047",
-      "civico_geocodificato": 2344,
+      "civico_geocodificato": 4268,
       "fuori_limite_comunale": 0,
-      "totale": 2344,
-      "civici_da_altri_comuni": 1
+      "totale": 4268,
+      "civici_da_altri_comuni": 4
     },
     {
       "CODICE_ISTAT": "037001",
-      "civico_geocodificato": 2172,
+      "civico_geocodificato": 3056,
       "fuori_limite_comunale": 0,
-      "totale": 2172,
+      "totale": 3056,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037002",
-      "civico_geocodificato": 3515,
+      "civico_geocodificato": 3547,
       "fuori_limite_comunale": 0,
-      "totale": 3515,
+      "totale": 3547,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037003",
-      "civico_geocodificato": 3010,
+      "civico_geocodificato": 3064,
       "fuori_limite_comunale": 0,
-      "totale": 3010,
+      "totale": 3064,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037005",
-      "civico_geocodificato": 2059,
+      "civico_geocodificato": 2422,
       "fuori_limite_comunale": 0,
-      "totale": 2059,
+      "totale": 2422,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16321,30 +16433,30 @@
     },
     {
       "CODICE_ISTAT": "037007",
-      "civico_geocodificato": 1471,
+      "civico_geocodificato": 2063,
       "fuori_limite_comunale": 2,
-      "totale": 1473,
+      "totale": 2065,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037008",
-      "civico_geocodificato": 5268,
+      "civico_geocodificato": 5973,
       "fuori_limite_comunale": 0,
-      "totale": 5268,
+      "totale": 5973,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037009",
-      "civico_geocodificato": 2837,
+      "civico_geocodificato": 3682,
       "fuori_limite_comunale": 0,
-      "totale": 2837,
+      "totale": 3682,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037010",
-      "civico_geocodificato": 1814,
+      "civico_geocodificato": 2670,
       "fuori_limite_comunale": 3,
-      "totale": 1817,
+      "totale": 2673,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16356,191 +16468,191 @@
     },
     {
       "CODICE_ISTAT": "037012",
-      "civico_geocodificato": 1247,
+      "civico_geocodificato": 1705,
       "fuori_limite_comunale": 0,
-      "totale": 1247,
+      "totale": 1705,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "037013",
-      "civico_geocodificato": 2320,
+      "civico_geocodificato": 2508,
       "fuori_limite_comunale": 0,
-      "totale": 2320,
+      "totale": 2508,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037014",
-      "civico_geocodificato": 742,
+      "civico_geocodificato": 1154,
       "fuori_limite_comunale": 0,
-      "totale": 742,
+      "totale": 1154,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037015",
-      "civico_geocodificato": 2650,
+      "civico_geocodificato": 2667,
       "fuori_limite_comunale": 0,
-      "totale": 2650,
+      "totale": 2667,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "037016",
-      "civico_geocodificato": 1255,
+      "civico_geocodificato": 2318,
       "fuori_limite_comunale": 0,
-      "totale": 1255,
+      "totale": 2318,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037017",
-      "civico_geocodificato": 1996,
+      "civico_geocodificato": 2418,
       "fuori_limite_comunale": 0,
-      "totale": 1996,
+      "totale": 2418,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037019",
-      "civico_geocodificato": 3415,
+      "civico_geocodificato": 4294,
       "fuori_limite_comunale": 0,
-      "totale": 3415,
+      "totale": 4294,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037020",
-      "civico_geocodificato": 5828,
+      "civico_geocodificato": 8370,
       "fuori_limite_comunale": 0,
-      "totale": 5828,
+      "totale": 8370,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037021",
-      "civico_geocodificato": 3837,
+      "civico_geocodificato": 4026,
       "fuori_limite_comunale": 0,
-      "totale": 3837,
+      "totale": 4026,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037022",
-      "civico_geocodificato": 3987,
+      "civico_geocodificato": 4184,
       "fuori_limite_comunale": 0,
-      "totale": 3987,
+      "totale": 4184,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037024",
-      "civico_geocodificato": 4049,
+      "civico_geocodificato": 5413,
       "fuori_limite_comunale": 0,
-      "totale": 4049,
+      "totale": 5413,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037025",
-      "civico_geocodificato": 2322,
+      "civico_geocodificato": 2752,
       "fuori_limite_comunale": 0,
-      "totale": 2322,
+      "totale": 2752,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037026",
-      "civico_geocodificato": 987,
+      "civico_geocodificato": 1145,
       "fuori_limite_comunale": 0,
-      "totale": 987,
+      "totale": 1145,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037027",
-      "civico_geocodificato": 3906,
+      "civico_geocodificato": 4006,
       "fuori_limite_comunale": 0,
-      "totale": 3906,
+      "totale": 4006,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037028",
-      "civico_geocodificato": 1700,
+      "civico_geocodificato": 1985,
       "fuori_limite_comunale": 0,
-      "totale": 1700,
+      "totale": 1985,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037030",
-      "civico_geocodificato": 3446,
+      "civico_geocodificato": 3846,
       "fuori_limite_comunale": 0,
-      "totale": 3446,
+      "totale": 3846,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037031",
-      "civico_geocodificato": 1416,
+      "civico_geocodificato": 2794,
       "fuori_limite_comunale": 0,
-      "totale": 1416,
+      "totale": 2794,
       "civici_da_altri_comuni": 2
     },
     {
       "CODICE_ISTAT": "037032",
-      "civico_geocodificato": 16011,
+      "civico_geocodificato": 22127,
       "fuori_limite_comunale": 0,
-      "totale": 16011,
+      "totale": 22127,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "037033",
-      "civico_geocodificato": 2440,
+      "civico_geocodificato": 4579,
       "fuori_limite_comunale": 0,
-      "totale": 2440,
+      "totale": 4579,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037034",
-      "civico_geocodificato": 2343,
+      "civico_geocodificato": 2358,
       "fuori_limite_comunale": 0,
-      "totale": 2343,
+      "totale": 2358,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037035",
-      "civico_geocodificato": 3115,
+      "civico_geocodificato": 3551,
       "fuori_limite_comunale": 0,
-      "totale": 3115,
+      "totale": 3551,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037036",
-      "civico_geocodificato": 2176,
+      "civico_geocodificato": 2340,
       "fuori_limite_comunale": 0,
-      "totale": 2176,
+      "totale": 2340,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037037",
-      "civico_geocodificato": 3947,
+      "civico_geocodificato": 6384,
       "fuori_limite_comunale": 0,
-      "totale": 3947,
+      "totale": 6384,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037038",
-      "civico_geocodificato": 2226,
+      "civico_geocodificato": 3131,
       "fuori_limite_comunale": 0,
-      "totale": 2226,
+      "totale": 3131,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037039",
-      "civico_geocodificato": 7284,
+      "civico_geocodificato": 7423,
       "fuori_limite_comunale": 0,
-      "totale": 7284,
+      "totale": 7423,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037040",
-      "civico_geocodificato": 4196,
+      "civico_geocodificato": 4230,
       "fuori_limite_comunale": 0,
-      "totale": 4196,
+      "totale": 4230,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037041",
-      "civico_geocodificato": 2332,
+      "civico_geocodificato": 2502,
       "fuori_limite_comunale": 0,
-      "totale": 2332,
+      "totale": 2502,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16552,65 +16664,65 @@
     },
     {
       "CODICE_ISTAT": "037044",
-      "civico_geocodificato": 2788,
+      "civico_geocodificato": 3190,
       "fuori_limite_comunale": 0,
-      "totale": 2788,
+      "totale": 3190,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037045",
-      "civico_geocodificato": 1857,
+      "civico_geocodificato": 2320,
       "fuori_limite_comunale": 0,
-      "totale": 1857,
+      "totale": 2320,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037046",
-      "civico_geocodificato": 3484,
+      "civico_geocodificato": 4140,
       "fuori_limite_comunale": 0,
-      "totale": 3484,
+      "totale": 4140,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037047",
-      "civico_geocodificato": 4010,
+      "civico_geocodificato": 4395,
       "fuori_limite_comunale": 0,
-      "totale": 4010,
+      "totale": 4395,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037048",
-      "civico_geocodificato": 2418,
+      "civico_geocodificato": 3333,
       "fuori_limite_comunale": 0,
-      "totale": 2418,
+      "totale": 3333,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037050",
-      "civico_geocodificato": 1797,
+      "civico_geocodificato": 2616,
       "fuori_limite_comunale": 0,
-      "totale": 1797,
+      "totale": 2616,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037051",
-      "civico_geocodificato": 4031,
+      "civico_geocodificato": 4819,
       "fuori_limite_comunale": 0,
-      "totale": 4031,
+      "totale": 4819,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037052",
-      "civico_geocodificato": 2509,
+      "civico_geocodificato": 2683,
       "fuori_limite_comunale": 0,
-      "totale": 2509,
+      "totale": 2683,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037053",
-      "civico_geocodificato": 7545,
+      "civico_geocodificato": 12326,
       "fuori_limite_comunale": 0,
-      "totale": 7545,
+      "totale": 12326,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16622,16 +16734,16 @@
     },
     {
       "CODICE_ISTAT": "037055",
-      "civico_geocodificato": 4682,
+      "civico_geocodificato": 6640,
       "fuori_limite_comunale": 0,
-      "totale": 4682,
+      "totale": 6640,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "037056",
-      "civico_geocodificato": 1767,
+      "civico_geocodificato": 2409,
       "fuori_limite_comunale": 0,
-      "totale": 1767,
+      "totale": 2409,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16643,9 +16755,9 @@
     },
     {
       "CODICE_ISTAT": "037059",
-      "civico_geocodificato": 3961,
+      "civico_geocodificato": 4665,
       "fuori_limite_comunale": 0,
-      "totale": 3961,
+      "totale": 4665,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16664,9 +16776,9 @@
     },
     {
       "CODICE_ISTAT": "037062",
-      "civico_geocodificato": 5183,
+      "civico_geocodificato": 5264,
       "fuori_limite_comunale": 0,
-      "totale": 5183,
+      "totale": 5264,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16685,37 +16797,37 @@
     },
     {
       "CODICE_ISTAT": "038004",
-      "civico_geocodificato": 10904,
+      "civico_geocodificato": 12483,
       "fuori_limite_comunale": 0,
-      "totale": 10904,
+      "totale": 12483,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "038005",
-      "civico_geocodificato": 6724,
+      "civico_geocodificato": 8932,
       "fuori_limite_comunale": 0,
-      "totale": 6724,
+      "totale": 8932,
       "civici_da_altri_comuni": 11
     },
     {
       "CODICE_ISTAT": "038006",
-      "civico_geocodificato": 27501,
+      "civico_geocodificato": 37895,
       "fuori_limite_comunale": 0,
-      "totale": 27501,
+      "totale": 37895,
       "civici_da_altri_comuni": 42
     },
     {
       "CODICE_ISTAT": "038007",
-      "civico_geocodificato": 8101,
+      "civico_geocodificato": 10834,
       "fuori_limite_comunale": 0,
-      "totale": 8101,
+      "totale": 10834,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "038008",
-      "civico_geocodificato": 57160,
+      "civico_geocodificato": 57161,
       "fuori_limite_comunale": 0,
-      "totale": 57160,
+      "totale": 57161,
       "civici_da_altri_comuni": 0
     },
     {
@@ -16783,9 +16895,9 @@
     },
     {
       "CODICE_ISTAT": "038027",
-      "civico_geocodificato": 6384,
+      "civico_geocodificato": 7188,
       "fuori_limite_comunale": 0,
-      "totale": 6384,
+      "totale": 7188,
       "civici_da_altri_comuni": 5
     },
     {
@@ -16797,16 +16909,16 @@
     },
     {
       "CODICE_ISTAT": "038029",
-      "civico_geocodificato": 4682,
+      "civico_geocodificato": 5893,
       "fuori_limite_comunale": 0,
-      "totale": 4682,
+      "totale": 5893,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "038030",
-      "civico_geocodificato": 3755,
+      "civico_geocodificato": 4741,
       "fuori_limite_comunale": 0,
-      "totale": 3755,
+      "totale": 4741,
       "civici_da_altri_comuni": 5
     },
     {
@@ -16902,9 +17014,9 @@
     },
     {
       "CODICE_ISTAT": "039014",
-      "civico_geocodificato": 62718,
+      "civico_geocodificato": 78171,
       "fuori_limite_comunale": 0,
-      "totale": 62718,
+      "totale": 78171,
       "civici_da_altri_comuni": 1
     },
     {
@@ -16916,9 +17028,9 @@
     },
     {
       "CODICE_ISTAT": "039016",
-      "civico_geocodificato": 6126,
+      "civico_geocodificato": 6589,
       "fuori_limite_comunale": 2,
-      "totale": 6128,
+      "totale": 6591,
       "civici_da_altri_comuni": 0
     },
     {
@@ -17434,9 +17546,9 @@
     },
     {
       "CODICE_ISTAT": "042010",
-      "civico_geocodificato": 474,
+      "civico_geocodificato": 475,
       "fuori_limite_comunale": 0,
-      "totale": 474,
+      "totale": 475,
       "civici_da_altri_comuni": 0
     },
     {
@@ -17483,9 +17595,9 @@
     },
     {
       "CODICE_ISTAT": "042021",
-      "civico_geocodificato": 18473,
+      "civico_geocodificato": 18524,
       "fuori_limite_comunale": 0,
-      "totale": 18473,
+      "totale": 18524,
       "civici_da_altri_comuni": 11
     },
     {
@@ -18099,9 +18211,9 @@
     },
     {
       "CODICE_ISTAT": "046007",
-      "civico_geocodificato": 23915,
+      "civico_geocodificato": 24100,
       "fuori_limite_comunale": 0,
-      "totale": 23915,
+      "totale": 24100,
       "civici_da_altri_comuni": 0
     },
     {
@@ -18855,9 +18967,9 @@
     },
     {
       "CODICE_ISTAT": "051003",
-      "civico_geocodificato": 1289,
+      "civico_geocodificato": 1292,
       "fuori_limite_comunale": 0,
-      "totale": 1289,
+      "totale": 1292,
       "civici_da_altri_comuni": 2
     },
     {
@@ -19177,9 +19289,9 @@
     },
     {
       "CODICE_ISTAT": "052031",
-      "civico_geocodificato": 2942,
+      "civico_geocodificato": 2943,
       "fuori_limite_comunale": 0,
-      "totale": 2942,
+      "totale": 2943,
       "civici_da_altri_comuni": 5
     },
     {
@@ -19254,9 +19366,9 @@
     },
     {
       "CODICE_ISTAT": "053009",
-      "civico_geocodificato": 4593,
+      "civico_geocodificato": 10555,
       "fuori_limite_comunale": 0,
-      "totale": 4593,
+      "totale": 10555,
       "civici_da_altri_comuni": 0
     },
     {
@@ -19513,9 +19625,9 @@
     },
     {
       "CODICE_ISTAT": "054044",
-      "civico_geocodificato": 5551,
+      "civico_geocodificato": 5560,
       "fuori_limite_comunale": 0,
-      "totale": 5551,
+      "totale": 5560,
       "civici_da_altri_comuni": 0
     },
     {
@@ -20437,9 +20549,9 @@
     },
     {
       "CODICE_ISTAT": "058007",
-      "civico_geocodificato": 24885,
+      "civico_geocodificato": 24964,
       "fuori_limite_comunale": 0,
-      "totale": 24885,
+      "totale": 24964,
       "civici_da_altri_comuni": 450
     },
     {
@@ -20808,9 +20920,9 @@
     },
     {
       "CODICE_ISTAT": "058082",
-      "civico_geocodificato": 3171,
+      "civico_geocodificato": 3190,
       "fuori_limite_comunale": 1,
-      "totale": 3172,
+      "totale": 3191,
       "civici_da_altri_comuni": 46
     },
     {
@@ -21004,9 +21116,9 @@
     },
     {
       "CODICE_ISTAT": "059003",
-      "civico_geocodificato": 683,
+      "civico_geocodificato": 759,
       "fuori_limite_comunale": 0,
-      "totale": 683,
+      "totale": 759,
       "civici_da_altri_comuni": 19
     },
     {
@@ -21074,9 +21186,9 @@
     },
     {
       "CODICE_ISTAT": "059023",
-      "civico_geocodificato": 539,
+      "civico_geocodificato": 1469,
       "fuori_limite_comunale": 0,
-      "totale": 539,
+      "totale": 1469,
       "civici_da_altri_comuni": 1
     },
     {
@@ -21095,9 +21207,9 @@
     },
     {
       "CODICE_ISTAT": "059026",
-      "civico_geocodificato": 4258,
+      "civico_geocodificato": 4260,
       "fuori_limite_comunale": 0,
-      "totale": 4258,
+      "totale": 4260,
       "civici_da_altri_comuni": 24
     },
     {
@@ -24147,9 +24259,9 @@
     },
     {
       "CODICE_ISTAT": "066034",
-      "civico_geocodificato": 1217,
+      "civico_geocodificato": 1606,
       "fuori_limite_comunale": 0,
-      "totale": 1217,
+      "totale": 1606,
       "civici_da_altri_comuni": 1
     },
     {
@@ -24364,9 +24476,9 @@
     },
     {
       "CODICE_ISTAT": "066067",
-      "civico_geocodificato": 1169,
+      "civico_geocodificato": 1183,
       "fuori_limite_comunale": 0,
-      "totale": 1169,
+      "totale": 1183,
       "civici_da_altri_comuni": 3
     },
     {
@@ -24553,9 +24665,9 @@
     },
     {
       "CODICE_ISTAT": "066096",
-      "civico_geocodificato": 3010,
+      "civico_geocodificato": 4288,
       "fuori_limite_comunale": 0,
-      "totale": 3010,
+      "totale": 4288,
       "civici_da_altri_comuni": 10
     },
     {
@@ -25078,9 +25190,9 @@
     },
     {
       "CODICE_ISTAT": "068041",
-      "civico_geocodificato": 1451,
+      "civico_geocodificato": 1453,
       "fuori_limite_comunale": 0,
-      "totale": 1451,
+      "totale": 1453,
       "civici_da_altri_comuni": 388
     },
     {
@@ -26072,9 +26184,9 @@
     },
     {
       "CODICE_ISTAT": "070068",
-      "civico_geocodificato": 1253,
+      "civico_geocodificato": 1338,
       "fuori_limite_comunale": 0,
-      "totale": 1253,
+      "totale": 1338,
       "civici_da_altri_comuni": 2
     },
     {
@@ -26345,9 +26457,9 @@
     },
     {
       "CODICE_ISTAT": "071059",
-      "civico_geocodificato": 7045,
+      "civico_geocodificato": 7061,
       "fuori_limite_comunale": 0,
-      "totale": 7045,
+      "totale": 7061,
       "civici_da_altri_comuni": 13
     },
     {
@@ -26380,9 +26492,9 @@
     },
     {
       "CODICE_ISTAT": "072004",
-      "civico_geocodificato": 36218,
+      "civico_geocodificato": 36219,
       "fuori_limite_comunale": 0,
-      "totale": 36218,
+      "totale": 36219,
       "civici_da_altri_comuni": 0
     },
     {
@@ -26569,9 +26681,9 @@
     },
     {
       "CODICE_ISTAT": "073003",
-      "civico_geocodificato": 9316,
+      "civico_geocodificato": 9462,
       "fuori_limite_comunale": 6,
-      "totale": 9322,
+      "totale": 9468,
       "civici_da_altri_comuni": 0
     },
     {
@@ -27223,7 +27335,7 @@
       "civico_geocodificato": 7192,
       "fuori_limite_comunale": 0,
       "totale": 7192,
-      "civici_da_altri_comuni": 1
+      "civici_da_altri_comuni": 3
     },
     {
       "CODICE_ISTAT": "075072",
@@ -27346,9 +27458,9 @@
     },
     {
       "CODICE_ISTAT": "075089",
-      "civico_geocodificato": 6078,
-      "fuori_limite_comunale": 0,
-      "totale": 6078,
+      "civico_geocodificato": 7618,
+      "fuori_limite_comunale": 2,
+      "totale": 7620,
       "civici_da_altri_comuni": 0
     },
     {
@@ -28011,16 +28123,16 @@
     },
     {
       "CODICE_ISTAT": "077015",
-      "civico_geocodificato": 2581,
+      "civico_geocodificato": 2590,
       "fuori_limite_comunale": 0,
-      "totale": 2581,
+      "totale": 2590,
       "civici_da_altri_comuni": 0
     },
     {
       "CODICE_ISTAT": "077017",
-      "civico_geocodificato": 4461,
+      "civico_geocodificato": 4891,
       "fuori_limite_comunale": 0,
-      "totale": 4461,
+      "totale": 4891,
       "civici_da_altri_comuni": 4
     },
     {
@@ -28053,9 +28165,9 @@
     },
     {
       "CODICE_ISTAT": "077026",
-      "civico_geocodificato": 2876,
+      "civico_geocodificato": 2961,
       "fuori_limite_comunale": 0,
-      "totale": 2876,
+      "totale": 2961,
       "civici_da_altri_comuni": 0
     },
     {
@@ -28543,9 +28655,9 @@
     },
     {
       "CODICE_ISTAT": "078106",
-      "civico_geocodificato": 3270,
+      "civico_geocodificato": 3679,
       "fuori_limite_comunale": 4,
-      "totale": 3274,
+      "totale": 3683,
       "civici_da_altri_comuni": 0
     },
     {
@@ -28620,9 +28732,9 @@
     },
     {
       "CODICE_ISTAT": "078126",
-      "civico_geocodificato": 837,
+      "civico_geocodificato": 842,
       "fuori_limite_comunale": 5,
-      "totale": 842,
+      "totale": 847,
       "civici_da_altri_comuni": 0
     },
     {
@@ -28907,9 +29019,9 @@
     },
     {
       "CODICE_ISTAT": "079058",
-      "civico_geocodificato": 120,
+      "civico_geocodificato": 177,
       "fuori_limite_comunale": 0,
-      "totale": 120,
+      "totale": 177,
       "civici_da_altri_comuni": 50
     },
     {
@@ -29565,9 +29677,9 @@
     },
     {
       "CODICE_ISTAT": "080093",
-      "civico_geocodificato": 11774,
+      "civico_geocodificato": 11783,
       "fuori_limite_comunale": 23,
-      "totale": 11797,
+      "totale": 11806,
       "civici_da_altri_comuni": 23
     },
     {
@@ -29684,9 +29796,9 @@
     },
     {
       "CODICE_ISTAT": "081022",
-      "civico_geocodificato": 13380,
+      "civico_geocodificato": 13503,
       "fuori_limite_comunale": 0,
-      "totale": 13380,
+      "totale": 13503,
       "civici_da_altri_comuni": 0
     },
     {
@@ -29729,7 +29841,7 @@
       "civico_geocodificato": 25750,
       "fuori_limite_comunale": 219,
       "totale": 25969,
-      "civici_da_altri_comuni": 41
+      "civici_da_altri_comuni": 46
     },
     {
       "CODICE_ISTAT": "082007",
@@ -29845,9 +29957,9 @@
     },
     {
       "CODICE_ISTAT": "082035",
-      "civico_geocodificato": 3947,
-      "fuori_limite_comunale": 96,
-      "totale": 4043,
+      "civico_geocodificato": 4065,
+      "fuori_limite_comunale": 114,
+      "totale": 4179,
       "civici_da_altri_comuni": 0
     },
     {
@@ -29908,9 +30020,9 @@
     },
     {
       "CODICE_ISTAT": "082046",
-      "civico_geocodificato": 5718,
+      "civico_geocodificato": 5719,
       "fuori_limite_comunale": 139,
-      "totale": 5857,
+      "totale": 5858,
       "civici_da_altri_comuni": 0
     },
     {
@@ -29946,7 +30058,7 @@
       "civico_geocodificato": 165020,
       "fuori_limite_comunale": 0,
       "totale": 165020,
-      "civici_da_altri_comuni": 884
+      "civici_da_altri_comuni": 894
     },
     {
       "CODICE_ISTAT": "082054",
@@ -30461,9 +30573,9 @@
     },
     {
       "CODICE_ISTAT": "083076",
-      "civico_geocodificato": 53,
+      "civico_geocodificato": 65,
       "fuori_limite_comunale": 0,
-      "totale": 53,
+      "totale": 65,
       "civici_da_altri_comuni": 47
     },
     {
@@ -30657,9 +30769,9 @@
     },
     {
       "CODICE_ISTAT": "084003",
-      "civico_geocodificato": 24830,
+      "civico_geocodificato": 24831,
       "fuori_limite_comunale": 0,
-      "totale": 24830,
+      "totale": 24831,
       "civici_da_altri_comuni": 2
     },
     {
@@ -30681,7 +30793,7 @@
       "civico_geocodificato": 2603,
       "fuori_limite_comunale": 0,
       "totale": 2603,
-      "civici_da_altri_comuni": 0
+      "civici_da_altri_comuni": 21
     },
     {
       "CODICE_ISTAT": "084014",
@@ -30723,7 +30835,7 @@
       "civico_geocodificato": 23247,
       "fuori_limite_comunale": 0,
       "totale": 23247,
-      "civici_da_altri_comuni": 17
+      "civici_da_altri_comuni": 19
     },
     {
       "CODICE_ISTAT": "084023",
@@ -30748,9 +30860,9 @@
     },
     {
       "CODICE_ISTAT": "084027",
-      "civico_geocodificato": 22237,
-      "fuori_limite_comunale": 37,
-      "totale": 22274,
+      "civico_geocodificato": 25442,
+      "fuori_limite_comunale": 70,
+      "totale": 25512,
       "civici_da_altri_comuni": 3
     },
     {
@@ -30951,9 +31063,9 @@
     },
     {
       "CODICE_ISTAT": "086006",
-      "civico_geocodificato": 6431,
+      "civico_geocodificato": 6695,
       "fuori_limite_comunale": 0,
-      "totale": 6431,
+      "totale": 6695,
       "civici_da_altri_comuni": 4
     },
     {
@@ -32232,10 +32344,10 @@
     },
     {
       "CODICE_ISTAT": "093018",
-      "civico_geocodificato": 18,
+      "civico_geocodificato": 1897,
       "fuori_limite_comunale": 0,
-      "totale": 18,
-      "civici_da_altri_comuni": 0
+      "totale": 1897,
+      "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "093022",
@@ -32281,9 +32393,9 @@
     },
     {
       "CODICE_ISTAT": "093039",
-      "civico_geocodificato": 5,
+      "civico_geocodificato": 652,
       "fuori_limite_comunale": 0,
-      "totale": 5,
+      "totale": 652,
       "civici_da_altri_comuni": 0
     },
     {
@@ -32295,9 +32407,9 @@
     },
     {
       "CODICE_ISTAT": "093044",
-      "civico_geocodificato": 52,
+      "civico_geocodificato": 4619,
       "fuori_limite_comunale": 0,
-      "totale": 52,
+      "totale": 4619,
       "civici_da_altri_comuni": 0
     },
     {
@@ -32309,9 +32421,9 @@
     },
     {
       "CODICE_ISTAT": "093053",
-      "civico_geocodificato": 3,
+      "civico_geocodificato": 2300,
       "fuori_limite_comunale": 0,
-      "totale": 3,
+      "totale": 2300,
       "civici_da_altri_comuni": 0
     },
     {
@@ -32589,9 +32701,9 @@
     },
     {
       "CODICE_ISTAT": "095006",
-      "civico_geocodificato": 2673,
+      "civico_geocodificato": 2676,
       "fuori_limite_comunale": 0,
-      "totale": 2673,
+      "totale": 2676,
       "civici_da_altri_comuni": 0
     },
     {
@@ -33296,9 +33408,9 @@
     },
     {
       "CODICE_ISTAT": "097032",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 365,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 365,
       "civici_da_altri_comuni": 2
     },
     {
@@ -33317,9 +33429,9 @@
     },
     {
       "CODICE_ISTAT": "097035",
-      "civico_geocodificato": 2,
+      "civico_geocodificato": 590,
       "fuori_limite_comunale": 0,
-      "totale": 2,
+      "totale": 590,
       "civici_da_altri_comuni": 0
     },
     {
@@ -33506,9 +33618,9 @@
     },
     {
       "CODICE_ISTAT": "097079",
-      "civico_geocodificato": 4,
+      "civico_geocodificato": 341,
       "fuori_limite_comunale": 0,
-      "totale": 4,
+      "totale": 341,
       "civici_da_altri_comuni": 1
     },
     {
@@ -33891,9 +34003,9 @@
     },
     {
       "CODICE_ISTAT": "099005",
-      "civico_geocodificato": 5746,
+      "civico_geocodificato": 9976,
       "fuori_limite_comunale": 0,
-      "totale": 5746,
+      "totale": 9976,
       "civici_da_altri_comuni": 0
     },
     {
@@ -34038,9 +34150,9 @@
     },
     {
       "CODICE_ISTAT": "100001",
-      "civico_geocodificato": 3485,
+      "civico_geocodificato": 3486,
       "fuori_limite_comunale": 0,
-      "totale": 3485,
+      "totale": 3486,
       "civici_da_altri_comuni": 0
     },
     {
@@ -34136,9 +34248,9 @@
     },
     {
       "CODICE_ISTAT": "101010",
-      "civico_geocodificato": 16566,
+      "civico_geocodificato": 16567,
       "fuori_limite_comunale": 189,
-      "totale": 16755,
+      "totale": 16756,
       "civici_da_altri_comuni": 33
     },
     {
@@ -34157,9 +34269,9 @@
     },
     {
       "CODICE_ISTAT": "101013",
-      "civico_geocodificato": 7820,
+      "civico_geocodificato": 7822,
       "fuori_limite_comunale": 0,
-      "totale": 7820,
+      "totale": 7822,
       "civici_da_altri_comuni": 64
     },
     {
@@ -34451,9 +34563,9 @@
     },
     {
       "CODICE_ISTAT": "102041",
-      "civico_geocodificato": 1165,
+      "civico_geocodificato": 1179,
       "fuori_limite_comunale": 9,
-      "totale": 1174,
+      "totale": 1188,
       "civici_da_altri_comuni": 0
     },
     {
@@ -34906,16 +35018,16 @@
     },
     {
       "CODICE_ISTAT": "108019",
-      "civico_geocodificato": 8508,
+      "civico_geocodificato": 8509,
       "fuori_limite_comunale": 0,
-      "totale": 8508,
+      "totale": 8509,
       "civici_da_altri_comuni": 1
     },
     {
       "CODICE_ISTAT": "108020",
-      "civico_geocodificato": 1982,
+      "civico_geocodificato": 2003,
       "fuori_limite_comunale": 0,
-      "totale": 1982,
+      "totale": 2003,
       "civici_da_altri_comuni": 2
     },
     {
@@ -35046,9 +35158,9 @@
     },
     {
       "CODICE_ISTAT": "108053",
-      "civico_geocodificato": 2896,
+      "civico_geocodificato": 2897,
       "fuori_limite_comunale": 0,
-      "totale": 2896,
+      "totale": 2897,
       "civici_da_altri_comuni": 1
     },
     {
@@ -35459,9 +35571,9 @@
     },
     {
       "CODICE_ISTAT": "111062",
-      "civico_geocodificato": 6761,
+      "civico_geocodificato": 6762,
       "fuori_limite_comunale": 0,
-      "totale": 6761,
+      "totale": 6762,
       "civici_da_altri_comuni": 0
     },
     {
