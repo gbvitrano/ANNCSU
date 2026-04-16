@@ -22,7 +22,7 @@ import geopandas as gpd
 
 # ── Configurazione ────────────────────────────────────────────────────────────
 PARQUET_URL = (
-    "https://github.com/PalermoHub/ANNCUS/"
+    "https://github.com/quattochiacchiereinquattro/anncus/"
     "raw/refs/heads/main/data/anncsu-indirizzi.parquet"
 )
 GEOJSON_PATH = os.path.join("dati", "comuni.geojson")

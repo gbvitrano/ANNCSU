@@ -1,5 +1,5 @@
   // ── CONFIGURAZIONE ──────────────────────────────────────────────────────────
-  const PMTILES_URL = 'https://media.githubusercontent.com/media/quattochiacchiereinquattro/anncus/main/data/anncsu-indirizzi.pmtiles';
+  const PMTILES_URL = 'https://media.githubusercontent.com/media/PalermoHub/ANNCUS/main/data/anncsu-indirizzi.pmtiles';
   const MAP_CENTER  = [12.5, 42.0];
   const MAP_ZOOM    = 6;
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
@@ -99,7 +99,7 @@
   // ── CARICAMENTO COMUNI ──────────────────────────────────────────────────────
   async function loadComuni() {
     try {
-      const res = await fetch('https://raw.githubusercontent.com/quattochiacchiereinquattro/anncus/refs/heads/main/data/comuni.json');
+      const res = await fetch('https://raw.githubusercontent.com/PalermoHub/ANNCUS/refs/heads/main/data/comuni.json');
       allComuni = await res.json();
       buildComuneList();
       applyUrlParams();
