@@ -1081,6 +1081,7 @@
     if (map.getLayer('civici-labels')) map.setFilter('civici-labels', f);
     applyAltriCiviciFilter();
     updateCounter();
+    if (document.getElementById('stats-panel').classList.contains('open')) renderStatsTable();
     updateMobileBadge();
     updateActiveFiltersStrip();
     // Contatori tipo: query sui feature filtrati
@@ -1683,60 +1684,147 @@ style: {
   }
 
   function renderStatsTable() {
-    const byComune = computeStats();
-    const rows = Object.entries(byComune).sort((a, b) => (b[1].ok + b[1].err) - (a[1].ok + a[1].err));
-    let totalOk = 0, totalErr = 0;
-    rows.forEach(([, v]) => { totalOk += v.ok; totalErr += v.err; });
-    const total = totalOk + totalErr;
-    const pctOk = total > 0 ? (totalOk / total * 100).toFixed(1) : '—';
-    const pctErr = total > 0 ? (totalErr / total * 100).toFixed(1) : '—';
+    const fmtN = n => (n ?? 0).toLocaleString('it-IT');
 
-    document.getElementById('stats-summary').innerHTML = `
-      <div class="stat-box"><div class="stat-box-label">✓ Dentro confine</div><div class="stat-box-value">${totalOk.toLocaleString('it-IT')}</div></div>
-      <div class="stat-box"><div class="stat-box-label">✗ Fuori confine</div><div class="stat-box-value err">${totalErr.toLocaleString('it-IT')}</div></div>
-      <div class="stat-box"><div class="stat-box-label">% OK / Errori</div><div class="stat-box-value neutral">${pctOk}% / ${pctErr}%</div></div>`;
+    if (selectedComune) {
+      // ── Comune selezionato: dati reali da anncsuStatsMap ──────────────────────
+      const cod      = parseInt(selectedComune.codice_istat, 10);
+      const statsRow = anncsuStatsMap[cod];
 
-    const tbody = document.getElementById('stats-tbody');
-    tbody.innerHTML = '';
-    rows.forEach(([nome, v], rowIdx) => {
-      const tot = v.ok + v.err;
-      const pct = (v.ok / tot * 100).toFixed(1);
+      document.getElementById('stats-title').textContent = selectedComune.nome_comune;
+      document.getElementById('stats-note').textContent  = 'Dati ANNCSU – totale del comune';
+
+      if (!statsRow) {
+        document.getElementById('stats-summary').innerHTML = '<div style="color:var(--text-faint);font-size:0.8rem;padding:8px">Dati non disponibili</div>';
+        document.getElementById('stats-tbody').innerHTML   = '';
+        document.getElementById('stats-tfoot').innerHTML  = '';
+        return;
+      }
+
+      const dentro = statsRow.civico_geocodificato   ?? 0;
+      const fuori  = statsRow.fuori_limite_comunale  ?? 0;
+      const totale = statsRow.totale                 ?? (dentro + fuori);
+      const altri  = statsRow.civici_da_altri_comuni ?? 0;
+      const pctOk  = totale > 0 ? (dentro / totale * 100).toFixed(1) : '—';
+      const pctErr = totale > 0 ? (fuori  / totale * 100).toFixed(1) : '—';
+
+      document.getElementById('stats-summary').innerHTML = `
+        <div class="stat-box"><div class="stat-box-label">✓ Dentro confine</div><div class="stat-box-value">${fmtN(dentro)}</div></div>
+        <div class="stat-box"><div class="stat-box-label">✗ Fuori confine</div><div class="stat-box-value err">${fmtN(fuori)}</div></div>
+        <div class="stat-box"><div class="stat-box-label">% OK / Errori</div><div class="stat-box-value neutral">${pctOk}% / ${pctErr}%</div></div>`;
+
+      const tbody = document.getElementById('stats-tbody');
+      tbody.innerHTML = '';
+
+      // Riga comune
       const tr = document.createElement('tr');
-      if (rowIdx % 2 === 1) tr.classList.add('tr-stripe');
       tr.innerHTML = `
-        <td>${nome}</td>
-        <td class="td-ok">${v.ok.toLocaleString('it-IT')}</td>
-        <td class="${v.err > 0 ? 'td-err' : 'td-ok'}">${v.err.toLocaleString('it-IT')}</td>
-        <td class="td-tot">${tot.toLocaleString('it-IT')}</td>
-        <td class="td-pct">${pct}%</td>
+        <td>${selectedComune.nome_comune}</td>
+        <td class="td-ok">${fmtN(dentro)}</td>
+        <td class="${fuori > 0 ? 'td-err' : 'td-ok'}">${fmtN(fuori)}</td>
+        <td class="td-tot">${fmtN(totale)}</td>
+        <td class="td-pct">${pctOk}%</td>
         <td style="text-align:center;padding:3px 6px;">
-          ${v.err > 0 ? `<button class="oob-btn" title="Analizza dove cadono i civici fuori confine">🔍</button>` : ''}
+          ${fuori > 0 ? `<button class="oob-btn" title="Analizza dove cadono i civici fuori confine">🔍</button>` : ''}
         </td>`;
       tbody.appendChild(tr);
 
-      const detailTr = document.createElement('tr');
-      detailTr.style.display = 'none';
-      detailTr.innerHTML = `<td colspan="6" style="padding:0 10px 8px 10px;"></td>`;
-      tbody.appendChild(detailTr);
-
-      if (v.err > 0) {
+      if (fuori > 0) {
+        const detailTr = document.createElement('tr');
+        detailTr.style.display = 'none';
+        detailTr.innerHTML = `<td colspan="6" style="padding:0 10px 8px 10px;"></td>`;
+        tbody.appendChild(detailTr);
         tr.querySelector('.oob-btn').addEventListener('click', () => {
           const isOpen = detailTr.style.display !== 'none';
           if (isOpen) { detailTr.style.display = 'none'; tr.querySelector('.oob-btn').textContent = '🔍'; }
-          else analyzeOOBComune(nome, tr.querySelector('.oob-btn'), detailTr);
+          else analyzeOOBComune(selectedComune.nome_comune, tr.querySelector('.oob-btn'), detailTr);
         });
       }
-    });
 
-    document.getElementById('stats-tfoot').innerHTML = `
-      <tr>
-        <td>Totale (${rows.length} comuni)</td>
-        <td class="td-ok">${totalOk.toLocaleString('it-IT')}</td>
-        <td class="${totalErr > 0 ? 'td-err' : 'td-ok'}">${totalErr.toLocaleString('it-IT')}</td>
-        <td class="td-tot">${total.toLocaleString('it-IT')}</td>
-        <td class="td-pct">${pctOk}%</td>
-        <td></td>
-      </tr>`;
+      // Riga civici di altri comuni (se presenti)
+      if (altri > 0) {
+        const trAltri = document.createElement('tr');
+        trAltri.classList.add('tr-stripe');
+        trAltri.innerHTML = `
+          <td style="color:var(--accent-oob);font-size:0.78rem;">↓ Civici di altri comuni nel territorio</td>
+          <td class="td-ok">—</td>
+          <td class="td-ok">—</td>
+          <td class="td-tot" style="color:var(--accent-oob);">${fmtN(altri)}</td>
+          <td class="td-pct">—</td>
+          <td></td>`;
+        tbody.appendChild(trAltri);
+      }
+
+      document.getElementById('stats-tfoot').innerHTML = `
+        <tr>
+          <td>Totale ANNCSU</td>
+          <td class="td-ok">${fmtN(dentro)}</td>
+          <td class="${fuori > 0 ? 'td-err' : 'td-ok'}">${fmtN(fuori)}</td>
+          <td class="td-tot">${fmtN(totale)}</td>
+          <td class="td-pct">${pctOk}%</td>
+          <td></td>
+        </tr>`;
+
+    } else {
+      // ── Nessun comune: dati in tempo reale dalla viewport ─────────────────────
+      document.getElementById('stats-title').textContent = 'Numeri civici per comune';
+      document.getElementById('stats-note').textContent  = 'Dati relativi ai civici visibili nella vista corrente';
+
+      const byComune = computeStats();
+      const rows = Object.entries(byComune).sort((a, b) => (b[1].ok + b[1].err) - (a[1].ok + a[1].err));
+      let totalOk = 0, totalErr = 0;
+      rows.forEach(([, v]) => { totalOk += v.ok; totalErr += v.err; });
+      const total = totalOk + totalErr;
+      const pctOk  = total > 0 ? (totalOk  / total * 100).toFixed(1) : '—';
+      const pctErr = total > 0 ? (totalErr / total * 100).toFixed(1) : '—';
+
+      document.getElementById('stats-summary').innerHTML = `
+        <div class="stat-box"><div class="stat-box-label">✓ Dentro confine</div><div class="stat-box-value">${totalOk.toLocaleString('it-IT')}</div></div>
+        <div class="stat-box"><div class="stat-box-label">✗ Fuori confine</div><div class="stat-box-value err">${totalErr.toLocaleString('it-IT')}</div></div>
+        <div class="stat-box"><div class="stat-box-label">% OK / Errori</div><div class="stat-box-value neutral">${pctOk}% / ${pctErr}%</div></div>`;
+
+      const tbody = document.getElementById('stats-tbody');
+      tbody.innerHTML = '';
+      rows.forEach(([nome, v], rowIdx) => {
+        const tot = v.ok + v.err;
+        const pct = (v.ok / tot * 100).toFixed(1);
+        const tr = document.createElement('tr');
+        if (rowIdx % 2 === 1) tr.classList.add('tr-stripe');
+        tr.innerHTML = `
+          <td>${nome}</td>
+          <td class="td-ok">${v.ok.toLocaleString('it-IT')}</td>
+          <td class="${v.err > 0 ? 'td-err' : 'td-ok'}">${v.err.toLocaleString('it-IT')}</td>
+          <td class="td-tot">${tot.toLocaleString('it-IT')}</td>
+          <td class="td-pct">${pct}%</td>
+          <td style="text-align:center;padding:3px 6px;">
+            ${v.err > 0 ? `<button class="oob-btn" title="Analizza dove cadono i civici fuori confine">🔍</button>` : ''}
+          </td>`;
+        tbody.appendChild(tr);
+
+        const detailTr = document.createElement('tr');
+        detailTr.style.display = 'none';
+        detailTr.innerHTML = `<td colspan="6" style="padding:0 10px 8px 10px;"></td>`;
+        tbody.appendChild(detailTr);
+
+        if (v.err > 0) {
+          tr.querySelector('.oob-btn').addEventListener('click', () => {
+            const isOpen = detailTr.style.display !== 'none';
+            if (isOpen) { detailTr.style.display = 'none'; tr.querySelector('.oob-btn').textContent = '🔍'; }
+            else analyzeOOBComune(nome, tr.querySelector('.oob-btn'), detailTr);
+          });
+        }
+      });
+
+      document.getElementById('stats-tfoot').innerHTML = `
+        <tr>
+          <td>Totale (${rows.length} comuni)</td>
+          <td class="td-ok">${totalOk.toLocaleString('it-IT')}</td>
+          <td class="${totalErr > 0 ? 'td-err' : 'td-ok'}">${totalErr.toLocaleString('it-IT')}</td>
+          <td class="td-tot">${total.toLocaleString('it-IT')}</td>
+          <td class="td-pct">${pctOk}%</td>
+          <td></td>
+        </tr>`;
+    }
   }
 
   // ── ANALISI PANEL (dot-list, bottom-left) ────────────────────────────────────
