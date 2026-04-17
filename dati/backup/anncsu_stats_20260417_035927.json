@@ -1,6 +1,6 @@
 {
-  "aggiornato_il": "2026-04-16T08:47:47.296140+00:00",
-  "fonte": "https://github.com/PalermoHub/ANNCUS/raw/refs/heads/main/data/anncsu-indirizzi.parquet",
+  "aggiornato_il": "2026-04-16T11:15:24.811669+00:00",
+  "fonte": "https://github.com/quattochiacchiereinquattro/anncus/raw/refs/heads/main/data/anncsu-indirizzi.parquet",
   "dati": [
     {
       "CODICE_ISTAT": "001003",
