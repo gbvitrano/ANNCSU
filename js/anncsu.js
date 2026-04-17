@@ -346,6 +346,8 @@
     buildComuneList();
     updateComuneLabel();
     applyFilter();
+    const n = selectedRegions.size;
+    if (n > 0 && n < ALL_REGIONS.length) flyToRegions([...selectedRegions]);
   }
 
   function syncProvincesToRegions() {
@@ -433,6 +435,9 @@
     buildComuneList();
     updateComuneLabel();
     applyFilter();
+    const activeSel = getActiveProvCodes().filter(c => selectedProvinces.has(c));
+    const total = getActiveProvCodes().length;
+    if (activeSel.length > 0 && activeSel.length < total) flyToProvinces(activeSel);
   }
 
   function selectAllProvinces() {
@@ -510,6 +515,7 @@
         updateComuneLabel();
         applyFilter();
         closeAllDropdowns();
+        if (selectedComune) flyToComuneByIstat(selectedComune.codice_istat);
       };
       list.appendChild(item);
     });
@@ -1080,6 +1086,95 @@
       const features = map.querySourceFeatures('anncsu', { sourceLayer: 'civici' });
       updateTypeCounters(features);
     } catch(_) {}
+  }
+
+  // ── ZOOM AI FILTRI ──────────────────────────────────────────────────────────
+
+  function flyToRegions(regNames) {
+    if (regNames.length === 0) return;
+    if (regNames.length === 1) {
+      const center = REGION_CENTROIDS[regNames[0]];
+      if (center) map.flyTo({ center, zoom: 7, duration: 800 });
+      return;
+    }
+    // Più regioni: bbox approssimativo dai centroidi
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+    regNames.forEach(r => {
+      const c = REGION_CENTROIDS[r]; if (!c) return;
+      if (c[0] < minLng) minLng = c[0]; if (c[0] > maxLng) maxLng = c[0];
+      if (c[1] < minLat) minLat = c[1]; if (c[1] > maxLat) maxLat = c[1];
+    });
+    if (isFinite(minLng))
+      map.fitBounds([[minLng - 0.5, minLat - 0.5], [maxLng + 0.5, maxLat + 0.5]],
+        { padding: 60, maxZoom: 8, duration: 800 });
+  }
+
+  function flyToProvinces(provCodes) {
+    if (provCodes.length === 0) return;
+    // Trova il centro di una delle regioni delle province per caricare le tiles
+    const regs = [...new Set(provCodes.map(p => PROV_TO_REG[p]).filter(Boolean))];
+    const center = regs.length === 1
+      ? (REGION_CENTROIDS[regs[0]] || MAP_CENTER)
+      : MAP_CENTER;
+    const doQuery = () => {
+      const features = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
+        .filter(f => {
+          const pc = String(f.properties.pro_com_t || '').padStart(6, '0').slice(0, 3);
+          return provCodes.includes(pc);
+        });
+      if (!features.length) return;
+      let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+      features.forEach(f => {
+        const rings = f.geometry.type === 'Polygon'
+          ? f.geometry.coordinates : f.geometry.coordinates.flat(1);
+        rings[0].forEach(([lng, lat]) => {
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
+      });
+      if (isFinite(minLng))
+        map.fitBounds([[minLng, minLat], [maxLng, maxLat]],
+          { padding: 60, maxZoom: 10, duration: 800 });
+    };
+    map.flyTo({ center, zoom: 7, duration: 600 });
+    map.once('idle', doQuery);
+  }
+
+  function flyToComuneByIstat(codistat) {
+    const provCode = codistat.slice(0, 3);
+    const regName  = PROV_TO_REG[provCode];
+    const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
+    map.jumpTo({ center: regCenter, zoom: 8 });
+    map.once('idle', () => {
+      const features = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
+        .filter(f => f.properties.CODICE_ISTAT === codistat);
+      if (features.length) {
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        features.forEach(f => {
+          const [lng, lat] = f.geometry.coordinates;
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
+        if (isFinite(minLng))
+          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14 });
+        return;
+      }
+      // Fallback: bbox dal layer comuni
+      const cf = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
+        .filter(f => String(f.properties.pro_com_t || '').padStart(6, '0') === codistat);
+      if (!cf.length) return;
+      let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+      cf.forEach(f => {
+        const rings = f.geometry.type === 'Polygon'
+          ? f.geometry.coordinates : f.geometry.coordinates.flat(1);
+        rings[0].forEach(([lng, lat]) => {
+          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+        });
+      });
+      if (isFinite(minLng))
+        map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14, duration: 1000 });
+    });
   }
 
   // Chiudi dropdown cliccando fuori
