@@ -300,9 +300,9 @@
 
 <div id="legend">
   <button id="legend-close" style="display:none" onclick="document.getElementById('legend').classList.toggle('legend-collapsed')" title="Comprimi">✕</button>
-  <h3>Numeri civici visibili</h3>
+  <h3 id="legend-title">Numeri civici visibili</h3>
   <div class="legend-content">
-  <div class="legend-realtime-note">Aggiornati in tempo reale sulla vista corrente</div>
+  <div class="legend-realtime-note" id="legend-note">Aggiornati in tempo reale sulla vista corrente</div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-ok);"></div>
     <span class="legend-label">Dentro il confine comunale</span>
@@ -318,8 +318,13 @@
     <span class="legend-label" style="font-size:0.72rem;">Propri fuori territorio</span>
     <span class="legend-count" id="count-oob" style="color:var(--accent-oob);">—</span>
   </div>
+  <div class="legend-item" id="count-altri-row" style="display:none; padding-top:3px;">
+    <div class="legend-dot" style="background:var(--accent-oob);"></div>
+    <span class="legend-label" style="font-size:0.72rem;">Civici di altri comuni nel territorio</span>
+    <span class="legend-count" id="count-altri" style="color:var(--accent-oob);">—</span>
+  </div>
   <div class="legend-item" style="border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
-    <span class="legend-label" style="color:var(--text-secondary); font-size:0.72rem;">Totale</span>
+    <span class="legend-label" style="color:var(--text-secondary); font-size:0.72rem;" id="count-value-label">Totale</span>
     <span class="legend-count" id="count-value" style="color:var(--text-primary);">—</span>
   </div>
   </div><!-- /.legend-content -->

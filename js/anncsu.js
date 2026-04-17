@@ -57,6 +57,7 @@
   let comuniLayerVisible = false;
   let comuniLayerReady   = false;
   let anncsuStatsMap = {}; // { cod_comune_num → { civico_geocodificato, fuori_limite_comunale, totale, civici_da_altri_comuni } }
+  let _selectedComunePolygon = null; // GeoJSON FeatureCollection del poligono comunale selezionato
 
   // ── HELPERS ─────────────────────────────────────────────────────────────────
   function getActiveProvCodes() {
@@ -1078,6 +1079,7 @@
     const f = buildFilter();
     map.setFilter('civici', f);
     if (map.getLayer('civici-labels')) map.setFilter('civici-labels', f);
+    applyAltriCiviciFilter();
     updateCounter();
     updateMobileBadge();
     updateActiveFiltersStrip();
@@ -1086,6 +1088,21 @@
       const features = map.querySourceFeatures('anncsu', { sourceLayer: 'civici' });
       updateTypeCounters(features);
     } catch(_) {}
+  }
+
+  // ── CIVICI DI ALTRI COMUNI NEL TERRITORIO ────────────────────────────────────
+
+  function applyAltriCiviciFilter() {
+    if (!map.getLayer('civici-altri')) return;
+    if (selectedComune && _selectedComunePolygon) {
+      map.setFilter('civici-altri', ['all',
+        ['!=', ['get', 'CODICE_ISTAT'], selectedComune.codice_istat],
+        ['within', _selectedComunePolygon]
+      ]);
+    } else {
+      if (!selectedComune) _selectedComunePolygon = null;
+      map.setFilter('civici-altri', ['==', '1', '0']);
+    }
   }
 
   // ── ZOOM AI FILTRI ──────────────────────────────────────────────────────────
@@ -1141,39 +1158,53 @@
   }
 
   function flyToComuneByIstat(codistat) {
-    const provCode = codistat.slice(0, 3);
-    const regName  = PROV_TO_REG[provCode];
+    const provCode  = codistat.slice(0, 3);
+    const regName   = PROV_TO_REG[provCode];
     const regCenter = REGION_CENTROIDS[regName] || MAP_CENTER;
+
+    // Salta al centroide della regione a zoom 8 per caricare le tiles comuni
     map.jumpTo({ center: regCenter, zoom: 8 });
     map.once('idle', () => {
-      const features = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
-        .filter(f => f.properties.CODICE_ISTAT === codistat);
-      if (features.length) {
-        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-        features.forEach(f => {
-          const [lng, lat] = f.geometry.coordinates;
-          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
-          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
-        });
-        if (isFinite(minLng))
-          map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14 });
-        return;
-      }
-      // Fallback: bbox dal layer comuni
+      // Prima scelta: bbox dal poligono comunale (più affidabile del set rarefatto di civici a zoom 8)
       const cf = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
         .filter(f => String(f.properties.pro_com_t || '').padStart(6, '0') === codistat);
-      if (!cf.length) return;
-      let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-      cf.forEach(f => {
+
+      const bboxFrom = (feats, getCoords) => {
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        feats.forEach(f => {
+          getCoords(f).forEach(([lng, lat]) => {
+            if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+            if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+          });
+        });
+        return isFinite(minLng) ? [[minLng, minLat], [maxLng, maxLat]] : null;
+      };
+
+      // tippecanoe non rarefà a zoom >= 15: con maxZoom 15 tutti i civici sono visibili
+      const bbox = bboxFrom(cf, f => {
         const rings = f.geometry.type === 'Polygon'
           ? f.geometry.coordinates : f.geometry.coordinates.flat(1);
-        rings[0].forEach(([lng, lat]) => {
-          if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
-          if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
-        });
+        return rings[0];
       });
-      if (isFinite(minLng))
-        map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 80, maxZoom: 14, duration: 1000 });
+
+      // Salva il poligono comunale per il filtro "civici di altri comuni nel territorio"
+      if (cf.length) {
+        _selectedComunePolygon = { type: 'FeatureCollection', features: cf };
+        applyAltriCiviciFilter();
+        updateCounter();
+      }
+
+      if (bbox) {
+        map.fitBounds(bbox, { padding: 80, maxZoom: 15, duration: 1000 });
+        return;
+      }
+
+      // Fallback: bbox dai civici caricati a zoom 8 (può essere rarefatto)
+      const pts = map.querySourceFeatures('anncsu', { sourceLayer: 'addresses' })
+        .filter(f => f.properties.CODICE_ISTAT === codistat);
+      const ptsBbox = bboxFrom(pts, f => [f.geometry.coordinates]);
+      if (ptsBbox)
+        map.fitBounds(ptsBbox, { padding: 80, maxZoom: 15 });
     });
   }
 
@@ -1358,6 +1389,21 @@ style: {
       }
     });
 
+    // Layer civici di altri comuni nel territorio del comune selezionato
+    map.addLayer({
+      id: 'civici-altri',
+      type: 'circle',
+      source: 'anncsu',
+      'source-layer': 'addresses',
+      filter: ['==', '1', '0'], // nascosto di default
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 8, 2.5, 12, 3.5, 16, 5],
+        'circle-color': COLOR_OOB,
+        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 10, 0.9, 14, 1.0],
+        'circle-stroke-width': 0
+      }
+    });
+
     map.addLayer({
       id: 'civici-highlight',
       type: 'circle',
@@ -1479,23 +1525,53 @@ style: {
   }
 
   function updateCounter() {
-    const features = map.queryRenderedFeatures({ layers: ['civici'] });
-    const ok  = features.filter(f => !f.properties.out_of_bounds).length;
-    const err = features.filter(f =>  f.properties.out_of_bounds).length;
-    document.getElementById('count-ok').textContent    = fmt(ok);
-    document.getElementById('count-err').textContent   = fmt(err);
-    document.getElementById('count-value').textContent = fmt(features.length);
+    const oobRow   = document.getElementById('count-oob-row');
+    const altriRow = document.getElementById('count-altri-row');
 
-    // Riga "Propri fuori territorio": visibile solo se è selezionato un singolo comune
-    const oobRow = document.getElementById('count-oob-row');
     if (selectedComune) {
-      const cod = parseInt(selectedComune.codice_istat, 10);
+      // Comune selezionato: mostra dati reali ANNCSU (non limitati alla viewport)
+      const cod      = parseInt(selectedComune.codice_istat, 10);
       const statsRow = anncsuStatsMap[cod];
-      const fuori = statsRow?.fuori_limite_comunale ?? 0;
-      document.getElementById('count-oob').textContent = fuori.toLocaleString('it-IT');
-      oobRow.style.display = fuori > 0 ? '' : 'none';
+
+      document.getElementById('legend-title').textContent = selectedComune.nome_comune;
+      document.getElementById('legend-note').textContent  = 'Dati ANNCSU – totale del comune';
+
+      const fmtReal = n => (n ?? 0).toLocaleString('it-IT');
+      if (statsRow) {
+        const dentro = statsRow.civico_geocodificato   ?? 0;
+        const fuori  = statsRow.fuori_limite_comunale  ?? 0;
+        const totale = statsRow.totale                 ?? (dentro + fuori);
+        const altri  = statsRow.civici_da_altri_comuni ?? 0;
+        document.getElementById('count-ok').textContent          = fmtReal(dentro);
+        document.getElementById('count-err').textContent         = fmtReal(fuori);
+        document.getElementById('count-value').textContent       = fmtReal(totale);
+        document.getElementById('count-value-label').textContent = 'Totale ANNCSU';
+        document.getElementById('count-oob').textContent         = fmtReal(fuori);
+        document.getElementById('count-altri').textContent       = fmtReal(altri);
+        oobRow.style.display   = fuori > 0 ? '' : 'none';
+        altriRow.style.display = altri > 0 ? '' : 'none';
+      } else {
+        // Stats non ancora caricate
+        document.getElementById('count-ok').textContent          = '—';
+        document.getElementById('count-err').textContent         = '—';
+        document.getElementById('count-value').textContent       = '—';
+        document.getElementById('count-value-label').textContent = 'Totale ANNCSU';
+        oobRow.style.display   = 'none';
+        altriRow.style.display = 'none';
+      }
     } else {
-      oobRow.style.display = 'none';
+      // Nessun comune: dati in tempo reale dalla viewport
+      const features = map.queryRenderedFeatures({ layers: ['civici'] });
+      const ok  = features.filter(f => !f.properties.out_of_bounds).length;
+      const err = features.filter(f =>  f.properties.out_of_bounds).length;
+      document.getElementById('legend-title').textContent      = 'Numeri civici visibili';
+      document.getElementById('legend-note').textContent       = 'Aggiornati in tempo reale sulla vista corrente';
+      document.getElementById('count-ok').textContent          = fmt(ok);
+      document.getElementById('count-err').textContent         = fmt(err);
+      document.getElementById('count-value').textContent       = fmt(features.length);
+      document.getElementById('count-value-label').textContent = 'Totale';
+      oobRow.style.display   = 'none';
+      altriRow.style.display = 'none';
     }
   }
 

@@ -8,7 +8,9 @@
       "Bash(curl -I \"http://localhost:3001/anncsu-indirizzi.pmtiles\" --max-time 10)",
       "Bash(py --version)",
       "Bash(python3.exe --version)",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/quattochiacchiereinquattro/anncus/refs/heads/main/data/comuni.json\")",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); p=[x for x in d if '082053' in str\\(x\\)]; print\\(p[:2]\\)\")"
     ]
   }
 }
