@@ -1,5 +1,5 @@
   // ── CONFIGURAZIONE ──────────────────────────────────────────────────────────
-  const PMTILES_URL = 'https://media.githubusercontent.com/media/quattochiacchiereinquattro/anncus/main/data/anncsu-indirizzi.pmtiles';
+  const PMTILES_URL = 'https://gbvitrano.it/anncus/data/anncsu-indirizzi.pmtiles';
   const MAP_CENTER  = [12.5, 42.0];
   const MAP_ZOOM    = 6;
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
@@ -11,7 +11,7 @@
     '#e63946','#2a9d8f','#f4a261','#06b6d4','#ffbe0b',
     '#7209b7','#ee9b00'
   ];
-  const COMUNI_PMTILES_URL = 'https://gbvitrano.github.io/ANNCSU/dati/comuni.pmtiles';
+  const COMUNI_PMTILES_URL = 'https://gbvitrano.it/anncus/data/comuni.pmtiles';
 
   // Centroidi approssimativi delle 20 regioni italiane [lon, lat]
   // usati per caricare le tiles dei comuni prima di interrogare querySourceFeatures
@@ -100,7 +100,7 @@
   // ── CARICAMENTO COMUNI ──────────────────────────────────────────────────────
   async function loadComuni() {
     try {
-      const res = await fetch('https://raw.githubusercontent.com/quattochiacchiereinquattro/anncus/refs/heads/main/data/comuni.json');
+      const res = await fetch('https://gbvitrano.it/anncus/data/comuni.json');
       allComuni = await res.json();
       buildComuneList();
       applyUrlParams();
