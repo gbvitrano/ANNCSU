@@ -1484,21 +1484,21 @@
 
     const t0 = performance.now();
     try {
-      const res = await fetch(API + '?' + params.toString(), {
-        headers: { 'Prefer': 'count=exact' }
-      });
+      /* Fetch senza header custom → richiesta CORS semplice, nessun preflight */
+      const res = await fetch(API + '?' + params.toString());
       const elapsed = Math.round(performance.now() - t0);
       if (!res.ok) throw new Error(await res.text());
 
       const data = await res.json();
-      const cr   = res.headers.get('Content-Range');
-      const total = cr ? (parseInt(cr.split('/')[1]) || data.length) : data.length;
+      /* Content-Range: 0-N/* (senza Prefer il totale è sconosciuto) */
+      const cr    = res.headers.get('Content-Range');
+      const total = cr ? (parseInt(cr.split('/')[1]) || 0) || data.length : data.length;
 
       civiciLastData = { data, params, total };
       renderCiviciTable(data, total, elapsed);
       renderCiviciMap(data);
     } catch (e) {
-      showCiviciError('Errore API: ' + (e.message || e));
+      showCiviciError('Errore API: ' + e.name + ' — ' + (e.message || e));
     } finally {
       btn.disabled = false;
       btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Cerca';
@@ -1623,14 +1623,16 @@
     try {
       const params = new URLSearchParams(civiciLastData.params.toString());
       params.set('limit', DL_MAX);
+      /* Fetch senza header custom → nessun preflight CORS */
+      const res = await fetch(API + '?' + params);
+      if (!res.ok) throw new Error(await res.text());
+      const json = await res.json();
       if (format === 'csv') {
-        const res = await fetch(API + '?' + params, { headers: { 'Accept': 'text/csv' } });
-        if (!res.ok) throw new Error(await res.text());
-        triggerCiviciDL(await res.text(), 'anncsu-civici.csv', 'text/csv;charset=utf-8;');
+        const csvRows = [Object.keys(json[0] || {}).join(',')];
+        json.forEach(r => csvRows.push(Object.values(r).map(v => v === null ? '' : '"' + String(v).replace(/"/g,'""') + '"').join(',')));
+        triggerCiviciDL(csvRows.join('\n'), 'anncsu-civici.csv', 'text/csv;charset=utf-8;');
       } else {
-        const res = await fetch(API + '?' + params, { headers: { 'Accept': 'application/json' } });
-        if (!res.ok) throw new Error(await res.text());
-        triggerCiviciDL(JSON.stringify(await res.json(), null, 2), 'anncsu-civici.json', 'application/json');
+        triggerCiviciDL(JSON.stringify(json, null, 2), 'anncsu-civici.json', 'application/json');
       }
     } catch (e) {
       alert('Errore download: ' + e.message);

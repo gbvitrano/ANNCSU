@@ -14,7 +14,12 @@
       "WebFetch(domain:developers.coseerobe.it)",
       "Bash(curl -si \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=eq.Iglesias&limit=1\" -H \"Origin: https://gbvitrano.github.io\")",
       "Bash(curl -si -X OPTIONS \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim\" -H \"Origin: https://gbvitrano.github.io\" -H \"Access-Control-Request-Method: GET\" -H \"Access-Control-Request-Headers: Prefer\")",
-      "Bash(curl -si \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=eq.Iglesias&limit=1\" -H \"Origin: https://gbvitrano.github.io\" -H \"Prefer: count=exact\")"
+      "Bash(curl -si \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=eq.Iglesias&limit=1\" -H \"Origin: https://gbvitrano.github.io\" -H \"Prefer: count=exact\")",
+      "Bash(curl -si \"https://gbvitrano.github.io/ANNCSU/\")",
+      "Bash(curl -si -X OPTIONS https://developers.coseerobe.it/api/anncsu-indirizzi-slim -H 'Origin: https://gbvitrano.github.io' -H 'Access-Control-Request-Method: GET' -H 'Access-Control-Request-Headers: Prefer' -H 'User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124')",
+      "Bash(curl -si --max-redirs 0 \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=ilike.*palermo*&limit=1\" -H \"Origin: https://gbvitrano.github.io\")",
+      "Bash(node *)",
+      "Bash(curl -si 'https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=ilike.*palermo*&order=NOME_COMUNE.asc%2CODONIMO.asc%2CCIVICO.asc&limit=2' -H 'Origin: https://gbvitrano.github.io' -H 'Prefer: count=exact')"
     ]
   }
 }
