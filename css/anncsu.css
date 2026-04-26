@@ -1508,3 +1508,177 @@
       color: var(--text-primary);
       font-style: italic;
     }
+
+    /* ── Civici Search Modal ─────────────────────────────────────────────────── */
+    #civici-search-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--border-accent);
+      background: var(--bg-btn); color: var(--text-secondary);
+      cursor: pointer; flex-shrink: 0;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    #civici-search-btn svg { width: 14px; height: 14px; }
+    #civici-search-btn:hover { background: var(--accent-ok); color: #fff; border-color: var(--accent-ok); }
+
+    #civici-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 10001;
+    }
+    #civici-modal-overlay.open { display: block; }
+
+    #civici-modal {
+      display: none; position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw; height: 80vh;
+      background: var(--bg-panel-full);
+      border: 1px solid var(--border-color);
+      border-radius: 12px; z-index: 10002;
+      flex-direction: column; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+    #civici-modal.open { display: flex; }
+
+    #civici-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color); flex-shrink: 0;
+    }
+    #civici-modal-header h2 {
+      font-size: 0.92rem; font-weight: 600;
+      color: var(--text-primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    #civici-modal-header h2 svg { width: 16px; height: 16px; color: var(--accent-ok); }
+    #civici-modal-close {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-btn); color: var(--text-secondary);
+      cursor: pointer; font-size: 14px;
+      transition: background 0.15s, color 0.15s;
+    }
+    #civici-modal-close:hover { background: var(--accent-err); color: #fff; border-color: var(--accent-err); }
+
+    #civici-modal-body { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
+
+    #civici-form {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color); flex-shrink: 0;
+    }
+    .civici-form-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .civici-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+    .civici-field-sm { flex: 0 0 100px; min-width: 80px; }
+    .civici-field label {
+      font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);
+    }
+    .civici-field input {
+      padding: 6px 10px; background: var(--bg-btn);
+      border: 1px solid var(--border-accent); border-radius: 6px;
+      color: var(--text-primary); font-size: 0.82rem;
+      outline: none; transition: border-color 0.15s;
+    }
+    .civici-field input:focus { border-color: var(--accent-ok); }
+    .civici-field input::placeholder { color: var(--text-muted); }
+    .civici-form-btns { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+    #civici-btn-search {
+      padding: 6px 16px; background: var(--accent-ok); color: #fff;
+      border: none; border-radius: 6px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    #civici-btn-search:hover { opacity: 0.85; }
+    #civici-btn-search:disabled { opacity: 0.5; cursor: not-allowed; }
+    #civici-btn-reset {
+      padding: 6px 12px; background: var(--bg-btn);
+      border: 1px solid var(--border-accent); border-radius: 6px;
+      color: var(--text-secondary); font-size: 0.82rem; cursor: pointer;
+      transition: background 0.15s;
+    }
+    #civici-btn-reset:hover { background: var(--bg-btn-hover); }
+
+    #civici-content-split { display: flex; flex: 1; overflow: hidden; }
+
+    #civici-map-wrap {
+      flex: 0 0 45%;
+      border-right: 1px solid var(--border-color); position: relative;
+    }
+    #civici-map { width: 100%; height: 100%; min-height: 300px; }
+
+    #civici-table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+
+    #civici-stats-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 7px 16px;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0; font-size: 0.78rem; color: var(--text-muted); flex-wrap: wrap;
+    }
+    #civici-stats-bar strong { color: var(--text-primary); }
+
+    #civici-dl-bar {
+      display: none; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0; flex-wrap: wrap;
+    }
+    #civici-dl-bar span { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+    .civici-btn-dl {
+      padding: 5px 14px; border: none; border-radius: 5px;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; color: #fff;
+      transition: opacity 0.15s;
+    }
+    .civici-btn-dl.csv  { background: #065f46; }
+    .civici-btn-dl.csv:hover  { background: #047857; }
+    .civici-btn-dl.json { background: #1e40af; }
+    .civici-btn-dl.json:hover { background: #1d4ed8; }
+    .civici-btn-dl:disabled { opacity: 0.45; cursor: not-allowed; }
+    #civici-dl-note {
+      font-size: 0.72rem; color: #92400e;
+      background: #fef3c7; padding: 2px 8px; border-radius: 4px;
+    }
+    [data-theme="dark"] #civici-dl-note { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+    #civici-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100%; color: var(--text-muted);
+      font-size: 0.82rem; gap: 8px; padding: 2rem; text-align: center;
+    }
+    #civici-placeholder svg { width: 36px; height: 36px; opacity: 0.3; }
+
+    .civici-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .civici-table th {
+      background: var(--bg-btn); color: var(--text-secondary);
+      padding: 7px 10px; text-align: left;
+      white-space: nowrap; font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+      position: sticky; top: 0; z-index: 1;
+    }
+    .civici-table td {
+      padding: 5px 10px; border-bottom: 1px solid var(--border-color);
+      color: var(--text-item); white-space: nowrap; cursor: pointer;
+    }
+    .civici-table tr:hover td { background: var(--bg-row-hover); }
+    .civici-table tr.civici-row-active td { background: rgba(76,155,130,0.15); }
+    .civici-table td.muted { color: var(--text-muted); }
+    .civici-tag-oob { color: var(--accent-err); font-size: 0.72rem; font-weight: 600; }
+
+    .civici-loading { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; }
+    .civici-error {
+      background: rgba(230,57,70,0.1); color: var(--accent-err);
+      padding: 0.8rem 1rem; font-size: 0.82rem; margin: 1rem;
+      border-radius: 6px; border: 1px solid rgba(230,57,70,0.3);
+    }
+
+    @media (max-width: 700px) {
+      #civici-content-split { flex-direction: column; }
+      #civici-map-wrap { flex: 0 0 220px; border-right: none; border-bottom: 1px solid var(--border-color); }
+      #civici-modal {
+        width: 100%; height: 100dvh;
+        border-radius: 0; top: 0; left: 0; transform: none;
+      }
+      .civici-field { min-width: 120px; }
+    }

@@ -51,6 +51,9 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	<!-- CSS Chart Builder -->
 	<link rel="stylesheet" href="css/chart-builder.css">
+	<!-- Leaflet per modal Cerca Civici -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </head>
 
@@ -179,6 +182,11 @@
 
     <!-- Separatore visivo -->
     <span class="ctrl-sep" aria-hidden="true"></span>
+
+    <!-- Pulsante Cerca Civici API -->
+    <button id="civici-search-btn" onclick="openCiviciModal()" title="Cerca civici tramite API REST" aria-label="Cerca civici">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    </button>
 
     <!-- Pulsante info con SVG -->
     <button id="info-btn" onclick="openInfoModal()" title="Informazioni sull'applicazione" aria-label="Informazioni">
@@ -1326,6 +1334,353 @@
 </div>
 
 <script src="js/chart-builder-anncsu.js"></script>
+
+<!-- ═══════════════════ MODAL CERCA CIVICI API ═══════════════════ -->
+<div id="civici-modal-overlay" onclick="closeCiviciModal()"></div>
+<div id="civici-modal" role="dialog" aria-modal="true" aria-label="Cerca civici tramite API">
+
+  <div id="civici-modal-header">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Cerca Civici — API REST ANNCSU
+    </h2>
+    <button id="civici-modal-close" onclick="closeCiviciModal()" title="Chiudi">✕</button>
+  </div>
+
+  <div id="civici-modal-body">
+
+    <div id="civici-form">
+      <div class="civici-form-row">
+        <div class="civici-field">
+          <label for="cm-comune">Comune</label>
+          <input id="cm-comune" type="text" placeholder="es. NAPOLI  (vuoto = tutti)" autocomplete="off"
+                 onkeydown="if(event.key==='Enter') civiciSearch()">
+        </div>
+        <div class="civici-field">
+          <label for="cm-via">Via / Odonimo</label>
+          <input id="cm-via" type="text" placeholder="es. TOLEDO  (parte del nome)" autocomplete="off"
+                 onkeydown="if(event.key==='Enter') civiciSearch()">
+        </div>
+        <div class="civici-field civici-field-sm">
+          <label for="cm-civico">Civico</label>
+          <input id="cm-civico" type="number" placeholder="es. 10" min="1"
+                 onkeydown="if(event.key==='Enter') civiciSearch()">
+        </div>
+        <div class="civici-field civici-field-sm">
+          <label for="cm-limit">Limite</label>
+          <input id="cm-limit" type="number" value="50" min="1" max="2000">
+        </div>
+        <div class="civici-form-btns">
+          <button id="civici-btn-search" onclick="civiciSearch()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Cerca
+          </button>
+          <button id="civici-btn-reset" onclick="civiciReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="civici-stats-bar" style="display:none">
+      Trovati: <strong id="cm-count">—</strong>
+      &nbsp;·&nbsp; Comuni: <strong id="cm-comuni">—</strong>
+      &nbsp;·&nbsp; Con coord.: <strong id="cm-geo">—</strong>
+      &nbsp;·&nbsp; <span id="cm-time" style="color:var(--text-muted)"></span>
+    </div>
+
+    <div id="civici-content-split">
+
+      <div id="civici-map-wrap">
+        <div id="civici-map"></div>
+      </div>
+
+      <div id="civici-table-wrap">
+        <div id="civici-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <span>Inserisci almeno un parametro e clicca <strong>Cerca</strong></span>
+          <small style="color:var(--text-muted)">API: developers.coseerobe.it/api/anncsu-indirizzi-slim</small>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="civici-dl-bar">
+      <span>Scarica risultati:</span>
+      <button class="civici-btn-dl csv"  id="cm-btn-csv"  onclick="civiciDownload('csv')">⬇ CSV</button>
+      <button class="civici-btn-dl json" id="cm-btn-json" onclick="civiciDownload('json')">⬇ JSON</button>
+      <span id="civici-dl-note" style="display:none"></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const API = 'https://developers.coseerobe.it/api/anncsu-indirizzi-slim';
+  const DL_MAX = 10000;
+
+  let civiciMap = null;
+  let civiciMarkers = null;
+  let civiciLastData = null;
+
+  /* ── Apertura / chiusura ──────────────────────────────────────────────── */
+  window.openCiviciModal = function () {
+    document.getElementById('civici-modal-overlay').classList.add('open');
+    document.getElementById('civici-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    initCiviciMap();
+  };
+
+  window.closeCiviciModal = function () {
+    document.getElementById('civici-modal-overlay').classList.remove('open');
+    document.getElementById('civici-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('civici-modal').classList.contains('open')) {
+      closeCiviciModal();
+    }
+  });
+
+  /* ── Inizializza mappa Leaflet (una volta sola) ───────────────────────── */
+  function initCiviciMap() {
+    if (civiciMap) {
+      civiciMap.invalidateSize();
+      return;
+    }
+    civiciMap = L.map('civici-map', { zoomControl: true }).setView([42.5, 12.5], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(civiciMap);
+    civiciMarkers = L.layerGroup().addTo(civiciMap);
+  }
+
+  /* ── Ricerca ──────────────────────────────────────────────────────────── */
+  window.civiciSearch = async function () {
+    const comune = document.getElementById('cm-comune').value.trim();
+    const via    = document.getElementById('cm-via').value.trim();
+    const civico = document.getElementById('cm-civico').value.trim();
+    const limit  = parseInt(document.getElementById('cm-limit').value) || 50;
+
+    if (!comune && !via && !civico) {
+      showCiviciError('Inserisci almeno un parametro di ricerca.');
+      return;
+    }
+
+    const params = new URLSearchParams();
+    if (comune) params.set('NOME_COMUNE', 'ilike.*' + comune + '*');
+    if (via)    params.set('ODONIMO',     'ilike.*' + via.toUpperCase() + '*');
+    if (civico) params.set('CIVICO',      'eq.' + civico);
+    params.set('order', 'NOME_COMUNE.asc,ODONIMO.asc,CIVICO.asc');
+    params.set('limit', Math.min(limit, DL_MAX));
+
+    const btn = document.getElementById('civici-btn-search');
+    btn.disabled = true;
+    btn.textContent = 'Caricamento…';
+    showCiviciLoading();
+
+    const t0 = performance.now();
+    try {
+      const res = await fetch(API + '?' + params.toString(), {
+        headers: { 'Prefer': 'count=exact' }
+      });
+      const elapsed = Math.round(performance.now() - t0);
+      if (!res.ok) throw new Error(await res.text());
+
+      const data = await res.json();
+      const cr   = res.headers.get('Content-Range');
+      const total = cr ? (parseInt(cr.split('/')[1]) || data.length) : data.length;
+
+      civiciLastData = { data, params, total };
+      renderCiviciTable(data, total, elapsed);
+      renderCiviciMap(data);
+    } catch (e) {
+      showCiviciError('Errore API: ' + (e.message || e));
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Cerca';
+    }
+  };
+
+  /* ── Render tabella ───────────────────────────────────────────────────── */
+  function renderCiviciTable(data, total, elapsed) {
+    const statsBar = document.getElementById('civici-stats-bar');
+    statsBar.style.display = 'flex';
+    document.getElementById('cm-count').textContent  = total.toLocaleString('it');
+    document.getElementById('cm-comuni').textContent = new Set(data.map(r => r.NOME_COMUNE)).size;
+    const geo = data.filter(r => r.latitude && r.longitude).length;
+    document.getElementById('cm-geo').textContent   = geo.toLocaleString('it');
+    document.getElementById('cm-time').textContent  = elapsed + ' ms';
+
+    const wrap = document.getElementById('civici-table-wrap');
+
+    if (!data.length) {
+      wrap.innerHTML = '<div class="civici-loading">Nessun risultato trovato.</div>';
+      document.getElementById('civici-dl-bar').style.display = 'none';
+      return;
+    }
+
+    const cols = [
+      { key: 'NOME_COMUNE', label: 'Comune' },
+      { key: 'ODONIMO',     label: 'Via / Odonimo' },
+      { key: 'CIVICO',      label: 'Civico' },
+      { key: 'ESPONENTE',   label: 'Esp.' },
+      { key: 'latitude',    label: 'Lat' },
+      { key: 'longitude',   label: 'Lon' },
+      { key: 'out_of_bounds', label: 'OOB' }
+    ];
+
+    let html = '<table class="civici-table"><thead><tr>';
+    cols.forEach(c => { html += '<th>' + c.label + '</th>'; });
+    html += '</tr></thead><tbody>';
+
+    data.forEach((r, i) => {
+      html += '<tr data-idx="' + i + '" onclick="civiciRowClick(' + i + ')">';
+      cols.forEach(c => {
+        let v = r[c.key];
+        if (c.key === 'out_of_bounds') {
+          html += v ? '<td class="civici-tag-oob">⚠ sì</td>' : '<td class="muted">—</td>';
+        } else if (v === null || v === undefined || v === '') {
+          html += '<td class="muted">—</td>';
+        } else if (c.key === 'latitude' || c.key === 'longitude') {
+          html += '<td class="muted">' + parseFloat(v).toFixed(5) + '</td>';
+        } else {
+          html += '<td>' + v + '</td>';
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+
+    /* download bar */
+    const dlBar  = document.getElementById('civici-dl-bar');
+    const dlNote = document.getElementById('civici-dl-note');
+    dlBar.style.display = 'flex';
+    if (total > DL_MAX) {
+      dlNote.style.display = 'inline';
+      dlNote.textContent = 'Download limitato ai primi ' + DL_MAX.toLocaleString('it') + ' su ' + total.toLocaleString('it');
+    } else {
+      dlNote.style.display = 'none';
+    }
+  }
+
+  /* ── Render mappa ─────────────────────────────────────────────────────── */
+  function renderCiviciMap(data) {
+    if (!civiciMap) return;
+    civiciMarkers.clearLayers();
+    const pts = data.filter(r => r.latitude && r.longitude);
+    pts.forEach(r => {
+      const color = r.out_of_bounds ? '#E63946' : '#4c9b82';
+      L.circleMarker([r.latitude, r.longitude], {
+        radius: 5, color: '#fff', weight: 1,
+        fillColor: color, fillOpacity: 0.85
+      }).bindPopup(
+        '<b>' + (r.ODONIMO || '') + ' ' + (r.CIVICO || '') + '</b>' +
+        (r.ESPONENTE ? '/' + r.ESPONENTE : '') +
+        '<br>' + (r.NOME_COMUNE || '') +
+        (r.out_of_bounds ? '<br><span style="color:#E63946;font-size:11px">⚠ fuori confine</span>' : '')
+      ).addTo(civiciMarkers);
+    });
+    if (pts.length) {
+      civiciMap.fitBounds(pts.map(r => [r.latitude, r.longitude]), { padding: [20, 20], maxZoom: 15 });
+    } else {
+      civiciMap.setView([42.5, 12.5], 5);
+    }
+  }
+
+  /* ── Click su riga → zoom mappa ───────────────────────────────────────── */
+  window.civiciRowClick = function (idx) {
+    if (!civiciLastData) return;
+    const r = civiciLastData.data[idx];
+    /* evidenzia riga */
+    document.querySelectorAll('#civici-table-wrap tr.civici-row-active').forEach(el => el.classList.remove('civici-row-active'));
+    const tr = document.querySelector('#civici-table-wrap tr[data-idx="' + idx + '"]');
+    if (tr) tr.classList.add('civici-row-active');
+    /* zoom se ha coordinate */
+    if (r.latitude && r.longitude && civiciMap) {
+      civiciMap.setView([r.latitude, r.longitude], 17);
+      civiciMarkers.getLayers().forEach(layer => {
+        const ll = layer.getLatLng();
+        if (Math.abs(ll.lat - r.latitude) < 0.000001 && Math.abs(ll.lng - r.longitude) < 0.000001) {
+          layer.openPopup();
+        }
+      });
+    }
+  };
+
+  /* ── Download ─────────────────────────────────────────────────────────── */
+  window.civiciDownload = async function (format) {
+    if (!civiciLastData) return;
+    const btnId = format === 'csv' ? 'cm-btn-csv' : 'cm-btn-json';
+    const btn = document.getElementById(btnId);
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Download…';
+
+    try {
+      const params = new URLSearchParams(civiciLastData.params.toString());
+      params.set('limit', DL_MAX);
+      if (format === 'csv') {
+        const res = await fetch(API + '?' + params, { headers: { 'Accept': 'text/csv' } });
+        if (!res.ok) throw new Error(await res.text());
+        triggerCiviciDL(await res.text(), 'anncsu-civici.csv', 'text/csv;charset=utf-8;');
+      } else {
+        const res = await fetch(API + '?' + params, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(await res.text());
+        triggerCiviciDL(JSON.stringify(await res.json(), null, 2), 'anncsu-civici.json', 'application/json');
+      }
+    } catch (e) {
+      alert('Errore download: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  };
+
+  function triggerCiviciDL(content, filename, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+
+  /* ── Reset ────────────────────────────────────────────────────────────── */
+  window.civiciReset = function () {
+    ['cm-comune','cm-via','cm-civico'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('cm-limit').value = '50';
+    document.getElementById('civici-stats-bar').style.display = 'none';
+    document.getElementById('civici-dl-bar').style.display   = 'none';
+    document.getElementById('civici-table-wrap').innerHTML =
+      '<div id="civici-placeholder">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;opacity:0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
+      '<span>Inserisci almeno un parametro e clicca <strong>Cerca</strong></span>' +
+      '<small style="color:var(--text-muted)">API: developers.coseerobe.it/api/anncsu-indirizzi-slim</small>' +
+      '</div>';
+    civiciLastData = null;
+    if (civiciMap) { civiciMarkers.clearLayers(); civiciMap.setView([42.5, 12.5], 5); }
+  };
+
+  /* ── Helpers ──────────────────────────────────────────────────────────── */
+  function showCiviciLoading() {
+    document.getElementById('civici-stats-bar').style.display  = 'none';
+    document.getElementById('civici-dl-bar').style.display     = 'none';
+    document.getElementById('civici-table-wrap').innerHTML     = '<div class="civici-loading">Caricamento…</div>';
+    if (civiciMap) civiciMarkers.clearLayers();
+  }
+
+  function showCiviciError(msg) {
+    document.getElementById('civici-table-wrap').innerHTML =
+      '<div class="civici-error">' + msg + '</div>';
+    document.getElementById('civici-stats-bar').style.display = 'none';
+    document.getElementById('civici-dl-bar').style.display    = 'none';
+  }
+
+})();
+</script>
 
 </body>
 </html>

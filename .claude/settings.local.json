@@ -10,7 +10,11 @@
       "Bash(python3.exe --version)",
       "Bash(python -c \":*)",
       "Bash(curl -s \"https://raw.githubusercontent.com/quattochiacchiereinquattro/anncus/refs/heads/main/data/comuni.json\")",
-      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); p=[x for x in d if '082053' in str\\(x\\)]; print\\(p[:2]\\)\")"
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); p=[x for x in d if '082053' in str\\(x\\)]; print\\(p[:2]\\)\")",
+      "WebFetch(domain:developers.coseerobe.it)",
+      "Bash(curl -si \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=eq.Iglesias&limit=1\" -H \"Origin: https://gbvitrano.github.io\")",
+      "Bash(curl -si -X OPTIONS \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim\" -H \"Origin: https://gbvitrano.github.io\" -H \"Access-Control-Request-Method: GET\" -H \"Access-Control-Request-Headers: Prefer\")",
+      "Bash(curl -si \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=eq.Iglesias&limit=1\" -H \"Origin: https://gbvitrano.github.io\" -H \"Prefer: count=exact\")"
     ]
   }
 }
