@@ -1249,6 +1249,7 @@ style: {
   attributionControl: false
   });
   map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+  window.anncsuMap = map; /* esposto per civiciBboxFromMap in index.html */
 
   function resetToItaly() {
     map.flyTo({ center: MAP_CENTER, zoom: MAP_ZOOM, duration: 800 });

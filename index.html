@@ -435,12 +435,23 @@
         </div>
       </div>
     </div>
-	   <h3>Nota tecnica</h3>
-    <div class="info-source">
-     Un ringraziamento speciale a <b>Federico Cortese</b> per i preziosi suggerimenti sul trattamento dei dati: l'aggiunta di un fallback sul nome del comune per i comuni privi di codice ISTAT (tra cui i comuni sardi), e la segnalazione del caso in cui il dataset ANAC riporta solo il codice fiscale dell'aggiudicatario senza la denominazione, causando la perdita del campo nel join.</p>
+    <h3>Strumenti QGIS</h3>
+    <div class="info-source info-source-qgis">
+      <div class="info-source-qgis-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-qgis-icon" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <a href="https://github.com/pigreco/anncsu_loader" target="_blank" rel="noopener">Plugin QGIS · anncsu_loader</a>
+      </div>
+      <p>Plugin per <strong>QGIS 3.20+ / 4.x</strong> realizzato da <strong>Salvatore Fiandaca</strong> (<a href="https://github.com/pigreco" target="_blank" rel="noopener">@pigreco</a>) che permette di caricare i dati ANNCSU direttamente in QGIS partendo dai file <strong>Parquet</strong> locali. Ideale per chi lavora con GIS desktop e vuole analizzare, filtrare o elaborare gli indirizzi nazionali all'interno di un ambiente GIS completo.</p>
+      <a class="info-source-qgis-btn" href="https://github.com/pigreco/anncsu_loader" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Vai al repository GitHub
+      </a>
     </div>
 
-
+    <h3>Nota tecnica</h3>
+    <div class="info-source">
+     <p>Un ringraziamento speciale a <b>Federico Cortese</b> per i preziosi suggerimenti sul trattamento dei dati: l'aggiunta di un fallback sul nome del comune per i comuni privi di codice ISTAT (tra cui i comuni sardi), e la segnalazione del caso in cui il dataset ANAC riporta solo il codice fiscale dell'aggiudicatario senza la denominazione, causando la perdita del campo nel join.</p>
+    </div>
 
   </div>
 
@@ -1353,22 +1364,46 @@
       <div class="civici-form-row">
         <div class="civici-field">
           <label for="cm-comune">Comune</label>
-          <input id="cm-comune" type="text" placeholder="es. NAPOLI  (vuoto = tutti)" autocomplete="off"
+          <input id="cm-comune" type="text" placeholder="es. Palermo" autocomplete="off"
                  onkeydown="if(event.key==='Enter') civiciSearch()">
         </div>
         <div class="civici-field">
           <label for="cm-via">Via / Odonimo</label>
-          <input id="cm-via" type="text" placeholder="es. TOLEDO  (parte del nome)" autocomplete="off"
+          <input id="cm-via" type="text" placeholder="es. Roma  (parte del nome)" autocomplete="off"
                  onkeydown="if(event.key==='Enter') civiciSearch()">
+        </div>
+        <div class="civici-field civici-field-tipo">
+          <label for="cm-tipo">Tipo strada</label>
+          <select id="cm-tipo">
+            <option value="">— tutti —</option>
+            <option value="VIA">VIA</option>
+            <option value="CORSO">CORSO</option>
+            <option value="PIAZZA">PIAZZA</option>
+            <option value="VIALE">VIALE</option>
+            <option value="VICOLO">VICOLO</option>
+            <option value="LARGO">LARGO</option>
+            <option value="STRADA">STRADA</option>
+            <option value="LOCALITA">LOCALITA</option>
+            <option value="FRAZIONE">FRAZIONE</option>
+          </select>
         </div>
         <div class="civici-field civici-field-sm">
           <label for="cm-civico">Civico</label>
-          <input id="cm-civico" type="number" placeholder="es. 10" min="1"
+          <input id="cm-civico" type="number" placeholder="es. 25" min="1"
                  onkeydown="if(event.key==='Enter') civiciSearch()">
         </div>
         <div class="civici-field civici-field-sm">
-          <label for="cm-limit">Limite</label>
-          <input id="cm-limit" type="number" value="50" min="1" max="2000">
+          <label for="cm-limit">Limite fetch</label>
+          <select id="cm-limit">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="500" selected>500</option>
+            <option value="1000">1000</option>
+            <option value="2000">2000</option>
+            <option value="10000">Tutti</option>
+          </select>
         </div>
         <div class="civici-form-btns">
           <button id="civici-btn-search" onclick="civiciSearch()">
@@ -1378,6 +1413,30 @@
           <button id="civici-btn-reset" onclick="civiciReset()">Reset</button>
         </div>
       </div>
+      <!-- ── Riga 2: filtri avanzati (temporaneamente disattivata) ── -->
+      <!--
+      <div class="civici-form-row civici-form-row2">
+        <label class="civici-chk-label" title="Mostra solo civici con coordinata fuori dal confine comunale">
+          <input type="checkbox" id="cm-oob"> Solo fuori confine
+        </label>
+        <div class="civici-bbox-group">
+          <span class="civici-bbox-label">Bounding Box:</span>
+          <input id="cm-lat-min" type="number" step="0.00001" placeholder="Sud (lat min)" class="civici-bbox-input"
+                 title="Latitudine minima (Sud)" onkeydown="if(event.key==='Enter') civiciSearch()">
+          <input id="cm-lat-max" type="number" step="0.00001" placeholder="Nord (lat max)" class="civici-bbox-input"
+                 title="Latitudine massima (Nord)" onkeydown="if(event.key==='Enter') civiciSearch()">
+          <input id="cm-lon-min" type="number" step="0.00001" placeholder="Ovest (lon min)" class="civici-bbox-input"
+                 title="Longitudine minima (Ovest)" onkeydown="if(event.key==='Enter') civiciSearch()">
+          <input id="cm-lon-max" type="number" step="0.00001" placeholder="Est (lon max)" class="civici-bbox-input"
+                 title="Longitudine massima (Est)" onkeydown="if(event.key==='Enter') civiciSearch()">
+          <button class="civici-btn-map" onclick="civiciBboxFromMap()" title="Carica i bounds della mappa attuale">📍 Usa mappa</button>
+        </div>
+      </div>
+      -->
+      <!-- input nascosti per mantenere compatibilità JS (reset, query) -->
+      <input type="checkbox" id="cm-oob" style="display:none">
+      <input id="cm-lat-min" type="hidden"><input id="cm-lat-max" type="hidden">
+      <input id="cm-lon-min" type="hidden"><input id="cm-lon-max" type="hidden">
     </div>
 
     <div id="civici-stats-bar" style="display:none">
@@ -1404,10 +1463,25 @@
     </div>
 
     <div id="civici-dl-bar">
-      <span>Scarica risultati:</span>
-      <button class="civici-btn-dl csv"  id="cm-btn-csv"  onclick="civiciDownload('csv')">⬇ CSV</button>
-      <button class="civici-btn-dl json" id="cm-btn-json" onclick="civiciDownload('json')">⬇ JSON</button>
+      <span>Risultati:</span>
+      <button class="civici-btn-dl csv"  id="cm-btn-csv"  onclick="civiciDownload('csv')"  title="Scarica i risultati visibili in CSV">⬇ CSV</button>
+      <button class="civici-btn-dl json" id="cm-btn-json" onclick="civiciDownload('json')" title="Scarica i risultati visibili in JSON">⬇ JSON</button>
       <span id="civici-dl-note" style="display:none"></span>
+      <span class="civici-dl-sep">|</span>
+      <span>Tutto (paginato):</span>
+      <button class="civici-btn-dl all-csv"  id="cm-btn-all-csv"  onclick="civiciDownloadAll('csv')"  title="Scarica tutti i record (paginazione automatica) in CSV">⬇ Tutto CSV</button>
+      <button class="civici-btn-dl all-json" id="cm-btn-all-json" onclick="civiciDownloadAll('json')" title="Scarica tutti i record (paginazione automatica) in JSON">⬇ Tutto JSON</button>
+      <span id="civici-dl-progress" class="civici-dl-progress" style="display:none"></span>
+      <span class="civici-dl-warn">⏱ Con molti civici il download potrebbe richiedere qualche minuto.</span>
+    </div>
+
+    <div id="civici-qgis-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Lavori con QGIS? Il plugin <strong>anncsu_loader</strong> di <strong>Salvatore Fiandaca</strong> carica i dati ANNCSU da Parquet locale — compatibile con QGIS 3.20+ / 4.x.</span>
+      <a href="https://github.com/pigreco/anncsu_loader" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
     </div>
 
   </div>
@@ -1423,6 +1497,10 @@
   let civiciMap = null;
   let civiciMarkers = null;
   let civiciLastData = null;
+  let civiciPage = 1;
+  let civiciRowsPerPage = 25;
+  let civiciSortCol = 'NOME_COMUNE';
+  let civiciSortDir = 'asc';
 
   /* ── Apertura / chiusura ──────────────────────────────────────────────── */
   window.openCiviciModal = function () {
@@ -1460,20 +1538,34 @@
 
   /* ── Ricerca ──────────────────────────────────────────────────────────── */
   window.civiciSearch = async function () {
-    const comune = document.getElementById('cm-comune').value.trim();
-    const via    = document.getElementById('cm-via').value.trim();
-    const civico = document.getElementById('cm-civico').value.trim();
-    const limit  = parseInt(document.getElementById('cm-limit').value) || 50;
+    const comune  = document.getElementById('cm-comune').value.trim();
+    const via     = document.getElementById('cm-via').value.trim();
+    const tipo    = document.getElementById('cm-tipo').value;
+    const civico  = document.getElementById('cm-civico').value.trim();
+    const limit   = parseInt(document.getElementById('cm-limit').value) || 50;
+    const oob     = document.getElementById('cm-oob').checked;
+    const latMin  = document.getElementById('cm-lat-min').value.trim();
+    const latMax  = document.getElementById('cm-lat-max').value.trim();
+    const lonMin  = document.getElementById('cm-lon-min').value.trim();
+    const lonMax  = document.getElementById('cm-lon-max').value.trim();
+    const hasBbox = latMin || latMax || lonMin || lonMax;
 
-    if (!comune && !via && !civico) {
+    if (!comune && !via && !tipo && !civico && !oob && !hasBbox) {
       showCiviciError('Inserisci almeno un parametro di ricerca.');
       return;
     }
 
     const params = new URLSearchParams();
     if (comune) params.set('NOME_COMUNE', 'ilike.*' + comune + '*');
-    if (via)    params.set('ODONIMO',     'ilike.*' + via.toUpperCase() + '*');
-    if (civico) params.set('CIVICO',      'eq.' + civico);
+    /* tipo strada e via si combinano entrambi su ODONIMO (AND in PostgREST) */
+    if (tipo) params.append('ODONIMO', 'ilike.' + tipo + '*');
+    if (via)  params.append('ODONIMO', 'ilike.*' + via.toUpperCase() + '*');
+    if (civico) params.set('CIVICO', 'eq.' + civico);
+    if (oob)    params.set('out_of_bounds', 'eq.true');
+    if (latMin) params.append('latitude',   'gte.' + parseFloat(latMin));
+    if (latMax) params.append('latitude',   'lte.' + parseFloat(latMax));
+    if (lonMin) params.append('longitude',  'gte.' + parseFloat(lonMin));
+    if (lonMax) params.append('longitude',  'lte.' + parseFloat(lonMax));
     params.set('order', 'NOME_COMUNE.asc,ODONIMO.asc,CIVICO.asc');
     params.set('limit', Math.min(limit, DL_MAX));
 
@@ -1494,9 +1586,10 @@
       const cr    = res.headers.get('Content-Range');
       const total = cr ? (parseInt(cr.split('/')[1]) || 0) || data.length : data.length;
 
-      civiciLastData = { data, params, total };
+      civiciPage = 1;
+      civiciLastData = { data, params, total, elapsed };
       renderCiviciTable(data, total, elapsed);
-      renderCiviciMap(data);
+      renderCiviciMap(getPageData(data), true); /* fitView = true: zoom su tutta l'area */
     } catch (e) {
       showCiviciError('Errore API: ' + e.name + ' — ' + (e.message || e));
     } finally {
@@ -1505,15 +1598,16 @@
     }
   };
 
-  /* ── Render tabella ───────────────────────────────────────────────────── */
+  /* ── Render tabella (con paginazione lato client) ────────────────────── */
   function renderCiviciTable(data, total, elapsed) {
     const statsBar = document.getElementById('civici-stats-bar');
     statsBar.style.display = 'flex';
     document.getElementById('cm-count').textContent  = total.toLocaleString('it');
     document.getElementById('cm-comuni').textContent = new Set(data.map(r => r.NOME_COMUNE)).size;
     const geo = data.filter(r => r.latitude && r.longitude).length;
-    document.getElementById('cm-geo').textContent   = geo.toLocaleString('it');
-    document.getElementById('cm-time').textContent  = elapsed + ' ms';
+    document.getElementById('cm-geo').textContent = geo.toLocaleString('it');
+    if (typeof elapsed === 'number')
+      document.getElementById('cm-time').textContent = elapsed + ' ms';
 
     const wrap = document.getElementById('civici-table-wrap');
 
@@ -1523,24 +1617,41 @@
       return;
     }
 
+    /* ── Calcolo pagina ── */
+    const rpp        = civiciRowsPerPage;                                    // 0 = tutti
+    const totalPages = rpp === 0 ? 1 : Math.ceil(data.length / rpp);
+    if (civiciPage > totalPages) civiciPage = totalPages;
+    const startIdx   = rpp === 0 ? 0 : (civiciPage - 1) * rpp;
+    const endIdx     = rpp === 0 ? data.length : Math.min(startIdx + rpp, data.length);
+    const pageData   = data.slice(startIdx, endIdx);
+
+    /* ── Tabella ── */
     const cols = [
-      { key: 'NOME_COMUNE', label: 'Comune' },
-      { key: 'ODONIMO',     label: 'Via / Odonimo' },
-      { key: 'CIVICO',      label: 'Civico' },
-      { key: 'ESPONENTE',   label: 'Esp.' },
-      { key: 'latitude',    label: 'Lat' },
-      { key: 'longitude',   label: 'Lon' },
-      { key: 'out_of_bounds', label: 'OOB' }
+      { key: 'NOME_COMUNE',   label: 'Comune',        sortable: true  },
+      { key: 'ODONIMO',       label: 'Via / Odonimo', sortable: true  },
+      { key: 'CIVICO',        label: 'Civico',        sortable: true  },
+      { key: 'ESPONENTE',     label: 'Esp.',          sortable: false },
+      { key: 'latitude',      label: 'Lat',           sortable: false },
+      { key: 'longitude',     label: 'Lon',           sortable: false },
+      { key: 'out_of_bounds', label: 'OOB',           sortable: false }
     ];
-
     let html = '<table class="civici-table"><thead><tr>';
-    cols.forEach(c => { html += '<th>' + c.label + '</th>'; });
+    cols.forEach(c => {
+      if (c.sortable) {
+        const active = civiciSortCol === c.key;
+        const arrow  = active ? (civiciSortDir === 'asc' ? ' ↑' : ' ↓') : ' ⇅';
+        html += '<th class="civici-th-sort' + (active ? ' civici-th-active' : '') + '" onclick="civiciThClick(\'' + c.key + '\')">'
+              + c.label + '<span class="civici-sort-arrow">' + arrow + '</span></th>';
+      } else {
+        html += '<th>' + c.label + '</th>';
+      }
+    });
     html += '</tr></thead><tbody>';
-
-    data.forEach((r, i) => {
-      html += '<tr data-idx="' + i + '" onclick="civiciRowClick(' + i + ')">';
+    pageData.forEach((r, i) => {
+      const absIdx = startIdx + i;
+      html += '<tr data-idx="' + absIdx + '" onclick="civiciRowClick(' + absIdx + ')">';
       cols.forEach(c => {
-        let v = r[c.key];
+        const v = r[c.key];
         if (c.key === 'out_of_bounds') {
           html += v ? '<td class="civici-tag-oob">⚠ sì</td>' : '<td class="muted">—</td>';
         } else if (v === null || v === undefined || v === '') {
@@ -1554,22 +1665,112 @@
       html += '</tr>';
     });
     html += '</tbody></table>';
+
+    /* ── Barra paginazione ── */
+    html += '<div class="civici-pagination">';
+    /* selettore righe/pagina */
+    html += '<div class="civici-pp-wrap"><span>Righe/pagina:</span><select class="civici-pp-sel" onchange="civiciSetRpp(+this.value)">';
+    [10, 25, 50, 100, 0].forEach(n => {
+      html += '<option value="' + n + '"' + (n === rpp ? ' selected' : '') + '>' + (n === 0 ? 'Tutti' : n) + '</option>';
+    });
+    html += '</select></div>';
+    /* navigazione pagine */
+    if (totalPages > 1) {
+      html += '<button class="civici-page-btn" onclick="civiciGoPage(' + (civiciPage - 1) + ')"' + (civiciPage === 1 ? ' disabled' : '') + '>‹</button>';
+      const r = 2, s = Math.max(1, civiciPage - r), e = Math.min(totalPages, civiciPage + r);
+      if (s > 1) { html += '<button class="civici-page-btn" onclick="civiciGoPage(1)">1</button>'; if (s > 2) html += '<span class="civici-page-ellipsis">…</span>'; }
+      for (let p = s; p <= e; p++)
+        html += '<button class="civici-page-btn' + (p === civiciPage ? ' civici-page-active' : '') + '" onclick="civiciGoPage(' + p + ')">' + p + '</button>';
+      if (e < totalPages) { if (e < totalPages - 1) html += '<span class="civici-page-ellipsis">…</span>'; html += '<button class="civici-page-btn" onclick="civiciGoPage(' + totalPages + ')">' + totalPages + '</button>'; }
+      html += '<button class="civici-page-btn" onclick="civiciGoPage(' + (civiciPage + 1) + ')"' + (civiciPage === totalPages ? ' disabled' : '') + '>›</button>';
+    }
+    /* info record visibili */
+    html += '<span class="civici-page-info">' + (startIdx + 1) + '–' + endIdx + ' di ' + data.length.toLocaleString('it') + '</span>';
+    html += '</div>';
+
     wrap.innerHTML = html;
 
-    /* download bar */
+    /* ── Download bar ── */
     const dlBar  = document.getElementById('civici-dl-bar');
     const dlNote = document.getElementById('civici-dl-note');
     dlBar.style.display = 'flex';
-    if (total > DL_MAX) {
-      dlNote.style.display = 'inline';
+    dlNote.style.display = total > DL_MAX ? 'inline' : 'none';
+    if (total > DL_MAX)
       dlNote.textContent = 'Download limitato ai primi ' + DL_MAX.toLocaleString('it') + ' su ' + total.toLocaleString('it');
-    } else {
-      dlNote.style.display = 'none';
-    }
   }
 
+  /* ── Ordinamento client-side ─────────────────────────────────────────── */
+  function sortData(data, orderStr) {
+    const keys = orderStr.split(',').map(part => {
+      const [field, dir] = part.trim().split('.');
+      return { field, desc: dir === 'desc' };
+    });
+    return [...data].sort((a, b) => {
+      for (const { field, desc } of keys) {
+        let va = a[field], vb = b[field];
+        if (field === 'CIVICO') {          /* civico: confronto numerico */
+          va = parseInt(va) || 0;
+          vb = parseInt(vb) || 0;
+        } else {
+          va = (va || '').toString().toUpperCase();
+          vb = (vb || '').toString().toUpperCase();
+        }
+        if (va < vb) return desc ? 1 : -1;
+        if (va > vb) return desc ? -1 : 1;
+      }
+      return 0;
+    });
+  }
+
+  /* click su intestazione colonna → cambia sort e ri-renderizza */
+  window.civiciThClick = function (col) {
+    if (!civiciLastData) return;
+    if (civiciSortCol === col) {
+      civiciSortDir = civiciSortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      civiciSortCol = col;
+      civiciSortDir = 'asc';
+    }
+    civiciLastData.data = sortData(civiciLastData.data, col + '.' + civiciSortDir);
+    civiciPage = 1;
+    renderCiviciTable(civiciLastData.data, civiciLastData.total, civiciLastData.elapsed);
+    renderCiviciMap(getPageData(civiciLastData.data), false);
+  };
+
+  /* ── Helper: estrae i dati della pagina corrente ─────────────────────── */
+  function getPageData(data) {
+    const rpp = civiciRowsPerPage;
+    if (rpp === 0) return data;
+    const start = (civiciPage - 1) * rpp;
+    return data.slice(start, Math.min(start + rpp, data.length));
+  }
+
+  /* ── Navigazione pagina ───────────────────────────────────────────────── */
+  window.civiciGoPage = function (p) {
+    if (!civiciLastData) return;
+    const rpp = civiciRowsPerPage;
+    const tot = rpp === 0 ? 1 : Math.ceil(civiciLastData.data.length / rpp);
+    civiciPage = Math.max(1, Math.min(p, tot));
+    renderCiviciTable(civiciLastData.data, civiciLastData.total, civiciLastData.elapsed);
+    renderCiviciMap(getPageData(civiciLastData.data), false); /* fitView = false: non spostare la mappa */
+    document.getElementById('civici-table-wrap').scrollTop = 0;
+  };
+
+  /* ── Cambia righe per pagina ──────────────────────────────────────────── */
+  window.civiciSetRpp = function (n) {
+    civiciRowsPerPage = n;
+    civiciPage = 1;
+    if (civiciLastData) {
+      renderCiviciTable(civiciLastData.data, civiciLastData.total, civiciLastData.elapsed);
+      renderCiviciMap(getPageData(civiciLastData.data), false); /* fitView = false: non spostare la mappa */
+    }
+  };
+
   /* ── Render mappa ─────────────────────────────────────────────────────── */
-  function renderCiviciMap(data) {
+  /* data     = record da visualizzare come marker (pagina corrente)
+     fitView  = true solo alla prima ricerca; false al cambio pagina/rpp
+                (così l'utente mantiene il suo zoom e "Usa mappa" funziona) */
+  function renderCiviciMap(data, fitView) {
     if (!civiciMap) return;
     civiciMarkers.clearLayers();
     const pts = data.filter(r => r.latitude && r.longitude);
@@ -1585,10 +1786,20 @@
         (r.out_of_bounds ? '<br><span style="color:#E63946;font-size:11px">⚠ fuori confine</span>' : '')
       ).addTo(civiciMarkers);
     });
-    if (pts.length) {
-      civiciMap.fitBounds(pts.map(r => [r.latitude, r.longitude]), { padding: [20, 20], maxZoom: 15 });
-    } else {
-      civiciMap.setView([42.5, 12.5], 5);
+    if (fitView) {
+      /* fitBounds sull'INTERO dataset (non solo la pagina): evita che OOB
+         geograficamente lontani distorcano il viewport usato da "Usa mappa".
+         Usiamo tutti i record di civiciLastData, non solo la pagina corrente. */
+      const allPts = civiciLastData
+        ? civiciLastData.data.filter(r => r.latitude && r.longitude)
+        : pts;
+      if (allPts.length) {
+        const inBounds = allPts.filter(r => !r.out_of_bounds);
+        const fitPts   = inBounds.length ? inBounds : allPts;
+        civiciMap.fitBounds(fitPts.map(r => [r.latitude, r.longitude]), { padding: [20, 20], maxZoom: 15 });
+      } else {
+        civiciMap.setView([42.5, 12.5], 5);
+      }
     }
   }
 
@@ -1650,10 +1861,124 @@
     document.body.removeChild(a); URL.revokeObjectURL(url);
   }
 
+  /* ── Bbox dalla mappa principale (MapLibre) ──────────────────────────── */
+  /* Usiamo la mappa principale che l'utente sta già navigando: così le
+     coordinate rispecchiano sempre l'area visibile sullo schermo, indipendentemente
+     da dove il modal map abbia fatto il fitBounds (che può essere l'area OOB). */
+  window.civiciBboxFromMap = function () {
+    const mainMap = window.anncsuMap;
+    if (!mainMap) { alert('Mappa non ancora caricata.'); return; }
+    const zoom = mainMap.getZoom();
+    if (zoom < 9) {
+      alert('Zooma sulla mappa principale (livello ≥ 9) per selezionare un\'area più specifica, poi clicca di nuovo "Usa mappa".');
+      return;
+    }
+    const b = mainMap.getBounds();
+    document.getElementById('cm-lat-min').value = b.getSouth().toFixed(5);
+    document.getElementById('cm-lat-max').value = b.getNorth().toFixed(5);
+    document.getElementById('cm-lon-min').value = b.getWest().toFixed(5);
+    document.getElementById('cm-lon-max').value = b.getEast().toFixed(5);
+  };
+
+  /* ── Download tutto (paginato) ────────────────────────────────────────── */
+  window.civiciDownloadAll = async function (format) {
+    const comune = document.getElementById('cm-comune').value.trim();
+    const via    = document.getElementById('cm-via').value.trim();
+    const tipo   = document.getElementById('cm-tipo').value;
+    const civico = document.getElementById('cm-civico').value.trim();
+    const oob    = document.getElementById('cm-oob').checked;
+    const latMin = document.getElementById('cm-lat-min').value.trim();
+    const latMax = document.getElementById('cm-lat-max').value.trim();
+    const lonMin = document.getElementById('cm-lon-min').value.trim();
+    const lonMax = document.getElementById('cm-lon-max').value.trim();
+
+    if (!comune && !via && !tipo && !civico && !oob && !latMin && !latMax && !lonMin && !lonMax) {
+      alert('Specifica almeno il Comune o la Via per scaricare tutti i record.');
+      return;
+    }
+
+    const base = new URLSearchParams();
+    if (comune) base.set('NOME_COMUNE', 'ilike.*' + comune + '*');
+    if (tipo)   base.append('ODONIMO', 'ilike.' + tipo + '*');
+    if (via)    base.append('ODONIMO', 'ilike.*' + via.toUpperCase() + '*');
+    if (civico) base.set('CIVICO', 'eq.' + civico);
+    if (oob)    base.set('out_of_bounds', 'eq.true');
+    if (latMin) base.append('latitude',   'gte.' + parseFloat(latMin));
+    if (latMax) base.append('latitude',   'lte.' + parseFloat(latMax));
+    if (lonMin) base.append('longitude',  'gte.' + parseFloat(lonMin));
+    if (lonMax) base.append('longitude',  'lte.' + parseFloat(lonMax));
+    base.set('order', 'NOME_COMUNE.asc,ODONIMO.asc,CIVICO.asc');
+
+    const PAGE    = 1000;
+    const MAX_REC = 500000;
+    const btnId   = format === 'csv' ? 'cm-btn-all-csv' : 'cm-btn-all-json';
+    const btn     = document.getElementById(btnId);
+    const progEl  = document.getElementById('civici-dl-progress');
+    const origTxt = btn.textContent;
+
+    btn.disabled = true;
+    progEl.style.display = 'inline';
+
+    let allData = [], total = 0;
+    try {
+      /* Prima pagina con count esatto (Prefer: count=exact ora consentito dal server) */
+      const p0 = new URLSearchParams(base.toString());
+      p0.set('limit', PAGE); p0.set('offset', 0);
+      const r0 = await fetch(API + '?' + p0, { headers: { 'Prefer': 'count=exact' } });
+      if (!r0.ok) throw new Error(await r0.text());
+      const cr = r0.headers.get('Content-Range');
+      total    = cr ? (parseInt(cr.split('/')[1]) || 0) : 0;
+      allData  = await r0.json();
+      progEl.textContent = allData.length.toLocaleString('it') + ' / ' + total.toLocaleString('it') + ' record…';
+
+      /* Pagine successive */
+      let offset = PAGE;
+      while (allData.length < total && allData.length < MAX_REC) {
+        const p = new URLSearchParams(base.toString());
+        p.set('limit', PAGE); p.set('offset', offset);
+        const r = await fetch(API + '?' + p);
+        if (!r.ok) throw new Error(await r.text());
+        const chunk = await r.json();
+        if (!chunk.length) break;
+        allData = allData.concat(chunk);
+        offset += PAGE;
+        progEl.textContent = allData.length.toLocaleString('it') + ' / ' + total.toLocaleString('it') + ' record…';
+      }
+
+      if (!allData.length) { alert('Nessun dato da scaricare.'); return; }
+
+      /* Nome file */
+      const label = (comune || via || 'civici')
+        .replace(/\*/g, '').trim().toLowerCase().replace(/\s+/g, '-');
+
+      if (format === 'csv') {
+        const rows = [Object.keys(allData[0]).join(',')];
+        allData.forEach(r => rows.push(
+          Object.values(r).map(v => v === null ? '' : '"' + String(v).replace(/"/g, '""') + '"').join(',')
+        ));
+        triggerCiviciDL(rows.join('\n'), 'anncsu-' + label + '-tutti.csv', 'text/csv;charset=utf-8;');
+      } else {
+        triggerCiviciDL(JSON.stringify(allData, null, 2), 'anncsu-' + label + '-tutti.json', 'application/json');
+      }
+    } catch (e) {
+      alert('Errore download: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origTxt;
+      progEl.style.display = 'none';
+      progEl.textContent = '';
+    }
+  };
+
   /* ── Reset ────────────────────────────────────────────────────────────── */
   window.civiciReset = function () {
-    ['cm-comune','cm-via','cm-civico'].forEach(id => { document.getElementById(id).value = ''; });
-    document.getElementById('cm-limit').value = '50';
+    ['cm-comune','cm-via','cm-civico','cm-lat-min','cm-lat-max','cm-lon-min','cm-lon-max']
+      .forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('cm-tipo').value    = '';
+    civiciSortCol = 'NOME_COMUNE'; civiciSortDir = 'asc';
+    document.getElementById('cm-oob').checked   = false;
+    document.getElementById('cm-limit').value   = '500';
+    civiciPage = 1;
     document.getElementById('civici-stats-bar').style.display = 'none';
     document.getElementById('civici-dl-bar').style.display   = 'none';
     document.getElementById('civici-table-wrap').innerHTML =
