@@ -1929,7 +1929,8 @@
 
     let allData = [], total = 0;
     try {
-      /* Prima pagina con count esatto (Prefer: count=exact ora consentito dal server) */
+      /* Prima pagina con count esatto — Prefer: count=exact ora consentito dal server
+         (Access-Control-Allow-Headers include Prefer). */
       const p0 = new URLSearchParams(base.toString());
       p0.set('limit', PAGE); p0.set('offset', 0);
       const r0 = await fetch(API + '?' + p0, { headers: { 'Prefer': 'count=exact' } });
