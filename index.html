@@ -1482,7 +1482,11 @@
              onkeydown="if(event.key==='Enter') civiciDownloadParquet()">
       <button class="civici-btn-dl parquet" id="cm-btn-parquet" onclick="civiciDownloadParquet()"
               title="Scarica il file Parquet completo del comune">
-        ⬇ Tutti i civici del comune
+        ⬇ Tutti i civici del comune (GeoParquet)
+      </button>
+      <button class="civici-btn-dl parquet" id="cm-btn-gpkg" onclick="civiciDownloadGpkg()"
+              title="Scarica il file GeoPackage completo del comune">
+        ⬇ Tutti i civici del comune (GeoPackage)
       </button>
       <span id="cm-parquet-err"></span>
       <div class="cm-parquet-info" tabindex="0" aria-label="Informazioni sul formato GeoParquet e codice catastale">
@@ -2091,6 +2095,26 @@
     const a   = document.createElement('a');
     a.href    = url;
     a.setAttribute('download', 'anncsu_' + code + '.parquet');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  window.civiciDownloadGpkg = function () {
+    const input = document.getElementById('cm-parquet-code');
+    const errEl = document.getElementById('cm-parquet-err');
+    const code  = input.value.trim().toUpperCase();
+    errEl.style.display = 'none';
+    if (!code) {
+      errEl.textContent = 'Inserisci il codice catastale (es. G273)';
+      errEl.style.display = 'inline';
+      input.focus();
+      return;
+    }
+    const url = 'https://developers.coseerobe.it/export/gpkg/' + encodeURIComponent(code);
+    const a   = document.createElement('a');
+    a.href    = url;
+    a.setAttribute('download', 'anncsu_' + code + '.gpkg');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
