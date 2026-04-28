@@ -1475,6 +1475,40 @@
       <span class="civici-dl-warn">⏱ Con molti civici il download potrebbe richiedere qualche minuto.</span>
     </div>
 
+    <div id="civici-parquet-bar">
+      <span>Codice catastale del comune:</span>
+      <input id="cm-parquet-code" type="text" placeholder="es. G273" maxlength="6"
+             title="Inserisci solo il codice catastale del comune (es. per Palermo: G273)."
+             onkeydown="if(event.key==='Enter') civiciDownloadParquet()">
+      <button class="civici-btn-dl parquet" id="cm-btn-parquet" onclick="civiciDownloadParquet()"
+              title="Scarica il file Parquet completo del comune">
+        ⬇ Tutti i civici del comune
+      </button>
+      <span id="cm-parquet-err"></span>
+      <div class="cm-parquet-info" tabindex="0" aria-label="Informazioni sul formato GeoParquet e codice catastale">
+        <span class="cm-parquet-info-icon">ℹ</span>
+        <div class="cm-parquet-popup" role="tooltip">
+          <p class="cm-parquet-popup-desc">Scarica tutti i numeri civici del comune in formato GeoParquet (compatibile con QGIS, DuckDB, Python…)</p>
+          <table class="cm-parquet-examples">
+            <thead><tr><th>#</th><th>Città</th><th>Prov.</th><th>Codice Catastale</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Roma</td><td>RM</td><td><code>H501</code></td></tr>
+              <tr><td>2</td><td>Milano</td><td>MI</td><td><code>F205</code></td></tr>
+              <tr><td>3</td><td>Napoli</td><td>NA</td><td><code>F839</code></td></tr>
+              <tr><td>4</td><td>Torino</td><td>TO</td><td><code>L219</code></td></tr>
+              <tr><td>5</td><td>Palermo</td><td>PA</td><td><code>G273</code></td></tr>
+              <tr><td>6</td><td>Genova</td><td>GE</td><td><code>D969</code></td></tr>
+              <tr><td>7</td><td>Bologna</td><td>BO</td><td><code>A944</code></td></tr>
+              <tr><td>8</td><td>Firenze</td><td>FI</td><td><code>D612</code></td></tr>
+              <tr><td>9</td><td>Bari</td><td>BA</td><td><code>A662</code></td></tr>
+              <tr><td>10</td><td>Venezia</td><td>VE</td><td><code>L736</code></td></tr>
+            </tbody>
+          </table>
+          <p class="cm-parquet-popup-note">Il codice catastale (detto anche codice Belfiore) è composto da una lettera seguita da 3 numeri ed è assegnato dall'Agenzia delle Entrate a ogni comune italiano. Viene usato, tra l'altro, nel calcolo del codice fiscale per identificare il luogo di nascita.</p>
+        </div>
+      </div>
+    </div>
+
     <div id="civici-qgis-note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       <span>Lavori con QGIS? Il plugin <strong>anncsu_loader</strong> di <strong>Salvatore Fiandaca</strong> carica i dati ANNCSU da Parquet locale — compatibile con QGIS 3.20+ / 4.x.</span>
@@ -2014,6 +2048,53 @@
     document.getElementById('civici-stats-bar').style.display = 'none';
     document.getElementById('civici-dl-bar').style.display    = 'none';
   }
+
+  /* ── Info popup Parquet ────────────────────────────────────────────────────
+     Il modal ha transform:translate(-50%,-50%) che intrappola position:fixed.
+     Soluzione: sposto il popup su document.body così è fuori dal modal DOM
+     e position:fixed usa correttamente il viewport come containing block.    */
+  document.addEventListener('DOMContentLoaded', function () {
+    const icon   = document.querySelector('.cm-parquet-info-icon');
+    const popup  = document.querySelector('.cm-parquet-popup');
+    if (!icon || !popup) return;
+
+    document.body.appendChild(popup);   /* esce dallo stacking context del modal */
+
+    function showPopup() {
+      const r = icon.getBoundingClientRect();
+      popup.style.bottom = (window.innerHeight - r.top + 8) + 'px';
+      popup.style.right  = (window.innerWidth  - r.right)  + 'px';
+      popup.style.left   = 'auto';
+      popup.classList.add('is-visible');
+    }
+    function hidePopup() { popup.classList.remove('is-visible'); }
+
+    const trigger = icon.parentElement;
+    trigger.addEventListener('mouseenter', showPopup);
+    trigger.addEventListener('mouseleave', hidePopup);
+    trigger.addEventListener('focus',      showPopup);
+    trigger.addEventListener('blur',       hidePopup);
+  });
+
+  window.civiciDownloadParquet = function () {
+    const input = document.getElementById('cm-parquet-code');
+    const errEl = document.getElementById('cm-parquet-err');
+    const code  = input.value.trim().toUpperCase();
+    errEl.style.display = 'none';
+    if (!code) {
+      errEl.textContent = 'Inserisci il codice catastale (es. G273)';
+      errEl.style.display = 'inline';
+      input.focus();
+      return;
+    }
+    const url = 'https://developers.coseerobe.it/export/parquet/' + encodeURIComponent(code);
+    const a   = document.createElement('a');
+    a.href    = url;
+    a.setAttribute('download', 'anncsu_' + code + '.parquet');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
 })();
 </script>

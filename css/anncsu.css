@@ -1698,6 +1698,84 @@
     .civici-dl-progress { font-size: 0.72rem !important; color: var(--accent-ok) !important; font-weight: 600 !important; }
     .civici-dl-warn { font-size: 0.72rem !important; color: var(--text-muted) !important; margin-left: auto; font-style: italic; white-space: nowrap; }
 
+    /* Barra download Parquet bulk */
+    #civici-parquet-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0; flex-wrap: wrap;
+    }
+    #civici-parquet-bar > span { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+    #cm-parquet-code {
+      width: 88px; padding: 4px 8px;
+      border: 1px solid var(--border-color); border-radius: 5px;
+      font-size: 0.78rem; font-family: monospace;
+      background: var(--bg-surface); color: var(--text-primary);
+      text-transform: uppercase;
+    }
+    .civici-btn-dl.parquet { background: #7c3aed; }
+    .civici-btn-dl.parquet:hover { background: #6d28d9; }
+    #cm-parquet-err {
+      font-size: 0.72rem; color: #b91c1c;
+      background: #fee2e2; padding: 2px 8px; border-radius: 4px;
+      display: none;
+    }
+    [data-theme="dark"] #cm-parquet-err { background: rgba(185,28,28,0.2); color: #fca5a5; }
+
+    /* Icona info + popover Parquet */
+    .cm-parquet-info {
+      position: relative; margin-left: auto;
+      display: inline-flex; align-items: center;
+    }
+    .cm-parquet-info-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--bg-btn, #e5e7eb); color: var(--text-muted);
+      font-size: 0.8rem; font-weight: 700; cursor: default;
+      border: 1px solid var(--border-color); user-select: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cm-parquet-info:hover .cm-parquet-info-icon,
+    .cm-parquet-info:focus-within .cm-parquet-info-icon {
+      background: #7c3aed; color: #fff; border-color: #7c3aed;
+    }
+    .cm-parquet-popup {
+      display: none; position: fixed;
+      width: 340px; z-index: 2147483647;
+      background: var(--bg-panel-full); border: 1px solid var(--border-color);
+      border-radius: 8px; box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      padding: 12px 14px; font-size: 0.75rem; color: var(--text-primary);
+    }
+    .cm-parquet-popup.is-visible { display: block; }
+    .cm-parquet-popup-desc {
+      margin: 0 0 10px; line-height: 1.5; color: var(--text-secondary, var(--text-muted));
+    }
+    .cm-parquet-examples {
+      width: 100%; border-collapse: collapse; margin-bottom: 10px;
+      font-size: 0.72rem;
+    }
+    .cm-parquet-examples th {
+      text-align: left; padding: 3px 6px;
+      border-bottom: 2px solid var(--border-color);
+      color: var(--text-muted); font-weight: 600; white-space: nowrap;
+    }
+    .cm-parquet-examples td {
+      padding: 3px 6px; border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .cm-parquet-examples td:first-child { color: var(--text-muted); }
+    .cm-parquet-examples code {
+      font-family: monospace; font-weight: 700;
+      color: #7c3aed; background: rgba(124,58,237,0.08);
+      padding: 1px 4px; border-radius: 3px;
+    }
+    [data-theme="dark"] .cm-parquet-examples code { color: #a78bfa; background: rgba(167,139,250,0.12); }
+    .cm-parquet-popup-note {
+      margin: 0; line-height: 1.5; font-size: 0.7rem;
+      color: var(--text-muted); border-top: 1px solid var(--border-color);
+      padding-top: 8px;
+    }
+
     /* Nota QGIS plugin sotto la download bar */
     #civici-qgis-note {
       display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
