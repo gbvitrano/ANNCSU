@@ -947,14 +947,15 @@
     const leg = document.getElementById('comuni-legend');
     if (leg) leg.style.display = comuniLayerVisible ? '' : 'none';
 
+    const tbComuniAnalisi = document.getElementById('tb-comuni-analisi');
+    const tbComuni = document.getElementById('tb-comuni');
     if (comuniLayerVisible) {
-      if (!_comuniAnalisiCtrl) _comuniAnalisiCtrl = new ComuniAnalisiControl();
-      map.addControl(_comuniAnalisiCtrl, 'top-right');
+      if (tbComuniAnalisi) tbComuniAnalisi.style.display = '';
+      if (tbComuni) tbComuni.classList.add('tb-btn-active');
     } else {
-      if (_comuniAnalisiCtrl) {
-        map.removeControl(_comuniAnalisiCtrl);
-        document.getElementById('comuni-analisi-panel')?.classList.remove('open');
-      }
+      if (tbComuniAnalisi) tbComuniAnalisi.style.display = 'none';
+      document.getElementById('comuni-analisi-panel')?.classList.remove('open');
+      if (tbComuni) tbComuni.classList.remove('tb-btn-active');
     }
   }
 
@@ -1255,19 +1256,37 @@ style: {
     map.flyTo({ center: MAP_CENTER, zoom: MAP_ZOOM, duration: 800 });
   }
 
-  const navControl = new maplibregl.NavigationControl({ showCompass: false });
-  map.addControl(navControl, 'top-right');
-  // Inserisce il pulsante Home tra zoom-in e zoom-out
-  const homeBtn = document.createElement('button');
-  homeBtn.type = 'button';
-  homeBtn.className = 'maplibregl-ctrl-home';
-  homeBtn.title = 'Vista Italia completa';
-  homeBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-  homeBtn.onclick = resetToItaly;
-  const zoomOut = navControl._container.querySelector('.maplibregl-ctrl-zoom-out');
-  navControl._container.insertBefore(homeBtn, zoomOut);
   map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
-  map.addControl(new maplibregl.FullscreenControl(), 'top-right');
+
+  // ── Toolbar: zoom slider sync ────────────────────────────────────────────────
+  const _tbZoomSlider = document.getElementById('tb-zoom-slider');
+  const _tbZoomValue  = document.getElementById('tb-zoom-value');
+  function _updateToolbarZoom() {
+    const z = Math.round(map.getZoom());
+    if (_tbZoomSlider) _tbZoomSlider.value = z;
+    if (_tbZoomValue)  _tbZoomValue.textContent = z;
+  }
+  if (_tbZoomSlider) _tbZoomSlider.addEventListener('input', () => map.setZoom(+_tbZoomSlider.value));
+  map.on('zoom', _updateToolbarZoom);
+  _updateToolbarZoom();
+
+  // ── Toolbar: fullscreen ──────────────────────────────────────────────────────
+  function tbToggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+  document.addEventListener('fullscreenchange', () => {
+    const isFs = !!document.fullscreenElement;
+    const expand   = document.getElementById('tb-fs-expand');
+    const compress = document.getElementById('tb-fs-compress');
+    const btn      = document.getElementById('tb-fullscreen');
+    if (expand)   expand.style.display   = isFs ? 'none' : '';
+    if (compress) compress.style.display = isFs ? '' : 'none';
+    if (btn) btn.classList.toggle('tb-btn-active', isFs);
+  });
 
   let popup = null;
 
@@ -1278,9 +1297,6 @@ style: {
     });
     document.getElementById('loading').classList.add('hidden');
     if (pendingTheme) { map.getSource('carto').setTiles(pendingTheme); pendingTheme = null; }
-    map.addControl(new StatsControl(), 'top-right');
-    map.addControl(new AnalisiControl(), 'top-right');
-    map.addControl(new ComuniControl(), 'top-right');
 
     // ── Source e layer comuni (zoom 4-11) ──────────────────────────────────────
     map.addSource('comuni', {

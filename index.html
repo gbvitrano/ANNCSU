@@ -183,11 +183,6 @@
     <!-- Separatore visivo -->
     <span class="ctrl-sep" aria-hidden="true"></span>
 
-    <!-- Pulsante Cerca Civici API -->
-    <button id="civici-search-btn" onclick="openCiviciModal()" title="Cerca civici tramite API REST" aria-label="Cerca civici">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-    </button>
-
     <!-- Pulsante info con SVG -->
     <button id="info-btn" onclick="openInfoModal()" title="Informazioni sull'applicazione" aria-label="Informazioni">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
@@ -210,13 +205,42 @@
 </header>
 
 <div id="map">
-  <!-- Pulsante DataViz: disabled finché i dati non sono pronti -->
-  <button class="chart-builder-trigger loading" id="chart-builder-trigger"
-          title="Caricamento dati in corso..." disabled>
-    <span class="pulse-ring1"></span>
-    <i class="fas fa-spinner fa-spin"></i>
-    <span>Caricamento...</span>
-  </button>
+  <!-- Barra degli strumenti mappa: centrata in alto -->
+  <div id="map-toolbar">
+    <button class="tb-btn" id="tb-home" title="Vista Italia completa" onclick="resetToItaly()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
+    <button class="tb-btn" id="tb-comuni" title="Mostra/nascondi layer comuni PNRR" onclick="toggleComuniLayer()">
+      <span class="italia-icon"></span>
+    </button>
+    <button class="tb-btn" id="tb-analisi" title="Analisi mappa" onclick="toggleAnalisiPanel()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><circle cx="11" cy="11" r="3"/><line x1="11" y1="4" x2="11" y2="2"/><line x1="11" y1="20" x2="11" y2="22"/><line x1="4" y1="11" x2="2" y2="11"/><line x1="20" y1="11" x2="22" y2="11"/></svg>
+    </button>
+    <button class="tb-btn" id="tb-stats" title="Statistiche per comune" onclick="toggleStatsPanel()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>
+    </button>
+    <button class="tb-btn" id="tb-comuni-analisi" title="Analisi aggiudicatori ANNCSU" onclick="toggleComuniAnalisiPanel()" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/><line x1="15" y1="9" x2="15" y2="21"/></svg>
+    </button>
+    <span class="tb-sep"></span>
+    <button class="tb-btn" id="tb-search" title="Cerca civici" onclick="openCiviciModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    </button>
+    <button class="tb-btn" id="tb-fullscreen" title="Schermo intero" onclick="tbToggleFullscreen()">
+      <svg id="tb-fs-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      <svg id="tb-fs-compress" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+    </button>
+    <span class="tb-sep"></span>
+    <input type="range" id="tb-zoom-slider" class="tb-zoom-slider" min="5" max="19" step="1" value="6" aria-label="Zoom mappa">
+    <span id="tb-zoom-value" class="tb-zoom-value">6</span>
+    <span class="tb-sep"></span>
+    <button class="chart-builder-trigger loading" id="chart-builder-trigger"
+            title="Caricamento dati in corso..." disabled>
+      <span class="pulse-ring1"></span>
+      <i class="fas fa-spinner fa-spin"></i>
+      <span></span>
+    </button>
+  </div>
 
   <div id="loading">Caricamento mappa...</div>
 
