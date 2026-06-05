@@ -297,17 +297,47 @@
     <div id="comuni-analisi-footer" style="display:none"></div>
   </div>
 
-  <!-- Cerca via e numero civico (bottom-center) -->
+  <!-- Smart search bar (bottom-center): regione, provincia, comune o indirizzo -->
   <div id="address-search-box">
     <div id="address-suggestions"></div>
+    <div id="addr-chips-row"></div>
     <div id="address-search-row">
       <svg class="addr-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text" id="address-search-input" placeholder="Es. Via Roma, 25, Palermo"
+      <input type="text" id="address-search-input" placeholder="Cerca regione, provincia, comune o indirizzo…"
              autocomplete="off" oninput="onAddressInput(this.value)"
-             onkeydown="onAddressKeydown(event)" aria-label="Cerca via e numero civico" />
+             onkeydown="onAddressKeydown(event)" aria-label="Cerca" />
       <button id="address-search-clear" onclick="clearAddressSearch()" title="Cancella ricerca">✕</button>
+      <button id="filter-modal-btn" onclick="openFilterModal()" title="Filtro Territorio" aria-label="Apri filtri territorio">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+          <line x1="9" y1="3" x2="9" y2="18"/>
+          <line x1="15" y1="6" x2="15" y2="21"/>
+        </svg>
+        <span id="filter-modal-badge"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal filtri territorio -->
+  <div id="filter-modal-overlay" onclick="closeFilterModal()"></div>
+  <div id="filter-modal" role="dialog" aria-modal="true" aria-label="Filtro Territorio">
+    <div id="filter-modal-header">
+      <span class="filter-modal-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+          <line x1="9" y1="3" x2="9" y2="18"/>
+          <line x1="15" y1="6" x2="15" y2="21"/>
+        </svg>
+        Filtro Territorio
+      </span>
+      <button onclick="closeFilterModal()" title="Chiudi" aria-label="Chiudi filtri">✕</button>
+    </div>
+    <div id="filter-modal-body"></div>
+    <div id="filter-modal-footer">
+      <button id="filter-modal-reset" onclick="resetAllFilters()">✕ Reset</button>
+      <button id="filter-modal-apply" onclick="closeFilterModal()">✓ Applica</button>
     </div>
   </div>
 

@@ -100,12 +100,27 @@
   // ── CARICAMENTO COMUNI ──────────────────────────────────────────────────────
   async function loadComuni() {
     try {
-      const res = await fetch('https://gbvitrano.it/anncus/data/comuni.json');
-      allComuni = await res.json();
+      const res  = await fetch('dati/comuni.csv');
+      const text = await res.text();
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',');
+      const iCode = headers.indexOf('pro_com_t');
+      const iName = headers.indexOf('comune');
+      allComuni = lines.slice(1).flatMap(line => {
+        if (!line.trim()) return [];
+        const cols = line.split(',');
+        const code = cols[iCode]?.trim().padStart(6, '0');
+        const name = cols[iName]?.trim();
+        return code && name ? [{ codice_istat: code, nome_comune: name }] : [];
+      });
       buildComuneList();
       applyUrlParams();
+      const pendingInput = document.getElementById('address-search-input');
+      if (pendingInput && pendingInput.value.trim().length >= 2) {
+        searchSmartBar(pendingInput.value.trim());
+      }
     } catch(e) {
-      console.warn('comuni.json non caricato:', e);
+      console.warn('comuni.csv non caricato:', e);
     }
   }
 
@@ -2029,6 +2044,7 @@ style: {
     if (e.key === 'Escape') {
       closeAllDropdowns();
       closeInfoModal();
+      if (document.getElementById('filter-modal').classList.contains('open')) closeFilterModal();
     }
   });
 
@@ -2038,6 +2054,11 @@ style: {
   let _addrResults    = [];
   let _addrHlIdx      = -1;
   let _lastParsedAddr = null;
+
+  // Smart bar: contesto geografico attivo
+  let _smartBarRegione   = null; // nome regione | null
+  let _smartBarProvincia = null; // cod provincia | null
+  let _smartBarComune    = null; // {codice_istat, nome_comune} | null
 
   // Normalizza stringa per confronto fuzzy (minuscolo, senza accenti)
   function normalizeStr(s) {
@@ -2063,67 +2084,143 @@ style: {
     _addrHlIdx = -1;
     clearTimeout(_addrDebounce);
     if (val.length < 2) { closeAddrSuggestions(); return; }
-    _addrDebounce = setTimeout(() => searchAddressInPMTiles(val), 300);
+    _addrDebounce = setTimeout(() => searchSmartBar(val), 300);
   }
 
-  // Ricerca comune in allComuni (dati già in memoria), senza chiamate esterne
-  function searchAddressInPMTiles(input) {
-    const parsed = parseItalianAddress(input);
-    _lastParsedAddr = parsed;
+  // Smart bar: ricerca unificata per regione, provincia, comune o indirizzo
+  function searchSmartBar(query) {
+    const q = query.trim();
+    if (q.length < 2) { closeAddrSuggestions(); return; }
+    const normQ = normalizeStr(q);
+    const isMobile = window.innerWidth <= 600;
+    const box = document.getElementById(isMobile ? 'mobile-address-suggestions' : 'address-suggestions');
 
     if (!allComuni.length) {
-      const box = document.getElementById('address-suggestions');
       box.innerHTML = '<div class="addr-sug-empty">Dati comuni in caricamento…</div>';
       box.classList.add('open');
       return;
     }
 
-    const cityQuery = normalizeStr(parsed.city || input);
-    const matches = allComuni
-      .filter(c => {
-        const n = normalizeStr(c.nome_comune);
-        return n.startsWith(cityQuery) || n.includes(cityQuery);
-      })
-      .sort((a, b) => {
-        const aN = normalizeStr(a.nome_comune), bN = normalizeStr(b.nome_comune);
-        const aS = aN.startsWith(cityQuery), bS = bN.startsWith(cityQuery);
-        if (aS && !bS) return -1;
-        if (!aS && bS) return 1;
-        return a.nome_comune.localeCompare(b.nome_comune, 'it');
-      })
-      .slice(0, 8);
+    const groups = [];
 
-    if (!matches.length) {
-      const box = document.getElementById('address-suggestions');
-      box.innerHTML = '<div class="addr-sug-empty">Nessun comune trovato — es: Piazza delle Iris, 41, Roma</div>';
+    // 1. Regioni
+    const regHits = ALL_REGIONS.filter(r => normalizeStr(r).includes(normQ));
+    if (regHits.length) {
+      groups.push({
+        label: 'Regioni',
+        items: regHits.slice(0, 4).map(r => ({ type: 'regione', name: r, label: r }))
+      });
+    }
+
+    // 2. Province (filtra per regione attiva se presente)
+    const provEntries = Object.entries(PROV_NAMES)
+      .filter(([cod, nome]) => {
+        if (_smartBarRegione && PROV_TO_REG[cod] !== _smartBarRegione) return false;
+        return normalizeStr(nome).includes(normQ);
+      });
+    if (provEntries.length) {
+      groups.push({
+        label: 'Province',
+        items: provEntries.slice(0, 5).map(([cod, nome]) => ({
+          type: 'provincia', code: cod, label: nome,
+          sub: PROV_TO_REG[cod]
+        }))
+      });
+    }
+
+    // 3. Comuni (filtra per provincia/regione attiva se presente)
+    const comHits = allComuni.filter(c => {
+      const prov = c.codice_istat.slice(0, 3);
+      if (_smartBarProvincia && prov !== _smartBarProvincia) return false;
+      if (_smartBarRegione && !_smartBarProvincia && PROV_TO_REG[prov] !== _smartBarRegione) return false;
+      return normalizeStr(c.nome_comune).includes(normQ);
+    });
+    if (comHits.length) {
+      groups.push({
+        label: 'Comuni',
+        items: comHits.slice(0, 5).map(c => ({
+          type: 'comune', istat: c.codice_istat, label: c.nome_comune,
+          sub: PROV_NAMES[c.codice_istat.slice(0, 3)]
+        }))
+      });
+    }
+
+    // 4. Indirizzi: se query ha virgola/numero o nessun altro risultato
+    const looksLikeAddr = q.includes(',') || /\d/.test(q);
+    if (looksLikeAddr || groups.length === 0) {
+      const parsed = parseItalianAddress(q);
+      if (!parsed.city && _smartBarComune) parsed.city = _smartBarComune.nome_comune;
+      _lastParsedAddr = parsed;
+
+      if (parsed.street) {
+        const normCity = normalizeStr(parsed.city || '');
+        let cityMatches;
+        if (!parsed.city && _smartBarComune) {
+          cityMatches = [_smartBarComune];
+        } else if (!parsed.city) {
+          cityMatches = [];
+        } else {
+          cityMatches = allComuni.filter(c => {
+            const prov = c.codice_istat.slice(0, 3);
+            if (_smartBarProvincia && prov !== _smartBarProvincia) return false;
+            if (_smartBarRegione && !_smartBarProvincia && PROV_TO_REG[prov] !== _smartBarRegione) return false;
+            return normalizeStr(c.nome_comune).includes(normCity);
+          }).slice(0, 5);
+        }
+        if (cityMatches.length) {
+          groups.push({
+            label: 'Indirizzi',
+            items: cityMatches.map(c => ({
+              type: 'indirizzo',
+              codice_istat: c.codice_istat,
+              nome_comune:  c.nome_comune,
+              street:       parsed.street,
+              housenumber:  parsed.housenumber,
+              label: [parsed.street, parsed.housenumber, c.nome_comune].filter(Boolean).join(', ')
+            }))
+          });
+        }
+      }
+    }
+
+    if (groups.length === 0) {
+      box.innerHTML = '<div class="addr-sug-empty">Nessun risultato — es: "Via Roma, 25, Palermo"</div>';
       box.classList.add('open');
       return;
     }
 
-    _addrResults = matches.map(c => ({
-      codice_istat: c.codice_istat,
-      nome_comune:  c.nome_comune,
-      street:       parsed.street,
-      housenumber:  parsed.housenumber,
-      label: [parsed.street, parsed.housenumber, c.nome_comune].filter(Boolean).join(', ')
-    }));
-
-    renderAddressSuggestions(_addrResults);
+    renderSmartSuggestions(groups);
   }
 
-  function renderAddressSuggestions(results) {
+  function renderSmartSuggestions(groups) {
     const isMobile = window.innerWidth <= 600;
     const box = document.getElementById(isMobile ? 'mobile-address-suggestions' : 'address-suggestions');
-    box.innerHTML = results.map((r, i) => {
-      const main = r.street
-        ? `${r.street}${r.housenumber ? ', ' + r.housenumber : ''}`
-        : r.nome_comune;
-      const sub = r.street ? r.nome_comune : '';
-      return `<div class="addr-sug-item" data-idx="${i}" onclick="selectAddress(${i})">
-        <span class="addr-sug-main">${main}</span>
-        ${sub ? `<span class="addr-sug-sub">${sub}</span>` : ''}
-      </div>`;
-    }).join('');
+
+    const catIcon = {
+      Regioni:   '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
+      Province:  '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+      Comuni:    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+      Indirizzi: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+    };
+
+    let flatIdx = 0;
+    let html = '';
+    const flat = [];
+
+    groups.forEach(g => {
+      html += `<div class="addr-sug-cat">${catIcon[g.label] || ''}${g.label}</div>`;
+      g.items.forEach(item => {
+        flat.push(item);
+        html += `<div class="addr-sug-item" data-idx="${flatIdx}" onclick="selectAddress(${flatIdx})">
+          <span class="addr-sug-main">${item.label}</span>
+          ${item.sub ? `<span class="addr-sug-sub">${item.sub}</span>` : ''}
+        </div>`;
+        flatIdx++;
+      });
+    });
+
+    _addrResults = flat;
+    box.innerHTML = html;
     box.classList.add('open');
   }
 
@@ -2250,6 +2347,11 @@ style: {
   function selectAddress(idx) {
     const r = _addrResults[idx];
     if (!r) return;
+
+    // Dispatch per tipo smart bar
+    if (r.type === 'regione')   { closeAddrSuggestions(); selectSmartRegione(r.name); return; }
+    if (r.type === 'provincia') { closeAddrSuggestions(); selectSmartProvincia(r.code, r.label); return; }
+    if (r.type === 'comune')    { closeAddrSuggestions(); selectSmartComune(r.istat, r.label); return; }
 
     document.getElementById('address-search-input').value = r.label || r.nome_comune;
     document.getElementById('address-search-clear').classList.add('visible');
@@ -2405,12 +2507,190 @@ style: {
 
   // Sincronizza il badge filtri dopo ogni cambio filtro
   function updateMobileBadge() {
-    if (window.innerWidth > 600) return;
-    const activeCount = selectedRegions.size + selectedProvinces.size + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
-    const badge = document.getElementById('mobile-filters-badge');
-    badge.textContent = activeCount;
-    badge.style.display = activeCount > 0 ? 'flex' : 'none';
+    if (window.innerWidth <= 600) {
+      const activeCount = selectedRegions.size + selectedProvinces.size + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
+      const badge = document.getElementById('mobile-filters-badge');
+      badge.textContent = activeCount;
+      badge.style.display = activeCount > 0 ? 'flex' : 'none';
+    }
+    updateFilterModalBadge();
   }
+
+  function updateFilterModalBadge() {
+    const badge = document.getElementById('filter-modal-badge');
+    const btn   = document.getElementById('filter-modal-btn');
+    if (!badge) return;
+    const notAllReg  = ALL_REGIONS.length  > 0 && selectedRegions.size   < ALL_REGIONS.length;
+    const notAllProv = Object.keys(PROV_NAMES).length > 0 && selectedProvinces.size < Object.keys(PROV_NAMES).length;
+    const count = (notAllReg ? 1 : 0) + (notAllProv ? 1 : 0) + (selectedComune ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+    if (btn) btn.classList.toggle('active', count > 0);
+  }
+
+  // ── MODAL FILTRO TERRITORIO ──────────────────────────────────────────────────
+  function openFilterModal() {
+    const modal    = document.getElementById('filter-modal');
+    const overlay  = document.getElementById('filter-modal-overlay');
+    const body     = document.getElementById('filter-modal-body');
+    const controls = document.getElementById('controls');
+
+    body.appendChild(controls);
+    controls.style.display = 'flex';
+
+    modal.classList.add('open');
+    overlay.classList.add('open');
+    updateFilterModalBadge();
+  }
+
+  function closeFilterModal() {
+    const modal    = document.getElementById('filter-modal');
+    const overlay  = document.getElementById('filter-modal-overlay');
+    const controls = document.getElementById('controls');
+    const strip    = document.getElementById('active-filters-strip');
+
+    // Ripristina controls prima dello strip attivi nell'header
+    document.querySelector('header').insertBefore(controls, strip);
+    controls.style.display = '';
+
+    modal.classList.remove('open');
+    overlay.classList.remove('open');
+    closeAllDropdowns();
+  }
+
+  function resetAllFilters() {
+    selectAllRegions();
+    selectAllProvinces();
+    clearComune();
+    setTypeFilter('all');
+    updateFilterModalBadge();
+  }
+
+  // ── SMART BAR: selezione geografica ─────────────────────────────────────────
+
+  function selectSmartRegione(name) {
+    selectedRegions = new Set([name]);
+    syncProvincesToRegions();
+    selectedComune = null;
+    buildRegionList();
+    buildProvinceList();
+    buildComuneList();
+    updateRegionLabel();
+    updateProvinceLabel();
+    updateComuneLabel();
+    applyFilter();
+    flyToRegions([name]);
+
+    _smartBarRegione   = name;
+    _smartBarProvincia = null;
+    _smartBarComune    = null;
+    renderSmartChips();
+
+    const inp = document.getElementById('address-search-input');
+    if (inp) { inp.value = ''; inp.placeholder = 'Provincia o comune in ' + name + '…'; }
+    document.getElementById('address-search-clear').classList.remove('visible');
+  }
+
+  function selectSmartProvincia(code, nome) {
+    const regName = PROV_TO_REG[code];
+    if (regName) {
+      selectedRegions = new Set([regName]);
+      syncProvincesToRegions();
+    }
+    selectedProvinces = new Set([code]);
+    selectedComune = null;
+    buildRegionList();
+    buildProvinceList();
+    buildComuneList();
+    updateRegionLabel();
+    updateProvinceLabel();
+    updateComuneLabel();
+    applyFilter();
+    flyToProvinces([code]);
+
+    _smartBarRegione   = regName || _smartBarRegione;
+    _smartBarProvincia = code;
+    _smartBarComune    = null;
+    renderSmartChips();
+
+    const inp = document.getElementById('address-search-input');
+    if (inp) { inp.value = ''; inp.placeholder = 'Comune in ' + nome + '…'; }
+    document.getElementById('address-search-clear').classList.remove('visible');
+  }
+
+  function selectSmartComune(istat, nome) {
+    const provCode = istat.slice(0, 3);
+    const regName  = PROV_TO_REG[provCode];
+    flyToComuneByIstat(istat);
+
+    _smartBarRegione   = regName || _smartBarRegione;
+    _smartBarProvincia = provCode;
+    _smartBarComune    = { codice_istat: istat, nome_comune: nome };
+    renderSmartChips();
+
+    const inp = document.getElementById('address-search-input');
+    if (inp) { inp.value = ''; inp.placeholder = 'Via, civico in ' + nome + '…'; }
+    document.getElementById('address-search-clear').classList.remove('visible');
+  }
+
+  function renderSmartChips() {
+    const row = document.getElementById('addr-chips-row');
+    if (!row) return;
+    let html = '';
+
+    if (_smartBarRegione) {
+      html += `<span class="addr-chip addr-chip-reg"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>${_smartBarRegione}<button class="addr-chip-remove" onclick="clearSmartBar('regione')" title="Rimuovi filtro regione">✕</button></span>`;
+    }
+    if (_smartBarProvincia) {
+      html += `<span class="addr-chip addr-chip-prov"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${PROV_NAMES[_smartBarProvincia] || _smartBarProvincia}<button class="addr-chip-remove" onclick="clearSmartBar('provincia')" title="Rimuovi filtro provincia">✕</button></span>`;
+    }
+    if (_smartBarComune) {
+      html += `<span class="addr-chip addr-chip-com"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${_smartBarComune.nome_comune}<button class="addr-chip-remove" onclick="clearSmartBar('comune')" title="Rimuovi filtro comune">✕</button></span>`;
+    }
+
+    row.innerHTML = html;
+  }
+
+  window.clearSmartBar = function(level) {
+    if (level === 'comune') {
+      _smartBarComune = null;
+    } else if (level === 'provincia') {
+      _smartBarProvincia = null;
+      _smartBarComune    = null;
+      // Ripristina tutte le province della regione attiva
+      if (_smartBarRegione) {
+        selectedRegions = new Set([_smartBarRegione]);
+        syncProvincesToRegions();
+      } else {
+        selectedProvinces = new Set(Object.keys(PROV_TO_REG));
+      }
+      selectedComune = null;
+      buildProvinceList();
+      buildComuneList();
+      updateProvinceLabel();
+      updateComuneLabel();
+      applyFilter();
+    } else if (level === 'regione') {
+      _smartBarRegione   = null;
+      _smartBarProvincia = null;
+      _smartBarComune    = null;
+      selectAllRegions();
+    }
+
+    // Aggiorna placeholder in base al contesto residuo
+    const inp = document.getElementById('address-search-input');
+    if (inp) {
+      inp.placeholder = _smartBarComune
+        ? 'Via, civico in ' + _smartBarComune.nome_comune + '…'
+        : _smartBarProvincia
+          ? 'Comune in ' + (PROV_NAMES[_smartBarProvincia] || _smartBarProvincia) + '…'
+          : _smartBarRegione
+            ? 'Provincia o comune in ' + _smartBarRegione + '…'
+            : 'Cerca regione, provincia, comune o indirizzo…';
+    }
+
+    renderSmartChips();
+  };
 
   // ── INIT ────────────────────────────────────────────────────────────────────
   if (window.innerWidth <= 600) {
