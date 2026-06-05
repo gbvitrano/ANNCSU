@@ -20,7 +20,9 @@
       "Bash(curl -si --max-redirs 0 \"https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=ilike.*palermo*&limit=1\" -H \"Origin: https://gbvitrano.github.io\")",
       "Bash(node *)",
       "Bash(curl -si 'https://developers.coseerobe.it/api/anncsu-indirizzi-slim?NOME_COMUNE=ilike.*palermo*&order=NOME_COMUNE.asc%2CODONIMO.asc%2CCIVICO.asc&limit=2' -H 'Origin: https://gbvitrano.github.io' -H 'Prefer: count=exact')",
-      "Bash(grep -v \"^\\\\s*//\")"
+      "Bash(grep -v \"^\\\\s*//\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\GitHub - Clone\\\\gbvitrano\\\\ANNCSU\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }

@@ -178,6 +178,9 @@
         <span class="type-dot type-dot-err"></span>Fuori confine
         <span class="type-count" id="type-count-err"></span>
       </button>
+      <button class="type-btn" data-type="none" onclick="setTypeFilter('none')" title="Nascondi tutti i civici dalla mappa">
+        <span class="type-dot type-dot-none"></span>Nessuno
+      </button>
     </div>
 
     <!-- Separatore visivo -->
@@ -426,6 +429,7 @@
   <div id="info-tabs">
     <button class="info-tab active" data-tab="come-funziona" onclick="switchInfoTab('come-funziona')">Come funziona</button>
     <button class="info-tab"        data-tab="fonti"         onclick="switchInfoTab('fonti')">Fonti dati</button>
+    <button class="info-tab"        data-tab="bivariata"     onclick="switchInfoTab('bivariata')">Bivariata</button>
     <button class="info-tab"        data-tab="dataviz"       onclick="switchInfoTab('dataviz')">DataViz</button>
     <button class="info-tab"        data-tab="credits"       onclick="switchInfoTab('credits')">Credits</button>
   </div>
@@ -835,6 +839,96 @@
       </div>
 
     </div><!-- /dv-examples-grid mixed+radar -->
+
+  </div>
+
+  <!-- Tab: Bivariata -->
+  <div class="info-tab-body" id="info-tab-bivariata">
+
+    <h3>Cos'è la mappa bivariate</h3>
+    <p>La mappa bivariate evidenzia, a livello comunale, <strong>dove il dato mancante o errato di ANNCSU ha il maggiore impatto reale</strong> sulla qualità dei servizi che dipendono dalla geocodifica degli indirizzi.</p>
+    <p>Un comune con pochi civici geocodificati male in una zona rurale disabitata ha un impatto pratico basso. Lo stesso tasso di errore in un comune densamente urbanizzato rappresenta un problema molto più grave. La mappa bivariate mette insieme queste due dimensioni in un'unica visualizzazione.</p>
+
+    <h3>Le due dimensioni</h3>
+
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#3b4994,#5698b9)">X</span>
+        <div>
+          <strong>Qualità reale della geocodifica</strong>
+          <p>Percentuale di civici con coordinata corretta, al netto dei <em>falsi positivi</em>: indirizzi a cui il geocoder non ha trovato la posizione esatta e ha assegnato una coordinata di fallback (centroide del comune, centroide della via, posizione del municipio). Questi punti cadono dentro il confine ma sono inutilizzabili — decine o centinaia di indirizzi diversi condividono la stessa coordinata.</p>
+          <p>Il rilevamento dei cluster di fallback (hotspot DBSCAN con parametri <code>eps = 8 m</code>, <code>min_points = 5</code>) è basato sul lavoro di <strong>Matteo Fortini</strong> (progetto <em>diff_ANNCSU</em>).</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#be64ac,#8c62aa)">Y</span>
+        <div>
+          <strong>Densità civici per km²</strong>
+          <p>Numero totale di civici diviso la superficie comunale in km². È un proxy efficace per l'urbanizzazione: i comuni densamente abitati hanno molti più indirizzi per unità di superficie rispetto ai comuni rurali o montani.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Classificazione — Terzili quantile</h3>
+    <p>Entrambe le dimensioni vengono classificate in <strong>3 classi</strong> (bassa / media / alta) usando i <strong>terzili della distribuzione reale</strong> dei comuni con dati ANNCSU disponibili (~5.107 comuni, non tutti i 7.918 comuni italiani). I quantili garantiscono che ogni classe contenga circa ⅓ dei comuni, compensando la forte asimmetria della densità urbana italiana.</p>
+
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#3b4994,#5698b9);font-size:10px">Q</span>
+        <div>
+          <strong>Qualità geocodifica</strong>
+          <p>Soglia bassa→media: <strong>72,7%</strong> &nbsp;·&nbsp; Soglia media→alta: <strong>95,1%</strong></p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#be64ac,#8c62aa);font-size:10px">D</span>
+        <div>
+          <strong>Densità civici/km²</strong>
+          <p>Soglia bassa→media: <strong>45 civ/km²</strong> &nbsp;·&nbsp; Soglia media→alta: <strong>114 civ/km²</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Palette cromatica — Joshua Stevens 3×3</h3>
+    <p>La palette è derivata dalla metodologia bivariate di <strong>Joshua Stevens</strong> (2015), progettata per massimizzare la distinguibilità percettiva delle 9 combinazioni qualità × densità.</p>
+
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:#be64ac">&#160;</span>
+        <div>
+          <strong>Alta densità + Bassa qualità — Viola <code>#be64ac</code></strong>
+          <p><strong>Massimo impatto reale</strong>: molti indirizzi errati in zona urbana. Sono i comuni dove un intervento urgente avrebbe la maggiore ricaduta pratica.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:#3b4994">&#160;</span>
+        <div>
+          <strong>Alta densità + Alta qualità — Blu scuro <code>#3b4994</code></strong>
+          <p>Comuni urbanizzati con buona copertura geocodifica.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:#e8e8e8;border:1px solid #ccc">&#160;</span>
+        <div>
+          <strong>Bassa densità + Bassa qualità — Grigio <code>#e8e8e8</code></strong>
+          <p>Errori numerosi ma impatto pratico limitato: pochi servizi dipendono dalla geocodifica in questi territori.</p>
+        </div>
+      </div>
+      <div class="info-step">
+        <span class="info-step-n" style="background:#5ac8c8">&#160;</span>
+        <div>
+          <strong>Bassa densità + Alta qualità — Teal <code>#5ac8c8</code></strong>
+          <p>Comuni rurali ben geocodificati.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Avvertenze</h3>
+    <ul style="margin:8px 0 0 16px;line-height:1.8;font-size:13px;color:#374151;">
+      <li>I parametri DBSCAN (<code>eps=8m, min_points=5</code>) possono includere cluster legittimi in edifici multipiano o piazze dense. La sottrazione degli hotspot è una stima conservativa, non una correzione esatta.</li>
+      <li>I comuni non presenti nel dataset ANNCSU appaiono trasparenti nella mappa bivariate: indica assenza di dati, non qualità zero.</li>
+      <li>La densità civici/km² è un proxy per l'urbanizzazione. Comuni con molte seconde case o destinazioni turistiche possono avere valori sproporzionati rispetto alla popolazione residente.</li>
+    </ul>
 
   </div>
 

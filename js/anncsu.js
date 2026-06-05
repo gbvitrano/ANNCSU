@@ -69,6 +69,7 @@
   let comuniAreaMap = {}; // { cod_comune_num → area_m2 } — da comuni.csv shape_area
   let hotspotMap    = {}; // { cod_comune_num → punti_in_cluster } — da DBSCAN mfortini
   let comuniBivariateMode = false;
+  let bivariateCache = null; // { codNum → { xClass, yClass } } — popolato da buildBivariateData()
   let _selectedComunePolygon = null; // GeoJSON FeatureCollection del poligono comunale selezionato
 
   // ── HELPERS ─────────────────────────────────────────────────────────────────
@@ -126,7 +127,9 @@
         const name = cols[iName]?.trim();
         if (iArea >= 0 && code) {
           const area = parseFloat(cols[iArea]);
-          if (area > 0) comuniAreaMap[parseInt(code, 10)] = area;
+          // shape_area è in m² per la maggior parte dei comuni, ma 1049 comuni
+          // hanno valori ~1000x maggiori (scala dm²). Soglia 1e10 separa i due gruppi.
+          if (area > 0) comuniAreaMap[parseInt(code, 10)] = area >= 1e10 ? area / 1e9 : area / 1e6;
         }
         return code && name ? [{ codice_istat: code, nome_comune: name }] : [];
       });
@@ -740,7 +743,7 @@
         qualValues.push(Math.max(0, geocoded - fake) / total);
       }
       const area = comuniAreaMap[cod];
-      if (area > 0 && total > 0) densValues.push(total / (area / 1e6));
+      if (area > 0 && total > 0) densValues.push(total / area);
     });
     const [qB1, qB2] = quantileBreaks(qualValues, 3);
     const [dB1, dB2] = quantileBreaks(densValues, 3);
@@ -753,13 +756,27 @@
       const geocoded = stats.civico_geocodificato || 0;
       const fake = hasHotspots ? (hotspotMap[cod] || 0) : 0;
       const qual = Math.max(0, geocoded - fake) / total;
-      const dens = total / (area / 1e6);
+      const dens = total / area;
       result[cod] = {
         xClass: qual >= qB2 ? 2 : qual >= qB1 ? 1 : 0,
         yClass: dens >= dB2 ? 2 : dens >= dB1 ? 1 : 0
       };
     });
     return result;
+  }
+
+  function buildBivariatePopupBlock(codNum) {
+    if (!bivariateCache) bivariateCache = buildBivariateData();
+    const d = bivariateCache[codNum];
+    if (!d) return '';
+    const color = BIVARIATE_COLORS[`${d.xClass}-${d.yClass}`];
+    const qLabel = ['Bassa qualità', 'Media qualità', 'Alta qualità'][d.xClass];
+    const dLabel = ['Bassa densità', 'Media densità', 'Alta densità'][d.yClass];
+    return `
+      <div class="popup-biv-block">
+        <span class="popup-biv-swatch" style="background:${color}"></span>
+        <span class="popup-biv-desc">${qLabel} · ${dLabel}</span>
+      </div>`;
   }
 
   function applyBivariateLayer(data) {
@@ -820,6 +837,7 @@
     if (comuniBivariateMode) {
       if (!comuniLayerVisible) toggleComuniLayer();
       const data = buildBivariateData();
+      bivariateCache = data;
       applyBivariateLayer(data);
       buildBivariateLegend();
       if (btn) btn.classList.add('biv-btn-active');
@@ -1153,7 +1171,7 @@
     document.querySelectorAll('.type-btn').forEach(btn => {
       btn.classList.remove('active', 'active-err');
       if (btn.dataset.type === type)
-        btn.classList.add(type === 'err' ? 'active-err' : 'active');
+        btn.classList.add('active');
     });
     applyFilter();
   }
@@ -1245,6 +1263,7 @@
     const parts = [];
 
     if (selectedRegions.size === 0) return ['==', '1', '0'];
+    if (typeFilter === 'none') return ['==', '1', '0'];
 
     if (selectedComune) {
       parts.push(['==', ['get', 'CODICE_ISTAT'], selectedComune.codice_istat]);
@@ -1677,9 +1696,9 @@ style: {
       if (popup) popup.remove();
       if (!info) {
         const statsRow = anncsuStatsMap[codNum];
-        popup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px' })
+        popup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px', maxHeight: '80vh' })
           .setLngLat(e.lngLat)
-          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${buildCiviciBlock(statsRow, hotspotMap[codNum] || 0)}`)
+          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${buildCiviciBlock(statsRow, hotspotMap[codNum] || 0)}${buildBivariatePopupBlock(codNum)}`)
           .addTo(map);
         return;
       }
@@ -1710,13 +1729,14 @@ style: {
               ${en.importo_aggiudicazione ? `<div class="popup-agg-row"><span>Importo aggiudicato :</span><strong>€ ${en.importo_aggiudicazione.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>` : ''}
             </div>`;
         }).join('')}`;
-      popup = new maplibregl.Popup({ closeButton: true, maxWidth: '340px' })
+      popup = new maplibregl.Popup({ closeButton: true, maxWidth: '340px', maxHeight: '80vh' })
         .setLngLat(e.lngLat)
         .setHTML(`
           <div class="popup-address">${info.ente || nome}</div>
           <div class="popup-comune">Provincia : (${info.provincia})</div>
           <div class="popup-comuni-importo">Importo finanziamento : € ${importoFmt}</div>
           ${civHTML}
+          ${buildBivariatePopupBlock(codNum)}
           ${entriesHTML}
           <div class="popup-importo-note">* Importi al netto di IVA, riferiti alle trattative di affidamento; i valori delle determine di affidamento potrebbero differire.</div>
         `)

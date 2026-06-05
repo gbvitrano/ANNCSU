@@ -47,17 +47,24 @@ Struttura JSON: `{ by_comune: [{ codice_istat, n_cluster, max_point_count, punti
 **Formula:**
 
 ```
-densità = totale_civici / (shape_area / 1.000.000)
+densità = totale_civici / area_km2
 ```
 
-`shape_area` è in m², diviso per 10⁶ dà km².
+dove `area_km2` è normalizzata in fase di caricamento da `comuni.csv`:
+
+```javascript
+// shape_area presenta due scale diverse nel CSV ISTAT:
+// valori >= 1e10 sono in unità ~dm² (1000× gonfiate) — 1.049 comuni
+// valori <  1e10 sono in m² standard — 4.058 comuni
+area_km2 = shape_area >= 1e10 ? shape_area / 1e9 : shape_area / 1e6;
+```
 
 **Dati usati:**
 
 | Campo | Sorgente | Descrizione |
 |-------|----------|-------------|
 | `totale` | `dati/anncsu_stats.json` | Totale civici del comune |
-| `shape_area` | `dati/comuni.csv` | Superficie comunale in m² (ISTAT/ANPR) |
+| `shape_area` | `dati/comuni.csv` | Superficie comunale (ISTAT/ANPR) — scala eterogenea, vedi nota |
 
 **Proxy per densità abitativa:**
 
@@ -67,7 +74,7 @@ Il dataset non contiene dati di popolazione. Il numero di civici per km² è un 
 
 ## Classificazione — Terzili quantile
 
-Entrambe le dimensioni vengono classificate in **3 classi** (bassa / media / alta) usando i **terzili della distribuzione reale** dei 7.918 comuni.
+Entrambe le dimensioni vengono classificate in **3 classi** (bassa / media / alta) usando i **terzili della distribuzione reale** dei comuni presenti in `anncsu_stats.json` (~5.107 comuni con dati ANNCSU disponibili, non tutti i 7.918 comuni italiani).
 
 ```javascript
 function quantileBreaks(values, n) {
@@ -77,6 +84,13 @@ function quantileBreaks(values, n) {
   );
 }
 ```
+
+**Valori reali dei terzili** (calcolati sul dataset corrente con hotspot DBSCAN):
+
+| Asse | Soglia bassa→media (qB1) | Soglia media→alta (qB2) |
+|------|--------------------------|-------------------------|
+| Qualità geocodifica | **72,7%** | **95,1%** |
+| Densità civici/km² | **45 civ/km²** | **114 civ/km²** |
 
 **Perché quantili e non intervalli uguali:**
 
@@ -128,6 +142,17 @@ map.setPaintProperty('comuni-fill', 'fill-color', fillMatch);
 
 ---
 
+## Popup comunale
+
+Cliccando su un comune in modalità bivariate (o anche in modalità normale con il layer comuni attivo), il popup mostra un **blocco bivariate** con:
+
+- Un quadratino colorato con il colore esatto della cella 3×3
+- La descrizione testuale: es. `Bassa qualità · Alta densità`
+
+Il blocco è generato da `buildBivariatePopupBlock(codNum)` che usa una cache del risultato di `buildBivariateData()` (aggiornata ogni volta che la modalità bivariate viene attivata) oppure la calcola al primo accesso.
+
+---
+
 ## Limitazioni e avvertenze
 
 1. **Hotspot DBSCAN vs geocodifica fallback:** i parametri `eps=8m, min_points=5` possono includere cluster legittimi in edifici multipiano o piazze dense. La sottrazione è una stima conservativa, non una correzione esatta.
@@ -137,6 +162,8 @@ map.setPaintProperty('comuni-fill', 'fill-color', fillMatch);
 3. **Comuni senza dati ANNCSU:** i comuni non presenti in `anncsu_stats.json` appaiono trasparenti nella mappa bivariate. Questo indica assenza di dati nel dataset, non necessariamente qualità zero.
 
 4. **Aggiornamento URL hotspot:** il file JSON degli hotspot è servito con hash di contenuto da Observable Framework. Quando i dati vengono rigenerati, la costante `HOTSPOT_URL` in `anncsu.js` (riga 4) va aggiornata con il nuovo hash.
+
+5. **Doppia scala `shape_area`:** il CSV ISTAT `comuni.csv` contiene valori `shape_area` in due unità diverse (1.049 comuni con valori ~1.000× gonfiati rispetto agli altri). Il codice normalizza automaticamente usando la soglia 1e10 come discriminante. Se il CSV viene aggiornato da ISTAT, verificare che la soglia rimanga valida.
 
 ---
 

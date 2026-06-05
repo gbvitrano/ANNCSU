@@ -335,6 +335,7 @@
     .type-dot-all  { background: var(--text-muted); }
     .type-dot-ok   { background: var(--accent-ok);  }
     .type-dot-err  { background: var(--accent-err); }
+    .type-dot-none { background: transparent; border: 1.5px solid var(--text-muted); }
 
     /* Contatore piccolo */
     .type-count {
@@ -348,6 +349,7 @@
     .type-btn[data-type="all"].active  { background: var(--bg-btn-hover); border-color: var(--text-muted); color: var(--text-primary); font-weight: 600; }
     .type-btn[data-type="ok"].active   { background: rgba(76,155,130,0.15); border-color: var(--accent-ok); color: var(--accent-ok); font-weight: 600; }
     .type-btn[data-type="err"].active  { background: rgba(230,57,70,0.12);  border-color: var(--accent-err); color: var(--accent-err); font-weight: 600; }
+    .type-btn[data-type="none"].active { background: var(--bg-btn-hover); border-color: var(--text-muted); color: var(--text-muted); font-weight: 600; }
 
     /* ── Pulsante info ridisegnato ────────────────────────────────────────────── */
     #info-btn {
@@ -437,6 +439,7 @@
     .maplibregl-ctrl-attrib.maplibregl-compact.maplibregl-compact-show .maplibregl-ctrl-attrib-inner { display: block; }
 
     /* ── Popup ───────────────────────────────────────────────────────────────── */
+    .maplibregl-popup { z-index: 600 !important; }
     .maplibregl-popup-content {
       background: var(--bg-header);
       border: 1px solid var(--border-color);
@@ -446,6 +449,7 @@
       font-size: 0.85rem;
       min-width: 200px;
       box-shadow: 0 4px 20px var(--shadow);
+      overflow-y: auto;
     }
     .maplibregl-popup-tip { border-top-color: var(--popup-tip) !important; }
     .maplibregl-popup-close-button { color: var(--text-muted); font-size: 22px; line-height: 1; width: 28px; height: 28px; top: 10px; right: 10px; }
@@ -537,6 +541,29 @@
     .civ-utili   { color: var(--accent-ok); font-weight: 700; }
     .popup-civici-sub { font-size: 0.78em; opacity: 0.92; padding-left: 4px; }
     .popup-civici-utili { font-size: 0.85em; opacity: 1; font-weight: 600; }
+
+    .popup-biv-block {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 6px 0 2px;
+      padding: 5px 6px;
+      border-radius: 5px;
+      background: var(--bg-secondary, rgba(0,0,0,0.04));
+      border: 1px solid var(--border);
+    }
+    .popup-biv-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .popup-biv-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {
