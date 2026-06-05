@@ -537,7 +537,7 @@
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {
       position: absolute;
-      bottom: 36px;
+      bottom: 80px;
       right: 12px;
       background: var(--bg-panel-alpha);
       border: 1px solid var(--border-color);
@@ -695,7 +695,7 @@
     /* ── Legenda ─────────────────────────────────────────────────────────────── */
     #legend {
       position: absolute;
-      bottom: 36px;
+      bottom: 80px;
       left: 12px;
       background: var(--bg-panel-alpha);
       border: 1px solid var(--border-color);
@@ -756,24 +756,31 @@
     }
     #loading.hidden { display: none; }
 
-    /* ── Stats panel (tabella dettaglio) ────────────────────────────────────── */
+    /* ── Stats panel (drawer da destra) ─────────────────────────────────────── */
     #stats-panel {
       position: absolute;
-      top: 10px; right: 44px;
+      top: 0; right: 0;
       width: 420px;
+      height: 100%;
       min-width: 280px;
       max-width: calc(100vw - 60px);
-      max-height: calc(100% - 20px);
       background: var(--bg-panel-full);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
+      border-right: none;
+      border-radius: 10px 0 0 10px;
       z-index: 16;
-      display: none;
+      display: flex;
       flex-direction: column;
       backdrop-filter: blur(6px);
-      box-shadow: 0 8px 32px var(--shadow-heavy);
+      box-shadow: -4px 0 24px var(--shadow-heavy);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
     }
-    #stats-panel.open { display: flex; }
+    #stats-panel.open {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
     #stats-resize-handle {
       position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
       cursor: ew-resize; border-radius: 10px 0 0 10px; z-index: 1;
@@ -830,26 +837,31 @@
     .oob-btn:hover { background: var(--bg-btn); }
     .oob-btn:disabled { opacity: 0.5; cursor: default; }
 
-    /* ── Pannello Analisi Aggiudicatori ─────────────────────────────────────── */
+    /* ── Pannello Analisi Aggiudicatori (drawer da sinistra) ────────────────── */
     #comuni-analisi-panel {
       position: absolute;
-      top: 10px; left: 10px;
+      top: 0; left: 0;
       width: 480px;
+      height: 100%;
       min-width: 300px;
       max-width: calc(100vw - 60px);
-      max-height: calc(100% - 90px);
       background: var(--bg-panel-full);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
       z-index: 18;
-      display: none;
+      display: flex;
       flex-direction: column;
       backdrop-filter: blur(6px);
-      box-shadow: 0 8px 32px var(--shadow-heavy);
-      resize: horizontal;
-      overflow: hidden;
+      box-shadow: 4px 0 24px var(--shadow-heavy);
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
     }
-    #comuni-analisi-panel.open { display: flex; }
+    #comuni-analisi-panel.open {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
     #comuni-analisi-panel-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 14px; border-bottom: 1px solid var(--border-color); flex-shrink: 0;
@@ -861,6 +873,69 @@
     }
     #comuni-analisi-panel-header button:hover { color: var(--text-primary); }
     #comuni-analisi-body { overflow-y: auto; flex: 1; padding: 0 0 10px;}
+
+    /* ── Linguette drawer (tab) ──────────────────────────────────────────────── */
+    /* I tab sono figli dei pannelli: seguono automaticamente il transform del pannello */
+    .panel-drawer-tab {
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 60px;
+      background: var(--bg-panel-hi);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      padding: 0;
+      backdrop-filter: blur(4px);
+      z-index: 20;
+      pointer-events: auto;
+      transition: background 0.15s, color 0.15s;
+    }
+    .panel-drawer-tab:hover {
+      background: var(--bg-btn-hover);
+      color: var(--text-primary);
+    }
+    .tab-chevron { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* Stats-panel tab: sporge a sinistra dal bordo del pannello */
+    #stats-panel-tab {
+      left: -22px;
+      transform: translateY(-50%);
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      box-shadow: -2px 0 8px var(--shadow);
+    }
+    #stats-panel.open #stats-panel-tab .tab-chevron { transform: rotate(180deg); }
+
+    /* Comuni-analisi-panel tab: sporge a destra dal bordo del pannello */
+    #comuni-analisi-tab {
+      right: -22px;
+      transform: translateY(-50%);
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 2px 0 8px var(--shadow);
+    }
+    #comuni-analisi-panel.open #comuni-analisi-tab .tab-chevron { transform: rotate(180deg); }
+
+    /* ── Transizioni elementi mappa ──────────────────────────────────────────── */
+    #legend, #comuni-legend, #counter, #analisi-panel, #ods-logo {
+      transition: left  0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Stats-panel open → sposta elementi sul lato destro
+       #ods-logo è dentro #map → usa #map:has(); gli altri sono fuori → usa body:has() */
+    body:has(#stats-panel.open) #comuni-legend { right: calc(420px + 12px); }
+    body:has(#stats-panel.open) #counter       { right: calc(420px + 12px); }
+    #map:has(#stats-panel.open) #ods-logo      { right: calc(420px + 10px); }
+
+    /* Comuni-analisi-panel open → sposta elementi sul lato sinistro
+       #legend è fuori #map → usa body:has(); #analisi-panel è dentro → usa #map:has() */
+    body:has(#comuni-analisi-panel.open) #legend        { left: calc(480px + 12px); }
+    #map:has(#comuni-analisi-panel.open) #analisi-panel { left: calc(480px + 12px); }
 
     #can-summary {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
@@ -1511,9 +1586,10 @@
       .analisi-title { font-size: 0.76rem; }
       .analisi-realtime-note { font-size: 0.62rem; }
 
-      /* Stats panel full width */
-      #stats-panel { width: calc(100vw - 20px); right: 10px; left: 10px; top: 56px; font-size: 0.73rem; }
+      /* Stats panel drawer mobile */
+      #stats-panel { width: 90vw; font-size: 0.73rem; }
       #stats-table th, #stats-table td { font-size: 0.68rem; padding: 3px 4px; }
+      #stats-resize-handle { display: none; }
 
       /* Popup più compatti */
       .maplibregl-popup-content { font-size: 0.8rem; padding: 10px 12px; }
@@ -1551,6 +1627,16 @@
 
       /* Titolo pannello analisi aggiudicatori */
       #comuni-analisi-panel-header h2 { font-size: 0.72rem; white-space: normal; line-height: 1.3; }
+
+      /* Comuni-analisi-panel drawer mobile */
+      #comuni-analisi-panel { width: 90vw; }
+
+      /* Annulla shift legende su mobile (pannelli a piena larghezza coprono la mappa) */
+      body:has(#stats-panel.open) #comuni-legend { right: 8px; }
+      body:has(#stats-panel.open) #counter       { right: 12px; }
+      #map:has(#stats-panel.open) #ods-logo      { right: 10px; }
+      body:has(#comuni-analisi-panel.open) #legend        { left: 8px; }
+      #map:has(#comuni-analisi-panel.open) #analisi-panel { left: 8px; }
     }
 
     /* ── Cerca indirizzo (bottom-center) ────────────────────────────────────── */

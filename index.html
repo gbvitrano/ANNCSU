@@ -259,6 +259,9 @@
 
   <!-- Stats panel (tabella dettaglio per comune) -->
   <div id="stats-panel">
+    <button id="stats-panel-tab" class="panel-drawer-tab" onclick="toggleStatsPanel()" title="Statistiche per comune">
+      <svg class="tab-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
     <div id="stats-resize-handle"></div>
     <div id="stats-panel-header">
       <h2 id="stats-title">Numeri civici per comune</h2>
@@ -286,6 +289,9 @@
 
   <!-- Pannello Analisi Aggiudicatori ANNCSU -->
   <div id="comuni-analisi-panel">
+    <button id="comuni-analisi-tab" class="panel-drawer-tab" onclick="toggleComuniAnalisiPanel()" title="Analisi aggiudicatori ANNCSU" style="display:none">
+      <svg class="tab-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
     <div id="comuni-analisi-panel-header">
       <h2>Analisi Aggiudicatori ANNCSU</h2>
       <button onclick="toggleComuniAnalisiPanel()" title="Chiudi">✕</button>

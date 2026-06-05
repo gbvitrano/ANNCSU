@@ -779,6 +779,9 @@
   // ── ANALISI AGGIUDICATORI ────────────────────────────────────────────────────
   function toggleComuniAnalisiPanel() {
     const panel = document.getElementById('comuni-analisi-panel');
+    if (!panel.classList.contains('open') && window.innerWidth <= 600) {
+      document.getElementById('stats-panel')?.classList.remove('open');
+    }
     panel.classList.toggle('open');
     if (panel.classList.contains('open')) renderComuniAnalisi();
   }
@@ -963,12 +966,20 @@
     if (leg) leg.style.display = comuniLayerVisible ? '' : 'none';
 
     const tbComuniAnalisi = document.getElementById('tb-comuni-analisi');
+    const tabComuniAnalisi = document.getElementById('comuni-analisi-tab');
     const tbComuni = document.getElementById('tb-comuni');
     if (comuniLayerVisible) {
       if (tbComuniAnalisi) tbComuniAnalisi.style.display = '';
+      if (tabComuniAnalisi) tabComuniAnalisi.style.display = '';
       if (tbComuni) tbComuni.classList.add('tb-btn-active');
+      const panel = document.getElementById('comuni-analisi-panel');
+      if (panel && !panel.classList.contains('open')) {
+        panel.classList.add('open');
+        renderComuniAnalisi();
+      }
     } else {
       if (tbComuniAnalisi) tbComuniAnalisi.style.display = 'none';
+      if (tabComuniAnalisi) tabComuniAnalisi.style.display = 'none';
       document.getElementById('comuni-analisi-panel')?.classList.remove('open');
       if (tbComuni) tbComuni.classList.remove('tb-btn-active');
     }
@@ -1699,6 +1710,9 @@ style: {
   // ── STATS PANEL (tabella per comune) ─────────────────────────────────────────
   function toggleStatsPanel() {
     const panel = document.getElementById('stats-panel');
+    if (!panel.classList.contains('open') && window.innerWidth <= 600) {
+      document.getElementById('comuni-analisi-panel')?.classList.remove('open');
+    }
     panel.classList.toggle('open');
     if (panel.classList.contains('open')) renderStatsTable();
   }
