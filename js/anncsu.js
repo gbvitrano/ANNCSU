@@ -2517,8 +2517,9 @@ style: {
   }
 
   function updateFilterModalBadge() {
-    const badge = document.getElementById('filter-modal-badge');
-    const btn   = document.getElementById('filter-modal-btn');
+    const badge    = document.getElementById('filter-modal-badge');
+    const btn      = document.getElementById('filter-modal-btn');
+    const resetBtn = document.getElementById('search-reset-btn');
     if (!badge) return;
     const notAllReg  = ALL_REGIONS.length  > 0 && selectedRegions.size   < ALL_REGIONS.length;
     const notAllProv = Object.keys(PROV_NAMES).length > 0 && selectedProvinces.size < Object.keys(PROV_NAMES).length;
@@ -2526,6 +2527,7 @@ style: {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
     if (btn) btn.classList.toggle('active', count > 0);
+    if (resetBtn) resetBtn.style.display = count > 0 ? 'flex' : 'none';
   }
 
   // ── MODAL FILTRO TERRITORIO ──────────────────────────────────────────────────

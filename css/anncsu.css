@@ -430,7 +430,7 @@
     .afs-reset:hover { color: var(--accent-err); }
 
     /* ── Mappa ───────────────────────────────────────────────────────────────── */
-    #map { flex: 1; width: 100%; }
+    #map { flex: 1; width: 100%; position: relative; }
 
     /* ── Attribution control: forza stato chiuso di default ─────────────────── */
     .maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-inner { display: none; }
@@ -2053,6 +2053,22 @@
     }
     #filter-modal-btn:hover { color: var(--text-primary); background: var(--bg-btn-hover); }
     #filter-modal-btn.active { color: var(--accent-ok); }
+
+    #search-reset-btn {
+      background: none;
+      border: none;
+      color: var(--accent-err);
+      cursor: pointer;
+      padding: 4px 6px;
+      display: none;
+      align-items: center;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-left: 2px;
+      opacity: 0.75;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    #search-reset-btn:hover { opacity: 1; background: var(--bg-btn-hover); }
 
     #filter-modal-badge {
       display: none;
