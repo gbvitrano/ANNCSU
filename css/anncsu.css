@@ -1472,10 +1472,9 @@
       #header-brand p  { display: none; }
       #controls { display: none; margin-left: 0; } /* nascosto: i filtri vanno nel drawer */
       #header-mobile-actions { display: flex; }
-      /* search bar desktop nascosta su mobile */
-      #address-search-box { display: none !important; }
-      /* search wrap mobile */
-      #mobile-search-wrap.open { display: flex; }
+      #mobile-search-btn { display: none; }
+      /* search wrap mobile (legacy, non più usato su mobile) */
+      #mobile-search-wrap { display: none !important; }
 
       /* Legenda compatta con pulsante chiudi */
       #legend {
@@ -1564,10 +1563,10 @@
       transform: translateX(-50%);
       width: 420px;
       max-width: calc(100vw - 40px);
-      z-index: 5;
+      z-index: 15;
       background: var(--bg-panel-alpha);
       border: 1px solid var(--border-color);
-      border-radius: 50px;
+      border-radius: 8px;
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 20px var(--shadow);
     }

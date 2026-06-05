@@ -2092,8 +2092,7 @@ style: {
     const q = query.trim();
     if (q.length < 2) { closeAddrSuggestions(); return; }
     const normQ = normalizeStr(q);
-    const isMobile = window.innerWidth <= 600;
-    const box = document.getElementById(isMobile ? 'mobile-address-suggestions' : 'address-suggestions');
+    const box = document.getElementById('address-suggestions');
 
     if (!allComuni.length) {
       box.innerHTML = '<div class="addr-sug-empty">Dati comuni in caricamento…</div>';
@@ -2193,8 +2192,7 @@ style: {
   }
 
   function renderSmartSuggestions(groups) {
-    const isMobile = window.innerWidth <= 600;
-    const box = document.getElementById(isMobile ? 'mobile-address-suggestions' : 'address-suggestions');
+    const box = document.getElementById('address-suggestions');
 
     const catIcon = {
       Regioni:   '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
