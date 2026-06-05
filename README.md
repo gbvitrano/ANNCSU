@@ -14,7 +14,15 @@ I punti **verdi** rappresentano civici geocodificati correttamente, la cui posiz
 
 ### Filtri e ricerca
 
-Puoi restringere la visualizzazione usando i menu a tendina in alto per selezionare una o più **regioni**, una o più **province**, oppure un singolo **comune**. I tre pulsanti *Tutti*, *Geocodificati* e *Fuori limite* permettono di isolare rapidamente i soli civici corretti o quelli anomali. La mappa si aggiorna in tempo reale a ogni modifica del filtro.
+La barra di ricerca in basso al centro funziona come una **ricerca smart**: bastano poche lettere per ottenere subito suggerimenti di **regioni**, **province**, **comuni** e indirizzi. Selezionando un risultato, questo diventa un **chip** visibile nella barra che restringe il contesto: scegliendo prima una regione, le ricerche successive mostreranno solo province e comuni di quella regione. Puoi combinare più livelli insieme — regione → provincia → comune → via e numero civico — per trovare esattamente quello che ti serve. Ogni chip ha un pulsante *✕* per rimuoverlo singolarmente e risalire di livello.
+
+Per un controllo più preciso, usa il pulsante **Filtro Territorio** (icona a griglia): si apre un pannello dove scegliere manualmente regioni, province e comune. Quando uno o più filtri sono attivi, sul pulsante compare un **badge numerico**. Per azzerare tutto in un colpo solo, premi il pulsante **Reset** (icona freccia circolare) che appare accanto. I tre pulsanti *Tutti*, *Geocodificati* e *Fuori limite* permettono inoltre di isolare rapidamente i civici corretti o quelli anomali. La mappa si aggiorna in tempo reale a ogni modifica.
+
+### Cerca civici tramite API REST *(Novità)*
+
+Il pulsante con la **lente +** nella barra di ricerca apre uno strumento dedicato che interroga direttamente l'**API REST ANNCSU** di *developers.coseerobe.it*. Puoi cercare civici filtrando per **comune**, **via** (o parte del nome), **tipo di strada** (via, corso, piazza…) e **numero civico**. I risultati appaiono in una tabella affiancata da una mini-mappa interattiva. Puoi scegliere quanti record recuperare (da 25 fino a tutti) e scaricare i dati in formato **CSV** o **JSON**.
+
+Nella stessa finestra è disponibile il **download per comune intero**: inserendo il **codice catastale** del comune (es. `G273` per Palermo) è possibile scaricare tutti i numeri civici in formato **GeoParquet** — compatibile con QGIS (EPSG 4326), DuckDB, Python e altri strumenti GIS — oppure in formato **GeoPackage**.
 
 ### I comuni finanziati con il PNRR
 
