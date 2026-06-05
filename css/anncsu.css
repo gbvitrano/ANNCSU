@@ -530,9 +530,13 @@
       padding-top: 4px;
       color: var(--text-secondary);
     }
-    .civ-ok   { color: var(--accent-ok);  font-weight: 700; }
-    .civ-err  { color: var(--accent-err); font-weight: 700; }
-    .civ-warn { color: var(--accent-oob); font-weight: 700; }
+    .civ-ok      { color: var(--accent-ok);  font-weight: 700; }
+    .civ-err     { color: var(--accent-err); font-weight: 700; }
+    .civ-warn    { color: var(--accent-oob); font-weight: 700; }
+    .civ-hotspot { color: #e09030; font-weight: 600; }
+    .civ-utili   { color: var(--accent-ok); font-weight: 700; }
+    .popup-civici-sub { font-size: 0.78em; opacity: 0.92; padding-left: 4px; }
+    .popup-civici-utili { font-size: 0.85em; opacity: 1; font-weight: 600; }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
     #comuni-legend {
@@ -560,6 +564,33 @@
     #comuni-legend.legend-collapsed .comuni-legend-content { display: none; }
     #comuni-legend.legend-collapsed { max-height: none; }
     .comuni-legend-name { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
+
+    /* ── Mappa bivariate ──────────────────────────────────────────────────────── */
+    #comuni-analisi-panel-header #btn-bivariate {
+      display: flex; align-items: center; gap: 3px;
+      background: none; border: 1px solid var(--border-color);
+      border-radius: 4px; padding: 2px 7px;
+      font-size: 0.7rem; cursor: pointer; color: var(--text-muted);
+      white-space: nowrap; line-height: 1.5;
+    }
+    #comuni-analisi-panel-header #btn-bivariate:hover { color: var(--text-primary); border-color: var(--text-muted); }
+    #comuni-analisi-panel-header #btn-bivariate.biv-btn-active { color: #3b4994; border-color: #3b4994; background: rgba(59,73,148,0.1); }
+    [data-theme="dark"] #comuni-analisi-panel-header #btn-bivariate.biv-btn-active { color: #a5add3; border-color: #8c62aa; background: rgba(140,98,170,0.15); }
+    .biv-legend-wrap { padding: 2px 0; }
+    .biv-grid-container { display: flex; gap: 4px; align-items: center; }
+    .biv-ylabel {
+      writing-mode: vertical-rl; transform: rotate(180deg);
+      font-size: 0.59rem; color: var(--text-muted); white-space: nowrap;
+      line-height: 1; flex-shrink: 0;
+    }
+    .biv-inner { display: grid; grid-template-columns: 26px repeat(3, 18px); row-gap: 2px; column-gap: 2px; }
+    .biv-rl { font-size: 0.57rem; color: var(--text-muted); text-align: right; padding-right: 3px; line-height: 18px; }
+    .biv-cell { width: 18px; height: 18px; border-radius: 2px; }
+    .biv-xlabels { display: grid; grid-template-columns: 26px 1fr 1fr 1fr; gap: 2px; margin-top: 1px; }
+    .biv-xlabels span { font-size: 0.56rem; color: var(--text-muted); }
+    .biv-xlabels span:last-child { text-align: right; }
+    .biv-xlabel { font-size: 0.59rem; color: var(--text-muted); text-align: center; margin-top: 1px; padding-left: 26px; }
+    .biv-note { font-size: 0.58rem; color: var(--text-faint); margin-top: 5px; line-height: 1.35; font-style: italic; }
 
     /* ── italia-icon (usato dalla toolbar) ────────────────────────────────────── */
     .italia-icon {

@@ -1,0 +1,43 @@
+name: Aggiorna URL Hotspot DBSCAN
+
+on:
+  schedule:
+    # Stesso calendario di anncsu-stats ma 1h dopo, così i dati stats sono già freschi
+    - cron: '0 2 1,5,9,13,15 * 1-5'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  update-hotspot-url:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install requests
+
+      - name: Controlla e aggiorna HOTSPOT_URL
+        run: python scripts/update_hotspot_url.py
+
+      - name: Commit se cambiato
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add js/anncsu.js
+          if git diff --staged --quiet; then
+            echo "Nessuna modifica necessaria."
+          else
+            git commit -m "chore: aggiorna HOTSPOT_URL hotspot DBSCAN [$(date -u +'%Y-%m-%d')]"
+            git push
+          fi

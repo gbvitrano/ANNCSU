@@ -294,7 +294,13 @@
     </button>
     <div id="comuni-analisi-panel-header">
       <h2>Analisi Aggiudicatori ANNCSU</h2>
-      <button onclick="toggleComuniAnalisiPanel()" title="Chiudi">✕</button>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button id="btn-bivariate" onclick="toggleBivariateMode()" title="Mappa bivariate: qualità civici vs densità abitativa">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1" opacity="0.45"/><rect x="2" y="13" width="9" height="9" rx="1" opacity="0.7"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+          Bivariata
+        </button>
+        <button onclick="toggleComuniAnalisiPanel()" title="Chiudi">✕</button>
+      </div>
     </div>
     <div id="comuni-analisi-body"></div>
     <div id="comuni-analisi-footer" style="display:none"></div>

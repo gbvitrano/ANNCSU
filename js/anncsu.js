@@ -1,5 +1,7 @@
   // ── CONFIGURAZIONE ──────────────────────────────────────────────────────────
   const PMTILES_URL = 'https://gbvitrano.it/anncus/data/anncsu-indirizzi.pmtiles';
+  // Hotspot DBSCAN da mfortini/diff_ANNCSU — aggiornare hash quando il file viene rigenerato
+  const HOTSPOT_URL = 'https://mfortini.github.io/diff_ANNCSU/quality/_file/data/anncsu_dbscan_hotspots.7b616718.json';
   const MAP_CENTER  = [12.5, 42.0];
   const MAP_ZOOM    = 6;
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
@@ -11,6 +13,13 @@
     '#e63946','#2a9d8f','#f4a261','#06b6d4','#ffbe0b',
     '#7209b7','#ee9b00'
   ];
+  // Palette bivariate Joshua Stevens 3×3
+  // Chiave: 'xClass-yClass' dove X=qualità geocodifica [0=bassa,2=alta], Y=densità civici/km² [0=bassa,2=alta]
+  const BIVARIATE_COLORS = {
+    '0-0': '#e8e8e8', '1-0': '#ace4e4', '2-0': '#5ac8c8',
+    '0-1': '#dfb0d6', '1-1': '#a5add3', '2-1': '#5698b9',
+    '0-2': '#be64ac', '1-2': '#8c62aa', '2-2': '#3b4994'
+  };
   const COMUNI_PMTILES_URL = 'https://gbvitrano.it/anncus/data/comuni.pmtiles';
 
   // Centroidi approssimativi delle 20 regioni italiane [lon, lat]
@@ -57,6 +66,9 @@
   let comuniLayerVisible = false;
   let comuniLayerReady   = false;
   let anncsuStatsMap = {}; // { cod_comune_num → { civico_geocodificato, fuori_limite_comunale, totale, civici_da_altri_comuni } }
+  let comuniAreaMap = {}; // { cod_comune_num → area_m2 } — da comuni.csv shape_area
+  let hotspotMap    = {}; // { cod_comune_num → punti_in_cluster } — da DBSCAN mfortini
+  let comuniBivariateMode = false;
   let _selectedComunePolygon = null; // GeoJSON FeatureCollection del poligono comunale selezionato
 
   // ── HELPERS ─────────────────────────────────────────────────────────────────
@@ -106,11 +118,16 @@
       const headers = lines[0].split(',');
       const iCode = headers.indexOf('pro_com_t');
       const iName = headers.indexOf('comune');
+      const iArea = headers.indexOf('shape_area');
       allComuni = lines.slice(1).flatMap(line => {
         if (!line.trim()) return [];
         const cols = line.split(',');
         const code = cols[iCode]?.trim().padStart(6, '0');
         const name = cols[iName]?.trim();
+        if (iArea >= 0 && code) {
+          const area = parseFloat(cols[iArea]);
+          if (area > 0) comuniAreaMap[parseInt(code, 10)] = area;
+        }
         return code && name ? [{ codice_istat: code, nome_comune: name }] : [];
       });
       buildComuneList();
@@ -125,17 +142,29 @@
   }
 
   // ── POPUP CIVICI BLOCK ───────────────────────────────────────────────────────
-  function buildCiviciBlock(statsRow) {
+  function buildCiviciBlock(statsRow, hotspotCount = 0) {
     if (!statsRow) return `<div class="popup-civici-block" style="color:var(--text-muted);font-size:0.75rem">Dati civici non disponibili</div>`;
     const fmt = n => (n || 0).toLocaleString('it-IT');
     const ospitati = statsRow.civici_da_altri_comuni || 0;
+    const geocodificati = statsRow.civico_geocodificato || 0;
+    const utili = Math.max(0, geocodificati - hotspotCount);
+    const hotspotHTML = hotspotCount > 0 ? `
+        <div class="popup-civici-row popup-civici-sub">
+          <span class="civ-label">  ↳ in hotspot (coord. dubbie)</span>
+          <span class="civ-hotspot">−${fmt(hotspotCount)}</span>
+        </div>
+        <div class="popup-civici-row popup-civici-sub popup-civici-utili">
+          <span class="civ-label">  ↳ stimati attendibili</span>
+          <span class="civ-utili">${fmt(utili)}</span>
+        </div>` : '';
     return `
       <div class="popup-civici-block">
         <div class="popup-civici-title">Numeri civici ANNCSU</div>
         <div class="popup-civici-row">
           <span class="civ-label">✓ Dentro il confine comunale</span>
-          <span class="civ-ok">${fmt(statsRow.civico_geocodificato)}</span>
+          <span class="civ-ok">${fmt(geocodificati)}</span>
         </div>
+        ${hotspotHTML}
         <div class="popup-civici-row">
           <span class="civ-label">✗ Fuori dal confine comunale</span>
           <span class="civ-warn">${fmt(statsRow.fuori_limite_comunale)}</span>
@@ -164,6 +193,22 @@
       });
     } catch(e) {
       console.warn('anncsu_stats.json non caricato:', e);
+    }
+  }
+
+  // ── CARICAMENTO HOTSPOT DBSCAN ──────────────────────────────────────────────
+  async function loadHotspotData() {
+    try {
+      const res = await fetch(HOTSPOT_URL);
+      const data = await res.json();
+      hotspotMap = {};
+      (data.by_comune || []).forEach(row => {
+        const cod = parseInt(row.codice_istat, 10);
+        if (!isNaN(cod) && row.punti_in_cluster > 0)
+          hotspotMap[cod] = row.punti_in_cluster;
+      });
+    } catch(e) {
+      console.warn('Hotspot DBSCAN non caricato (bivariate usa qualità grezza):', e);
     }
   }
 
@@ -596,6 +641,7 @@
 
   // ── LAYER COMUNI ─────────────────────────────────────────────────────────────
   function updateComuniColors() {
+    if (comuniBivariateMode) return;
     if (!map.getLayer('comuni-fill')) return;
     if (Object.keys(aggiudicatoriMap).length === 0) return;
 
@@ -670,6 +716,118 @@
     const el = document.getElementById('comuni-legend');
     el.classList.toggle('legend-collapsed');
     buildComuniLegend();
+  }
+
+  // ── MAPPA BIVARIATE: qualità geocodifica vs densità civici/km² ───────────────
+
+  function quantileBreaks(values, n) {
+    if (!values.length) return Array(n - 1).fill(0);
+    const sorted = [...values].sort((a, b) => a - b);
+    return Array.from({ length: n - 1 }, (_, i) =>
+      sorted[Math.floor((i + 1) * sorted.length / n)]
+    );
+  }
+
+  function buildBivariateData() {
+    const qualValues = [], densValues = [];
+    const hasHotspots = Object.keys(hotspotMap).length > 0;
+    Object.entries(anncsuStatsMap).forEach(([codStr, stats]) => {
+      const cod = parseInt(codStr, 10);
+      const total = stats.totale || 0;
+      if (total > 0) {
+        const geocoded = stats.civico_geocodificato || 0;
+        const fake = hasHotspots ? (hotspotMap[cod] || 0) : 0;
+        qualValues.push(Math.max(0, geocoded - fake) / total);
+      }
+      const area = comuniAreaMap[cod];
+      if (area > 0 && total > 0) densValues.push(total / (area / 1e6));
+    });
+    const [qB1, qB2] = quantileBreaks(qualValues, 3);
+    const [dB1, dB2] = quantileBreaks(densValues, 3);
+    const result = {};
+    Object.entries(anncsuStatsMap).forEach(([codStr, stats]) => {
+      const cod = parseInt(codStr, 10);
+      const total = stats.totale || 0;
+      const area = comuniAreaMap[cod];
+      if (!area || !total) return;
+      const geocoded = stats.civico_geocodificato || 0;
+      const fake = hasHotspots ? (hotspotMap[cod] || 0) : 0;
+      const qual = Math.max(0, geocoded - fake) / total;
+      const dens = total / (area / 1e6);
+      result[cod] = {
+        xClass: qual >= qB2 ? 2 : qual >= qB1 ? 1 : 0,
+        yClass: dens >= dB2 ? 2 : dens >= dB1 ? 1 : 0
+      };
+    });
+    return result;
+  }
+
+  function applyBivariateLayer(data) {
+    if (!map.getLayer('comuni-fill')) return;
+    const fillMatch = ['match', ['to-number', ['get', 'pro_com_t']]];
+    const codes = [];
+    Object.entries(data).forEach(([codStr, d]) => {
+      const cod = parseInt(codStr, 10);
+      codes.push(cod);
+      fillMatch.push(cod, BIVARIATE_COLORS[`${d.xClass}-${d.yClass}`]);
+    });
+    fillMatch.push('rgba(0,0,0,0)');
+    map.setPaintProperty('comuni-fill', 'fill-color', fillMatch);
+    map.setPaintProperty('comuni-fill', 'fill-opacity', [
+      'match', ['to-number', ['get', 'pro_com_t']], codes, 0.78, 0
+    ]);
+    map.setPaintProperty('comuni-outline', 'line-color', 'rgba(150,150,150,0.3)');
+    map.setPaintProperty('comuni-outline', 'line-width', 0.5);
+  }
+
+  function buildBivariateLegend() {
+    const el = document.getElementById('comuni-legend');
+    if (!el) return;
+    const rowDef = [{ y: 2, label: 'Alta' }, { y: 1, label: 'Med' }, { y: 0, label: 'Bassa' }];
+    const colDef = [{ x: 0, label: 'Bassa' }, { x: 1, label: '' }, { x: 2, label: 'Alta' }];
+    let cellsHTML = '';
+    rowDef.forEach(({ y, label: rl }) => {
+      cellsHTML += `<span class="biv-rl">${rl}</span>`;
+      colDef.forEach(({ x }) => {
+        cellsHTML += `<div class="biv-cell" style="background:${BIVARIATE_COLORS[`${x}-${y}`]}"></div>`;
+      });
+    });
+    let xlHTML = '<span></span>';
+    colDef.forEach(({ label }) => { xlHTML += `<span>${label}</span>`; });
+    const hasHotspots = Object.keys(hotspotMap).length > 0;
+    const qualLabel = hasHotspots ? '% qualità reale (−hotspot)' : '% geocodificati';
+    el.innerHTML = `
+      <div class="comuni-legend-header">
+        <h3>Qualità civici vs Densità</h3>
+      </div>
+      <div class="comuni-legend-content biv-legend-wrap">
+        <div class="biv-grid-container">
+          <span class="biv-ylabel">Civici/km²</span>
+          <div>
+            <div class="biv-inner">${cellsHTML}</div>
+            <div class="biv-xlabels">${xlHTML}</div>
+            <div class="biv-xlabel">${qualLabel}</div>
+          </div>
+        </div>
+        <div class="biv-note">viola = alta densità + bassa qualità = massimo impatto</div>
+      </div>`;
+    el.style.display = '';
+  }
+
+  function toggleBivariateMode() {
+    comuniBivariateMode = !comuniBivariateMode;
+    const btn = document.getElementById('btn-bivariate');
+    if (comuniBivariateMode) {
+      if (!comuniLayerVisible) toggleComuniLayer();
+      const data = buildBivariateData();
+      applyBivariateLayer(data);
+      buildBivariateLegend();
+      if (btn) btn.classList.add('biv-btn-active');
+    } else {
+      updateComuniColors();
+      buildComuniLegend();
+      if (btn) btn.classList.remove('biv-btn-active');
+    }
   }
 
   function selectAggiudicatario(den) {
@@ -978,6 +1136,10 @@
         renderComuniAnalisi();
       }
     } else {
+      if (comuniBivariateMode) {
+        comuniBivariateMode = false;
+        document.getElementById('btn-bivariate')?.classList.remove('biv-btn-active');
+      }
       if (tbComuniAnalisi) tbComuniAnalisi.style.display = 'none';
       if (tabComuniAnalisi) tabComuniAnalisi.style.display = 'none';
       document.getElementById('comuni-analisi-panel')?.classList.remove('open');
@@ -1517,7 +1679,7 @@ style: {
         const statsRow = anncsuStatsMap[codNum];
         popup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px' })
           .setLngLat(e.lngLat)
-          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${buildCiviciBlock(statsRow)}`)
+          .setHTML(`<div class="popup-address">${nome}</div><div class="popup-comune">Nessun finanziamento ANNCSU registrato</div>${buildCiviciBlock(statsRow, hotspotMap[codNum] || 0)}`)
           .addTo(map);
         return;
       }
@@ -1525,7 +1687,7 @@ style: {
 
       // Conteggio civici totali dal file anncsu_stats.json
       const statsRow = anncsuStatsMap[codNum];
-      const civHTML = buildCiviciBlock(statsRow);
+      const civHTML = buildCiviciBlock(statsRow, hotspotMap[codNum] || 0);
 
       const n = info.entries.length;
       const entriesHTML = `
@@ -2715,3 +2877,4 @@ style: {
   loadComuni();
   loadAggiudicatori();
   loadAnncsuStats();
+  loadHotspotData();
