@@ -2070,6 +2070,25 @@
     }
     #search-reset-btn:hover { opacity: 1; background: var(--bg-btn-hover); }
 
+    #civici-search-btn {
+      background: linear-gradient(135deg, #ff9900 0%, #e68800 100%);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      margin-left: 2px;
+      box-shadow: 0 2px 6px rgba(255, 153, 0, 0.4);
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    #civici-search-btn:hover {
+      box-shadow: 0 4px 12px rgba(255, 153, 0, 0.6);
+      transform: translateY(-1px);
+    }
+
     #filter-modal-badge {
       display: none;
       position: absolute;
