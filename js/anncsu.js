@@ -833,18 +833,24 @@
 
   function toggleBivariateMode() {
     comuniBivariateMode = !comuniBivariateMode;
-    const btn = document.getElementById('btn-bivariate');
+    const btn    = document.getElementById('btn-bivariate');
+    const tbBtn  = document.getElementById('tb-bivariate');
+    const CIVICI_LAYERS = ['civici', 'civici-labels'];
     if (comuniBivariateMode) {
       if (!comuniLayerVisible) toggleComuniLayer();
       const data = buildBivariateData();
       bivariateCache = data;
       applyBivariateLayer(data);
       buildBivariateLegend();
-      if (btn) btn.classList.add('biv-btn-active');
+      CIVICI_LAYERS.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none'); });
+      if (btn)   btn.classList.add('biv-btn-active');
+      if (tbBtn) tbBtn.classList.add('tb-btn-active');
     } else {
       updateComuniColors();
       buildComuniLegend();
-      if (btn) btn.classList.remove('biv-btn-active');
+      CIVICI_LAYERS.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'visible'); });
+      if (btn)   btn.classList.remove('biv-btn-active');
+      if (tbBtn) tbBtn.classList.remove('tb-btn-active');
     }
   }
 
@@ -1157,6 +1163,7 @@
       if (comuniBivariateMode) {
         comuniBivariateMode = false;
         document.getElementById('btn-bivariate')?.classList.remove('biv-btn-active');
+        document.getElementById('tb-bivariate')?.classList.remove('tb-btn-active');
       }
       if (tbComuniAnalisi) tbComuniAnalisi.style.display = 'none';
       if (tabComuniAnalisi) tabComuniAnalisi.style.display = 'none';
