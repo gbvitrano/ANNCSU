@@ -202,7 +202,7 @@
   // ── CARICAMENTO HOTSPOT DBSCAN ──────────────────────────────────────────────
   async function loadHotspotData() {
     try {
-      const res = await fetch(HOTSPOT_URL);
+      const res = await fetch('dati/hotspots_tmp.json');
       const data = await res.json();
       hotspotMap = {};
       (data.by_comune || []).forEach(row => {
