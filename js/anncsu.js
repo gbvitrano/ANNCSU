@@ -830,7 +830,7 @@
             <div class="biv-xlabel">${qualLabel}</div>
           </div>
         </div>
-        <div class="biv-note">viola = alta densità + bassa qualità = massimo impatto</div>
+        <div class="biv-note">viola = alta densità + bassa qualità<br>= massimo impatto</div>
       </div>`;
     el.style.display = '';
   }
