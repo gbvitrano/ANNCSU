@@ -773,9 +773,13 @@
     const qLabel = ['Bassa qualità', 'Media qualità', 'Alta qualità'][d.xClass];
     const dLabel = ['Bassa densità', 'Media densità', 'Alta densità'][d.yClass];
     return `
+      <div class="popup-civici-title">Mappa bivariata</div>
       <div class="popup-biv-block">
         <span class="popup-biv-swatch" style="background:${color}"></span>
         <span class="popup-biv-desc">${qLabel} · ${dLabel}</span>
+        <button class="popup-biv-btn" onclick="activateBivariateForComune(${codNum})" title="Apri mappa bivariata su questo comune">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1" opacity="0.45"/><rect x="2" y="13" width="9" height="9" rx="1" opacity="0.7"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+        </button>
       </div>`;
   }
 
@@ -852,6 +856,24 @@
       if (btn)   btn.classList.remove('biv-btn-active');
       if (tbBtn) tbBtn.classList.remove('tb-btn-active');
     }
+  }
+
+  function activateBivariateForComune(codNum) {
+    if (!comuniBivariateMode) toggleBivariateMode();
+    const features = map.querySourceFeatures('comuni', { sourceLayer: 'comuni' })
+      .filter(f => parseInt(f.properties.pro_com_t, 10) === codNum);
+    if (features.length === 0) return;
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+    features.forEach(f => {
+      const rings = f.geometry.type === 'Polygon'
+        ? f.geometry.coordinates
+        : f.geometry.coordinates.flat(1);
+      rings[0].forEach(([lng, lat]) => {
+        if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+      });
+    });
+    map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 120, maxZoom: 9 });
   }
 
   function selectAggiudicatario(den) {

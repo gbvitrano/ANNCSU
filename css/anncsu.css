@@ -551,6 +551,7 @@
       border-radius: 5px;
       background: var(--bg-secondary, rgba(0,0,0,0.04));
       border: 1px solid var(--border);
+      justify-content: space-between;
     }
     .popup-biv-swatch {
       width: 14px;
@@ -563,6 +564,25 @@
       font-size: 0.75rem;
       color: var(--text-secondary);
       font-weight: 500;
+      flex: 1;
+    }
+    .popup-biv-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 2px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 3px;
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    .popup-biv-btn:hover {
+      opacity: 1;
+      background: var(--border);
     }
 
     /* ── Legenda aggiudicatari ───────────────────────────────────────────────── */
