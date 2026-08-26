@@ -1,7 +1,7 @@
   // ── CONFIGURAZIONE ──────────────────────────────────────────────────────────
   const PMTILES_URL = 'https://gbvitrano.it/anncus/data/anncsu-indirizzi.pmtiles';
   // Hotspot DBSCAN da mfortini/diff_ANNCSU — aggiornare hash quando il file viene rigenerato
-  const HOTSPOT_URL = 'https://mfortini.github.io/diff_ANNCSU/quality/_file/data/anncsu_dbscan_hotspots.7b616718.json';
+  const HOTSPOT_URL = 'https://mfortini.github.io/diff_ANNCSU/quality/_file/data/anncsu_dbscan_hotspots.e661fb8f.json';
   const MAP_CENTER  = [12.5, 42.0];
   const MAP_ZOOM    = 6;
   const ITALY_BOUNDS = [[6.0, 35.5], [19.2, 47.8]]; // bounds leggermente più grandi dell'Italia
