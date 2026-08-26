@@ -608,7 +608,11 @@
   }
 
   // ── SWITCH TEMA ──────────────────────────────────────────────────────────────
-  let pendingTheme = null;
+  // Layer/source "nostri" da preservare quando la base OpenFreeMap viene
+  // sostituita (map.setStyle rimpiazza l'intero stile, base compresa).
+  const CUSTOM_SOURCE_IDS = ['comuni', 'anncsu'];
+  const CUSTOM_LAYER_IDS  = ['comuni-fill', 'comuni-outline', 'comuni-selected',
+                             'civici', 'civici-labels', 'civici-altri', 'civici-highlight'];
 
   function toggleThemeBtn() {
     const isDark = document.documentElement.getAttribute('data-theme') !== 'dark';
@@ -625,21 +629,32 @@
     // th-light / th-dark potrebbero non esistere nel clone — guard null
     document.getElementById('th-light')?.classList.toggle('active', !isDark);
     document.getElementById('th-dark')?.classList.toggle('active', isDark);
-    const tiles = isDark
-      ? ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-         'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-         'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png']
-      : ['https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'];
-    const src = map.getSource('carto');
-    if (src) {
-      src.setTiles(tiles);
-    } else {
-      pendingTheme = tiles;
+
+    const styleUrl  = isDark ? OFM_STYLE_DARK : OFM_STYLE_LIGHT;
+    const haloColor = isDark ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.85)';
+
+    if (!map.getSource('comuni')) {
+      // primo caricamento non ancora completato: nulla da preservare
+      map.setStyle(styleUrl);
+      return;
     }
-    if (map.getLayer('civici-labels')) {
-      map.setPaintProperty('civici-labels', 'text-halo-color',
-        isDark ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.85)');
-    }
+    // Cattura lo stato live (colori/filtri applicati a runtime) dei nostri
+    // layer/source prima di sostituire l'intero stile con quello nuovo.
+    const current = map.getStyle();
+    const customSources = {};
+    CUSTOM_SOURCE_IDS.forEach(id => { if (current.sources[id]) customSources[id] = current.sources[id]; });
+    const customLayers = current.layers
+      .filter(l => CUSTOM_LAYER_IDS.includes(l.id))
+      .map(l => l.id === 'civici-labels'
+        ? { ...l, paint: { ...l.paint, 'text-halo-color': haloColor } }
+        : l);
+    fetch(styleUrl).then(r => r.json()).then(baseStyle => {
+      map.setStyle({
+        ...baseStyle,
+        sources: { ...baseStyle.sources, ...customSources },
+        layers: [...baseStyle.layers, ...customLayers]
+      });
+    });
   }
 
   // ── LAYER COMUNI ─────────────────────────────────────────────────────────────
@@ -1461,20 +1476,14 @@
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol('pmtiles', protocol.tile.bind(protocol));
 
+  // Basemap vettoriale OpenFreeMap (sostituisce i tile raster CARTO)
+  const OFM_STYLE_LIGHT = 'https://tiles.openfreemap.org/styles/positron';
+  const OFM_STYLE_DARK  = 'https://tiles.openfreemap.org/styles/dark';
+  const initialIsDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
   const map = new maplibregl.Map({
     container: 'map',
-style: {
-  version: 8,
-  sources: {
-    'carto': {
-      type: 'raster',
-      tiles: ['https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors © <a href="https://www.linkedin.com/in/gbvitrano/" target="_blank">CARTO</a> | by <a href="https://www.linkedin.com/in/gbvitrano/" title="@gbvitrano "target="_blank">@gbvitrano</a> - <a href="https://creativecommons.org/licenses/by/4.0/deed.it" title="@gbvitrano "target="_blank">CC BY 4.0</a>  '
-    }
-  },
-  layers: [{ id: 'carto-tiles', type: 'raster', source: 'carto' }]
-},
+    style: initialIsDark ? OFM_STYLE_DARK : OFM_STYLE_LIGHT,
     center: MAP_CENTER,
     zoom: MAP_ZOOM,
     minZoom: 4,
@@ -1532,7 +1541,6 @@ style: {
       el.classList.remove('maplibregl-compact-show');
     });
     document.getElementById('loading').classList.add('hidden');
-    if (pendingTheme) { map.getSource('carto').setTiles(pendingTheme); pendingTheme = null; }
 
     // ── Source e layer comuni (zoom 4-11) ──────────────────────────────────────
     map.addSource('comuni', {
@@ -1582,7 +1590,7 @@ style: {
     map.addSource('anncsu', {
       type: 'vector',
       url: `pmtiles://${PMTILES_URL}`,
-      attribution: 'Dati: <a href="https://anncsu.open.agenziaentrate.gov.it/" target="_blank">ANNCSU – Agenzia delle Entrate</a>'
+      attribution: 'Dati: <a href="https://anncsu.open.agenziaentrate.gov.it/" target="_blank">ANNCSU – Agenzia delle Entrate</a> | by <a href="https://www.linkedin.com/in/gbvitrano/" title="@gbvitrano" target="_blank">@gbvitrano</a> - <a href="https://creativecommons.org/licenses/by/4.0/deed.it" title="@gbvitrano" target="_blank">CC BY 4.0</a>'
     });
 
     map.addLayer({
@@ -1625,7 +1633,7 @@ style: {
           ['concat', ['to-string', ['get', 'CIVICO']], '/', ['get', 'ESPONENTE']],
           ['to-string', ['get', 'CIVICO']]
         ],
-        'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+        'text-font': ['Noto Sans Regular'],
         'text-size': ['interpolate', ['linear'], ['zoom'], 17, 10, 19, 13],
         'text-anchor': 'top',
         'text-offset': [0, 0.4],

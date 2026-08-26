@@ -42,7 +42,7 @@ Dal pannello di analisi (icona target) è possibile vedere l'elenco dei comuni c
 
 ### Tecnologie
 
-La mappa è realizzata con **MapLibre GL JS**. I dati vettoriali sono in formato **PMTiles**, che permette di servire milioni di punti direttamente dal browser senza un server dedicato. La mappa di base è fornita da **CARTO** su base OpenStreetMap. L'applicazione è open source e gira interamente nel browser, senza installazione.
+La mappa è realizzata con **MapLibre GL JS**. I dati vettoriali sono in formato **PMTiles**, che permette di servire milioni di punti direttamente dal browser senza un server dedicato. La mappa di base è fornita da **OpenFreeMap** (stili Positron/Dark) su base OpenStreetMap. L'applicazione è open source e gira interamente nel browser, senza installazione.
 
 ---
 
