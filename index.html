@@ -5,82 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Analisi Numeri Civici ANNCSU – Italia</title>
-  <meta name="description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
+  <meta name="description" content="Esplora i dati dell'ANNCSU, l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: naviga il territorio nazionale e osserva la qualità della geocodifica comune per comune.">
   <meta name="author" content="Giovan Battista Vitrano per OpenDataSicilia.it">
-    <meta http-equiv="content-language" content="IT">
-    <meta name="robots" content="index,follow">
-    <meta name="creation_Date" content="31/03/2026>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-      <link rel="icon" href="favicon.png" type="image/png"/>
+  <meta http-equiv="content-language" content="IT">
+  <meta name="robots" content="index,follow">
+  <meta name="creation_Date" content="31/03/2026">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="favicon.png" type="image/png"/>
+  
+  <!-- Open Graph / Twitter -->
+  <meta property="og:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Analisi Numeri Civici ANNCSU – Italia">
+  <meta property="og:description" content="Esplora i dati dell'ANNCSU, l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano.">
+  <meta property="og:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="palermohub.opendatasicilia.it">
+  <meta property="twitter:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
+  <meta name="twitter:title" content="Analisi Numeri Civici ANNCSU – Italia">
+  <meta name="twitter:description" content="Esplora i dati dell'ANNCSU, l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani gestita dall'Agenzia delle Entrate.">
+  <meta name="twitter:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
+
+  <!-- Connessioni anticipate verso CDN e tile server -->
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Titillium Web: il carattere del design system della PA italiana -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap">
+
+  <!-- CSS critico: mappa + interfaccia -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
-  <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pmtiles@4/dist/pmtiles.js"></script>
+  <link rel="stylesheet" href="css/anncsu.css">
 
-	<link rel="stylesheet" href="css/anncsu.css">
+  <!-- CSS non critico (chart builder, icone, Leaflet per il modal civici): caricato senza bloccare il render -->
+  <link rel="stylesheet" href="css/chart-builder.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="css/chart-builder.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  </noscript>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87653723-4"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-87653723-4');
-    </script>
+  <!-- Script: tutti in defer, ordine di esecuzione garantito dal documento -->
+  <script defer src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/pmtiles@4/dist/pmtiles.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <script type="module">Chart.register(ChartDataLabels);</script>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-	    <!-- Meta tags per social sharing pen Graph Protocol -->
-   <meta property="og:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Analisi Numeri Civici ANNCSU – Italia">
-    <meta property="og:description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
-    <meta property="og:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
-	<!-- twitter -->
-     <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="palermohub.opendatasicilia.it">
-    <meta property="twitter:url" content="https://gbvitrano.github.io/ANNCSU/index.html">
-    <meta name="twitter:title" content="Analisi Numeri Civici ANNCSU – Italia">
-    <meta name="twitter:description" content="Questa applicazione ti permette di esplorare i dati dell'ANNCSU — l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani — gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: puoi navigare liberamente su tutto il territorio nazionale e osservare come sono distribuiti gli indirizzi nei diversi comuni.">
-    <meta name="twitter:image" content="https://gbvitrano.github.io/ANNCSU/img/social_card.jpg">
-
-	<!-- Chart.js per Chart Builder -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-	<!-- Plugin etichette valori sui grafici -->
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-	<script>Chart.register(ChartDataLabels);</script>
-	<!-- Font Awesome per icone -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-	<!-- CSS Chart Builder -->
-	<link rel="stylesheet" href="css/chart-builder.css">
-	<!-- Leaflet per modal Cerca Civici -->
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87653723-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-87653723-4');
+  </script>
 
 </head>
 
 <body>
 
 <header>
-  <div id="header-top-row">
-    <div id="header-brand">
-      <div id="header-logos">
-        <a href="https://palermohub.opendatasicilia.it/" target="_blank" title="palermohub.opendatasicilia.it">
-          <img src="img/pa_hub_new.png" alt="PalermoHub" id="logo-palermohub">
-        </a>
-      </div>
-      <div>
-        <h1>Analisi Numeri Civici ANNCSU – Italia</h1>
-        <p>Anagrafe Nazionale Numeri Civici Stradali Urbani · Agenzia delle Entrate</p>
-      </div>
-    </div>
-    <div id="header-mobile-actions">
-      <button id="mobile-search-btn" onclick="toggleMobileSearch()" title="Cerca indirizzo">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <button id="mobile-filters-btn" onclick="toggleMobileFilters()" title="Filtri">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-        <span id="mobile-filters-badge" style="display:none"></span>
-      </button>
-    </div>
+  <h1 class="sr-only">Analisi Numeri Civici ANNCSU – Italia</h1>
+  <div id="header-mobile-actions">
+    <button id="mobile-search-btn" onclick="toggleMobileSearch()" title="Cerca indirizzo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button id="mobile-filters-btn" onclick="toggleMobileFilters()" title="Filtri">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      <span id="mobile-filters-badge" style="display:none"></span>
+    </button>
   </div>
 
   <!-- Drawer filtri mobile -->
@@ -188,13 +190,13 @@
 
     <!-- Pulsante info con SVG -->
     <button id="info-btn" onclick="openInfoModal()" title="Informazioni sull'applicazione" aria-label="Informazioni">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg><span class="btn-label">Informazioni</span>
     </button>
 
     <!-- Switch tema compatto icona-only -->
     <button id="theme-toggle-btn" onclick="toggleThemeBtn()" title="Cambia tema" aria-label="Cambia tema chiaro/scuro">
       <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span class="btn-label">Tema chiaro o scuro</span>
     </button>
 
     <!-- Input nascosto per compatibilità JS esistente -->
@@ -320,7 +322,7 @@
       <svg class="addr-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text" id="address-search-input" Title="Cerca regione, provincia, comune o indirizzo…Bastano poche lettere per ottenere subito un suggerimento. Puoi anche combinare più filtri insieme, per trovare esattamente quello che ti serve." placeholder="Cerca regione, provincia, comune o indirizzo…Bastano poche lettere per ottenere subito un suggerimento. Puoi anche combinare più filtri insieme, per trovare esattamente quello che ti serve."
+      <input type="text" id="address-search-input" title="Bastano poche lettere. Puoi combinare regione, provincia, comune e indirizzo." placeholder="Cerca regione, provincia, comune o indirizzo"
              autocomplete="off" oninput="onAddressInput(this.value)"
              onkeydown="onAddressKeydown(event)" aria-label="Cerca" />
       <button id="address-search-clear" onclick="clearAddressSearch()" title="Cancella ricerca">✕</button>
@@ -375,7 +377,7 @@
       </svg>
       <span class="analisi-header-text"><span class="analisi-title">Analisi della mappa</span><span class="analisi-realtime-note">aggiornata sulla vista corrente</span></span>
       <button id="analisi-refresh" onclick="refreshAnalisi()" title="Aggiorna">↺</button>
-      <button id="analisi-download" onclick="downloadAnalisiCSV()" title="Scarica CSV civici fuori confine visibili" disabled>⬇ CSV</button>
+      <button id="analisi-download" onclick="downloadAnalisiCSV()" title="Scarica CSV dei civici fuori confine visibili" disabled>CSV</button>
       <button id="analisi-close" onclick="toggleAnalisiPanel()" title="Chiudi">✕</button>
     </div>
     <div id="analisi-body"></div>
@@ -388,37 +390,37 @@
   <button id="legend-close" style="display:none" onclick="document.getElementById('legend').classList.toggle('legend-collapsed')" title="Comprimi">✕</button>
   <h3 id="legend-title">Numeri civici visibili</h3>
   <div class="legend-content">
-  <div class="legend-realtime-note" id="legend-note">Aggiornati in tempo reale sulla vista corrente</div>
+  <div class="legend-realtime-note" id="legend-note">Aggiornati sulla vista corrente</div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-ok);"></div>
-    <span class="legend-label">Dentro il confine comunale</span>
+    <span class="legend-label">Dentro il confine</span>
     <span class="legend-count" id="count-ok">—</span>
   </div>
   <div class="legend-item">
     <div class="legend-dot" style="background:var(--accent-err);"></div>
-    <span class="legend-label">Fuori dal confine comunale</span>
+    <span class="legend-label">Fuori dal confine</span>
     <span class="legend-count err" id="count-err">—</span>
   </div>
-  <div class="legend-item" id="count-oob-row" style="display:none; border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
+  <div class="legend-item legend-sub" id="count-oob-row" style="display:none">
     <div class="legend-dot" style="background:var(--accent-oob); opacity:0.5;"></div>
-    <span class="legend-label" style="font-size:0.72rem;">Propri fuori territorio</span>
+    <span class="legend-label">Propri fuori territorio</span>
     <span class="legend-count" id="count-oob" style="color:var(--accent-oob);">—</span>
   </div>
-  <div class="legend-item" id="count-altri-row" style="display:none; padding-top:3px;">
+  <div class="legend-item" id="count-altri-row" style="display:none">
     <div class="legend-dot" style="background:var(--accent-oob);"></div>
-    <span class="legend-label" style="font-size:0.72rem;">Civici di altri comuni nel territorio</span>
+    <span class="legend-label">Civici di altri comuni nel territorio</span>
     <span class="legend-count" id="count-altri" style="color:var(--accent-oob);">—</span>
   </div>
-  <div class="legend-item" style="border-top:1px solid var(--border-color); margin-top:5px; padding-top:5px;">
-    <span class="legend-label" style="color:var(--text-secondary); font-size:0.72rem;" id="count-value-label">Totale</span>
-    <span class="legend-count" id="count-value" style="color:var(--text-primary);">—</span>
+  <div class="legend-item legend-total">
+    <span class="legend-label" id="count-value-label">Totale</span>
+    <span class="legend-count" id="count-value">—</span>
   </div>
   </div><!-- /.legend-content -->
 </div>
 
-  <!-- Usa il clone anncsu_dataviz.js che importa anncsu.js e espone i dati -->
-  <script src="js/anncsu_dataviz.js"></script>
-  <script src="js/anncsu.js"></script>
+  <!-- anncsu_dataviz.js espone i dati; anncsu.js è l'app mappa -->
+  <script defer src="js/anncsu_dataviz.js"></script>
+  <script defer src="js/anncsu.js"></script>
 
 <!-- Modal info – bottom sheet -->
 <div id="info-overlay" onclick="closeInfoModal()"></div>
@@ -448,7 +450,7 @@
     <p>La barra di ricerca in basso al centro funziona come una <strong>ricerca smart</strong>: bastano poche lettere per ottenere subito suggerimenti di <strong>regioni</strong>, <strong>province</strong>, <strong>comuni</strong> e indirizzi. Selezionando un risultato, questo diventa un <strong>chip</strong> visibile nella barra che restringe il contesto: per esempio, scegliendo prima una regione, le ricerche successive mostreranno solo province e comuni di quella regione. Puoi combinare più livelli insieme — regione → provincia → comune → via e numero civico — per trovare esattamente quello che ti serve. Ogni chip ha un pulsante <em>✕</em> per rimuoverlo singolarmente e risalire di livello.</p>
     <p>Per un controllo più preciso, usa il pulsante <strong>Filtro Territorio</strong> (icona a griglia): si apre un pannello dove scegliere manualmente regioni, province e comune. Quando uno o più filtri sono attivi, sul pulsante compare un <strong>badge numerico</strong>. Per azzerare tutto in un colpo solo, premi il pulsante <strong>Reset</strong> (icona freccia circolare) che appare accanto. I tre pulsanti <em>Tutti</em>, <em>Geocodificati</em> e <em>Fuori limite</em> ti permettono inoltre di isolare rapidamente i civici corretti o quelli anomali. La mappa si aggiorna in tempo reale a ogni modifica.</p>
 
-    <h3>Novità — Cerca civici tramite API REST <span style="background:var(--accent,#2563eb);color:#fff;font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:10px;vertical-align:middle;margin-left:4px;">NUOVO</span></h3>
+    <h3>Novità — Cerca civici tramite API REST <span class="info-new">Nuovo</span></h3>
     <p>Il pulsante con la <strong>lente +</strong> nella barra di ricerca apre uno strumento dedicato che interroga direttamente l'<strong>API REST ANNCSU</strong> di <em>developers.coseerobe.it</em>. Puoi cercare civici filtrando per <strong>comune</strong>, <strong>via</strong> (o parte del nome), <strong>tipo di strada</strong> (via, corso, piazza…) e <strong>numero civico</strong>. I risultati appaiono in una tabella affiancata da una mini-mappa interattiva che mostra i punti trovati. Puoi scegliere quanti record recuperare (da 25 fino a tutti) e scaricare i dati in formato <strong>CSV</strong> o <strong>JSON</strong>. Il pulsante <em>Reset</em> svuota il form e ripulisce la mappa. Nella stessa finestra trovi anche la sezione <strong>download per comune intero</strong>: inserendo il <strong>codice catastale</strong> del comune (es. <code>G273</code> per Palermo) puoi scaricare tutti i numeri civici in formato <strong>GeoParquet</strong> compatibile con QGIS (EPSG 4326), DuckDB, Python e altri strumenti GIS oppure in formato <strong>GeoPackage</strong>.</p>
 
     <h3>Link diretto a un comune</h3>
@@ -467,7 +469,7 @@
     <p>Dal pannello di analisi (icona target) puoi vedere l'elenco dei comuni con civici anomali visibili nella vista corrente. Cliccando su un comune i punti relativi vengono evidenziati in giallo sulla mappa e la vista si centra su di essi. È possibile avviare una <strong>verifica tramite geocodifica inversa</strong> (OpenStreetMap Nominatim) per scoprire in quale territorio ricadono realmente le coordinate fuori confine. Il pulsante CSV esporta tutti i civici anomali visibili con le relative coordinate.</p>
 
     <h3>Tecnologie</h3>
-    <p>La mappa è realizzata con <strong>MapLibre GL JS</strong>. I dati vettoriali sono in formato <em>PMTiles</em>, che permette di servire milioni di punti direttamente dal browser senza un server dedicato. La mappa di base è fornita da <strong>CARTO</strong> su base OpenStreetMap. L'applicazione è open source e gira interamente nel browser, senza installazione.</p>
+    <p>La mappa è realizzata con <strong>MapLibre GL JS</strong>. I dati vettoriali sono in formato <em>PMTiles</em>, che permette di servire milioni di punti direttamente dal browser senza un server dedicato. La mappa di base è fornita da <strong>OpenFreeMap</strong> (stili Positron e Dark) su base OpenStreetMap. L'applicazione è open source e gira interamente nel browser, senza installazione.</p>
   </div>
 
   <!-- Tab: Fonti dati -->
@@ -602,14 +604,14 @@
 
     <h3>7 · Tabelle dettaglio</h3>
     <p>Nel selettore Dimensione, in fondo all'elenco, ci sono due opzioni speciali:</p>
-    <ul style="margin:8px 0 0 16px;line-height:1.8;font-size:13px;color:#374151;">
+    <ul>
       <li><strong>Aggiudicatori per Regione / Provincia / Comune</strong> — tabella completa con Regione, Provincia, Comune, Aggiudicatore, Tipologia Ente, Misura PNRR, Totale Civici, OK, Fuori Limite, % OK, Importo Finanziamento.</li>
       <li><strong>Tutti i Comuni (Civici + PNRR)</strong> — una riga per comune con le statistiche civici e il primo aggiudicatore assegnato.</li>
     </ul>
-    <p style="margin-top:8px;">Entrambe le tabelle rispettano i filtri geografici attivi e possono essere scaricate in CSV.</p>
+    <p>Entrambe le tabelle rispettano i filtri geografici attivi e possono essere scaricate in CSV.</p>
 
     <h3>Esempi di grafici</h3>
-    <p style="margin-bottom:14px;font-size:13px;color:#6b7280;">Alcuni grafici pronti da replicare in pochi clic.</p>
+    <p>Alcuni grafici pronti da replicare in pochi clic.</p>
 
     <div class="dv-examples-grid">
 
@@ -741,7 +743,7 @@
     </div><!-- /dv-examples-grid -->
 
     <h3>Esempi con Mixed e Radar</h3>
-    <p style="margin-bottom:14px;font-size:13px;color:#6b7280;">Grafici combinati e polari per analisi multi-variabile.</p>
+    <p>Grafici combinati e polari per analisi multi-variabile.</p>
 
     <div class="dv-examples-grid">
 
@@ -927,7 +929,7 @@
     </div>
 
     <h3>Avvertenze</h3>
-    <ul style="margin:8px 0 0 16px;line-height:1.8;font-size:13px;color:#374151;">
+    <ul>
       <li>I parametri DBSCAN (<code>eps=8m, min_points=5</code>) possono includere cluster legittimi in edifici multipiano o piazze dense. La sottrazione degli hotspot è una stima conservativa, non una correzione esatta.</li>
       <li>I comuni non presenti nel dataset ANNCSU appaiono trasparenti nella mappa bivariate: indica assenza di dati, non qualità zero.</li>
       <li>La densità civici/km² è un proxy per l'urbanizzazione. Comuni con molte seconde case o destinazioni turistiche possono avere valori sproporzionati rispetto alla popolazione residente.</li>
@@ -1517,7 +1519,7 @@
   </div>
 </div>
 
-<script src="js/chart-builder-anncsu.js"></script>
+<script defer src="js/chart-builder-anncsu.js"></script>
 
 <!-- ═══════════════════ MODAL CERCA CIVICI API ═══════════════════ -->
 <div id="civici-modal-overlay" onclick="closeCiviciModal()"></div>
@@ -1525,8 +1527,8 @@
 
   <div id="civici-modal-header">
     <h2>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Cerca Civici — API REST ANNCSU
+      <span class="cm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <span class="cm-title-wrap"><span class="cm-kicker">API REST ANNCSU</span>Cerca civici</span>
     </h2>
     <button id="civici-modal-close" onclick="closeCiviciModal()" title="Chiudi">✕</button>
   </div>
@@ -1613,10 +1615,13 @@
     </div>
 
     <div id="civici-stats-bar" style="display:none">
-      Trovati: <strong id="cm-count">—</strong>
-      &nbsp;·&nbsp; Comuni: <strong id="cm-comuni">—</strong>
-      &nbsp;·&nbsp; Con coord.: <strong id="cm-geo">—</strong>
-      &nbsp;·&nbsp; <span id="cm-time" style="color:var(--text-muted)"></span>
+      <span>Trovati <strong id="cm-count">—</strong></span>
+      <span class="sep">|</span>
+      <span>Comuni <strong id="cm-comuni">—</strong></span>
+      <span class="sep">|</span>
+      <span>Con coordinate <strong id="cm-geo">—</strong></span>
+      <span class="sep">|</span>
+      <span id="cm-time"></span>
     </div>
 
     <div id="civici-content-split">
@@ -1629,7 +1634,7 @@
         <div id="civici-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
           <span>Inserisci almeno un parametro e clicca <strong>Cerca</strong></span>
-          <small style="color:var(--text-muted)">API: developers.coseerobe.it/api/v1/anncsu-indirizzi-slim</small>
+          <small>API: developers.coseerobe.it/api/v1/anncsu-indirizzi-slim</small>
         </div>
       </div>
 
@@ -2203,9 +2208,9 @@
     document.getElementById('civici-dl-bar').style.display   = 'none';
     document.getElementById('civici-table-wrap').innerHTML =
       '<div id="civici-placeholder">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;opacity:0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
       '<span>Inserisci almeno un parametro e clicca <strong>Cerca</strong></span>' +
-      '<small style="color:var(--text-muted)">API: developers.coseerobe.it/api/v1/anncsu-indirizzi-slim</small>' +
+      '<small>API: developers.coseerobe.it/api/v1/anncsu-indirizzi-slim</small>' +
       '</div>';
     civiciLastData = null;
     if (civiciMap) { civiciMarkers.clearLayers(); civiciMap.setView([42.5, 12.5], 5); }

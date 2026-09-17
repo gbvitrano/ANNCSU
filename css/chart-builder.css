@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     overflow: hidden;
     white-space: nowrap;
 }
@@ -134,7 +134,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     transition: all 0.2s;
     white-space: nowrap;
 }
@@ -259,7 +259,7 @@
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 13px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     background: white;
     color: #1f2937;
     cursor: pointer;
@@ -289,7 +289,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
 }
 
 .chart-type-btn i { font-size: 20px; color: #6b7280; transition: color 0.2s; }
@@ -521,7 +521,7 @@ input[type="range"]::-moz-range-thumb {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
 }
 
 .preset-btn:hover {
@@ -595,7 +595,7 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 8px;
     font-size: 14px;
     font-weight: 700;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -618,7 +618,7 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 8px;
     font-size: 13px;
     font-weight: 700;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -708,7 +708,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     background: transparent;
     color: #6b7280;
     transition: all 0.2s;
@@ -738,7 +738,7 @@ input[type="range"]::-moz-range-thumb {
     align-items: center;
     gap: 6px;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
 }
 
 .btn-download-csv:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
@@ -756,7 +756,7 @@ input[type="range"]::-moz-range-thumb {
     width: 100%;
     min-width: max-content;   /* scroll orizzontale per tabelle multi-colonna */
     border-collapse: collapse;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     font-size: 12px;
 }
 
@@ -944,7 +944,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 10px;
     font-weight: 700;
     color: #6b7280;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     transition: all 0.2s;
     cursor: pointer;
     white-space: nowrap;
@@ -977,7 +977,7 @@ input[type="range"]::-moz-range-thumb {
     align-items: center;
     gap: 3px;
     transition: all 0.2s;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     flex-shrink: 0;
 }
 
@@ -1001,7 +1001,7 @@ input[type="range"]::-moz-range-thumb {
     align-items: center;
     gap: 4px;
     transition: all 0.2s;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
 }
 
 .btn-reset-geo-filters:hover {
@@ -1026,7 +1026,7 @@ input[type="range"]::-moz-range-thumb {
     border-bottom: none;
     border-radius: 6px 6px 0 0;
     font-size: 12px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     background: white;
     color: #1f2937;
     box-sizing: border-box;
@@ -1046,7 +1046,7 @@ input[type="range"]::-moz-range-thumb {
     border: 2px solid #e5e7eb;
     border-radius: 6px;
     font-size: 12px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font), sans-serif;
     background: white;
     color: #1f2937;
     cursor: pointer;
