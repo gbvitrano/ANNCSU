@@ -296,6 +296,7 @@
       const iStato  = headers.indexOf('stato_candidatura');
       const iFin    = headers.indexOf('numero_finestra_temporale');
       const iImportoAgg = headers.indexOf('importo_aggiudicazione');
+      const iDataFin = headers.indexOf('data_finanziamento');
 
       lines.slice(1).forEach(line => {
         if (!line.trim()) return;
@@ -312,9 +313,13 @@
             provincia:    cols[iProv]?.trim()   || '',
             regione:      cols[iReg]?.trim()    || '',
             importoTotale: importo,
+            dataFinanziamento: '',
             entries:      []
           };
         }
+        const dataFin = (cols[iDataFin] || '').trim().slice(0, 10);
+        if (dataFin && (!aggiudicatoriMap[cod].dataFinanziamento || dataFin < aggiudicatoriMap[cod].dataFinanziamento))
+          aggiudicatoriMap[cod].dataFinanziamento = dataFin;
         const den = cols[iDen]?.trim() || '';
         const cf  = cols[iCF]?.trim()  || '';
         aggiudicatoriMap[cod].entries.push({
@@ -2354,12 +2359,13 @@
   async function loadQualitaTab() {
     if (qData) return;
     try {
-      const [inout, xreg, grid] = await Promise.all(
-        ['comuni_inout', 'cross_region_matrix', 'grid_quality']
+      const [inout, xreg, grid, spatial] = await Promise.all(
+        ['comuni_inout', 'cross_region_matrix', 'grid_quality', 'andamento_spatial']
           .map(f => fetch(`dati/${f}.json`).then(r => r.json())));
-      qData = { inout, xreg, grid };
+      qData = { inout, xreg, grid, spatial };
       document.getElementById('q-date').textContent = inout.date || '—';
       tfInit('q', renderQualita);
+      document.getElementById('q-incompleti-csv').onclick = downloadIncompletiCsv;
       renderQualita();
     } catch (e) {
       console.warn('Tab qualità: dati non disponibili', e);
@@ -2376,7 +2382,7 @@
 
   function renderQualita() {
     if (!qData) return;
-    const { inout, xreg, grid } = qData;
+    const { inout, xreg, grid, spatial } = qData;
     const fmt = fmtIt, pct = pctIt, rows = setRows;
     const { reg, keep, scope } = tfState('q');
     document.getElementById('q-scope').textContent = scope;
@@ -2413,6 +2419,73 @@
       .map(r => `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td>` +
         `<td>${fmt(r.n_celle_anomale)}</td><td>${fmt(r.max_point_count)}</td><td class="civ-warn">${fmt(r.punti_in_celle_anomale)}</td></tr>`).join(''));
     qBarChart('q-grid-chart', topGrid.map(r => r.comune), topGrid.map(r => r.punti_in_celle_anomale), COLOR_OOB);
+
+    // 4 — comuni con civici ancora da georeferenziare
+    const inc = qIncompleti(keep);
+    const zero = inc.filter(r => r.georef === 0).length;
+    const incFuori = inc.reduce((s, r) => s + r.fuori, 0);
+    const mancanti = inc.reduce((s, r) => s + r.totale - r.georef, 0);
+    document.getElementById('q-incompleti-summary').innerHTML =
+      `Comuni non completi: <b style="color:var(--text-primary)">${fmt(inc.length)}</b>, di cui ` +
+      `<b class="civ-err">${fmt(zero)}</b> senza alcun civico georeferenziato · ` +
+      `civici ancora da georeferenziare: <b class="civ-err">${fmt(mancanti)}</b> · ` +
+      `fuori confine tra quelli già georeferenziati: <b class="civ-err">${fmt(incFuori)}</b>.`;
+    const pnrrInc = inc.filter(r => r.pnrr).length;
+    document.getElementById('q-incompleti-pnrr').innerHTML =
+      `Di questi, <b style="color:var(--text-primary)">${fmt(pnrrInc)}</b> sono finanziati PNRR 1.3.1 ` +
+      `(<b class="civ-err">${fmt(inc.filter(r => r.pnrr && r.georef === 0).length)}</b> ancora a zero).`;
+
+    // riepilogo per regione
+    const byReg = {};
+    spatial.comuni.total.filter(r => keep(r.codice_istat)).forEach(r => {
+      (byReg[r.regione] ??= { regione: r.regione, comuni: 0, inc: 0, zero: 0, pnrr: 0, mancanti: 0 }).comuni++;
+    });
+    inc.forEach(r => { const g = byReg[r.regione]; g.inc++; if (r.georef === 0) g.zero++; if (r.pnrr) g.pnrr++; g.mancanti += r.totale - r.georef; });
+    const regRows = Object.values(byReg).filter(g => g.inc > 0).sort((a, b) => b.mancanti - a.mancanti);
+    rows('q-incompleti-reg-table', regRows.map(g =>
+      `<tr><td>${g.regione}</td><td>${fmt(g.inc)} <span style="color:var(--text-muted)">/ ${fmt(g.comuni)}</span></td>` +
+      `<td class="civ-err">${fmt(g.zero)}</td><td>${fmt(g.pnrr)}</td><td class="civ-err">${fmt(g.mancanti)}</td></tr>`).join(''), 5);
+    qBarChart('q-incompleti-reg-chart', regRows.map(g => g.regione), regRows.map(g => g.mancanti), COLOR_ERR);
+
+    const topInc = inc.slice(0, 15);
+    const muted = '<span style="color:var(--text-muted)">—</span>';
+    rows('q-incompleti-table', topInc
+      .map(r => `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td>` +
+        `<td>${fmt(r.totale)}</td><td>${fmt(r.georef)}</td><td class="civ-err">${pct(r.georef, r.totale)}</td>` +
+        `<td>${r.fuori == null ? muted : fmt(r.fuori)}</td>` +
+        `<td>${r.pnrr ? `<span class="civ-ok">sì</span> <span style="color:var(--text-muted)">${r.pnrr}</span>` : muted}</td></tr>`).join(''), 6);
+    qBarChart('q-incompleti-chart', topInc.map(r => r.comune), topInc.map(r => r.totale - r.georef), COLOR_ERR);
+  }
+
+  // Comuni con georeferenziati < totali nell'ultimo rilascio, ordinati per % completamento crescente poi totale decrescente.
+  // fuori = civici fuori confine da comuni_inout (null se il comune non è nel file, tipicamente quelli a zero).
+  // pnrr = data del primo finanziamento 1.3.1 da aggiudicatori.csv ('' se non finanziato).
+  function qIncompleti(keep) {
+    const { inout, spatial } = qData;
+    const last = spatial.date_columns[spatial.date_columns.length - 1];
+    const fuoriMap = {};
+    inout.comuni.forEach(r => { fuoriMap[String(r.pro_com).padStart(6, '0')] = r.fuori; });
+    return spatial.comuni.total
+      .map(r => ({ istat: r.codice_istat, comune: r.comune, regione: r.regione,
+        totale: r['total_all_' + last] || 0, georef: r[last] || 0, fuori: fuoriMap[r.codice_istat] ?? null,
+        pnrr: aggiudicatoriMap[parseInt(r.codice_istat, 10)]?.dataFinanziamento || (aggiudicatoriMap[parseInt(r.codice_istat, 10)] ? 'sì' : '') }))
+      .filter(r => r.totale > 0 && r.georef < r.totale && keep(r.istat))
+      .sort((a, b) => (a.georef / a.totale - b.georef / b.totale) || (b.totale - a.totale));
+  }
+
+  function downloadIncompletiCsv() {
+    if (!qData) return;
+    const { keep, scope } = tfState('q');
+    const last = qData.spatial.date_columns[qData.spatial.date_columns.length - 1];
+    const rows = [['codice_istat', 'comune', 'regione', 'civici_totali', 'georeferenziati', 'da_georeferenziare', 'pct_completamento', 'fuori_confine', 'pnrr_131', 'data_finanziamento']];
+    qIncompleti(keep).forEach(r => rows.push([r.istat, r.comune, r.regione, r.totale, r.georef, r.totale - r.georef,
+      (100 * r.georef / r.totale).toFixed(2), r.fuori ?? '', r.pnrr ? 'si' : 'no', r.pnrr.length === 10 ? r.pnrr : '']));
+    const csv = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = `anncsu_comuni_incompleti_${scope.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${last}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   // ── Tab "Andamento": serie storica dei rilasci ANNCSU da mfortini/diff_ANNCSU ──
@@ -2429,6 +2502,7 @@
       document.getElementById('a-ndates').textContent = aData.dates.length;
       tfInit('a', renderAndamento);
       document.getElementById('a-metric').onchange = renderAndamento;
+      document.getElementById('a-fermi-csv').onclick = downloadFermiCsv;
       renderAndamento();
     } catch (e) {
       console.warn('Tab andamento: dati non disponibili', e);
@@ -2518,6 +2592,69 @@
     rows('a-varcom-table', topCom.map(r =>
       `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td><td>${fmt(r[last])}</td><td>${fmt(r[prev] || 0)}</td></tr>`).join(''), 3);
     qBarChart('a-varcom-chart', topCom.map(r => r.comune), topCom.map(r => r[last]), colorOf);
+
+    // 6 — churn: civici spostati + rimossi sommati su tutti i rilasci, per comune (solo filtro regione, niente ISTAT)
+    const churn = {};
+    ['moved', 'missing'].forEach(kind => spatial.comuni[kind].forEach(r => {
+      if (reg && r.regione !== reg) return;
+      const k = r.comune + '|' + r.regione;
+      const c = (churn[k] ??= { comune: r.comune, regione: r.regione, moved: 0, missing: 0, rilasci: new Set() });
+      dates.forEach(d => { if (r[d] > 0) { c[kind] += r[d]; c.rilasci.add(d); } });
+    }));
+    const churnRows = Object.values(churn).sort((a, b) => (b.moved + b.missing) - (a.moved + a.missing));
+    const topChurn = churnRows.slice(0, 15);
+    document.getElementById('a-churn-summary').innerHTML =
+      `Comuni con almeno un civico spostato o rimosso: <b style="color:var(--text-primary)">${fmt(churnRows.length)}</b> · ` +
+      `spostati: <b class="civ-warn">${fmt(churnRows.reduce((s, r) => s + r.moved, 0))}</b> · ` +
+      `rimossi: <b class="civ-err">${fmt(churnRows.reduce((s, r) => s + r.missing, 0))}</b> ` +
+      `in ${dates.length - 1} confronti tra rilasci.`;
+    rows('a-churn-table', topChurn.map(r =>
+      `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td><td class="civ-warn">${fmt(r.moved)}</td>` +
+      `<td class="civ-err">${fmt(r.missing)}</td><td>${fmt(r.moved + r.missing)}</td><td>${r.rilasci.size}</td></tr>`).join(''), 5);
+    qChart('a-churn-chart', 'bar', topChurn.map(r => r.comune), [
+      { label: 'Spostati', data: topChurn.map(r => r.moved), color: COLOR_OOB },
+      { label: 'Rimossi', data: topChurn.map(r => r.missing), color: COLOR_ERR }]);
+
+    // 7 — comuni fermi: parziali (<50%) con georeferenziati invariati da almeno 3 rilasci
+    const fermi = aFermi(keep);
+    document.getElementById('a-fermi-summary').innerHTML =
+      `Comuni parziali fermi: <b style="color:var(--text-primary)">${fmt(fermi.length)}</b> · ` +
+      `civici ancora da georeferenziare in questi comuni: <b class="civ-err">${fmt(fermi.reduce((s, r) => s + r.totale - r.georef, 0))}</b>. ` +
+      `Esclusi i comuni a zero, elencati nella scheda <em>Qualità</em>.`;
+    const topFermi = fermi.slice(0, 15);
+    rows('a-fermi-table', topFermi.map(r =>
+      `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td><td>${fmt(r.totale)}</td><td>${fmt(r.georef)}</td>` +
+      `<td class="civ-err">${pct(r.georef, r.totale)}</td><td>${r.fermoDa}</td></tr>`).join(''), 5);
+    qBarChart('a-fermi-chart', topFermi.map(r => r.comune), topFermi.map(r => r.totale - r.georef), COLOR_ERR);
+  }
+
+  // Comuni con 0 < georeferenziati < 50% del totale e valore invariato negli ultimi 3 rilasci.
+  // fermoDa = numero di rilasci consecutivi (compreso l'ultimo) senza variazione. Ordinati per civici mancanti.
+  function aFermi(keep) {
+    const { spatial, dates } = aData;
+    const last = dates[dates.length - 1];
+    const MIN_RILASCI = 3; // ponytail: soglia fissa, rendere selezionabile se serve
+    return spatial.comuni.total.map(r => {
+      const totale = r['total_all_' + last] || 0, georef = r[last] || 0;
+      let fermoDa = 1;
+      while (fermoDa < dates.length && (r[dates[dates.length - 1 - fermoDa]] || 0) === georef) fermoDa++;
+      return { istat: r.codice_istat, comune: r.comune, regione: r.regione, totale, georef, fermoDa };
+    }).filter(r => r.georef > 0 && r.georef < 0.5 * r.totale && r.fermoDa >= MIN_RILASCI && keep(r.istat))
+      .sort((a, b) => (b.totale - b.georef) - (a.totale - a.georef));
+  }
+
+  function downloadFermiCsv() {
+    if (!aData) return;
+    const { keep, scope } = tfState('a');
+    const last = aData.dates[aData.dates.length - 1];
+    const rows = [['codice_istat', 'comune', 'regione', 'civici_totali', 'georeferenziati', 'da_georeferenziare', 'pct_completamento', 'rilasci_senza_variazione']];
+    aFermi(keep).forEach(r => rows.push([r.istat, r.comune, r.regione, r.totale, r.georef, r.totale - r.georef, (100 * r.georef / r.totale).toFixed(2), r.fermoDa]));
+    const csv = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = `anncsu_comuni_fermi_${scope.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${last}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   function openInfoModal() {

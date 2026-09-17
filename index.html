@@ -6,8 +6,8 @@
     if (window.top === window.self) {
       window.location.replace('https://palermohub.opendatasicilia.it/anncus.html');
     }
-  </script>
-
+  </script> 
+  
   <title>Analisi Numeri Civici ANNCSU – Italia</title>
   <meta name="description" content="Esplora i dati dell'ANNCSU, l'Anagrafe Nazionale dei Numeri Civici Stradali Urbani gestita dall'Agenzia delle Entrate. Ogni punto sulla mappa è un numero civico italiano: naviga il territorio nazionale e osserva la qualità della geocodifica comune per comune.">
   <meta name="author" content="Giovan Battista Vitrano per OpenDataSicilia.it">
@@ -950,7 +950,7 @@
   <div class="info-tab-body" id="info-tab-qualita">
 
     <h3>Analisi di qualità da diff_ANNCSU <span class="info-new">Nuovo</span></h3>
-    <p>Tre analisi aggiuntive sulla qualità della geocodifica, calcolate da <strong>Matteo Fortini</strong> nel progetto <em>diff_ANNCSU</em> e riprese qui come <strong>snapshot</strong>: un workflow GitHub scarica periodicamente i file JSON pubblicati (l'hash nell'URL cambia a ogni build) e li salva nella cartella <code>dati/</code> di questa app. I numeri sotto sono letti da quegli snapshot. Data del rilascio analizzato: <strong id="q-date">—</strong>.</p>
+    <p>Quattro analisi aggiuntive sulla qualità della geocodifica, calcolate da <strong>Matteo Fortini</strong> nel progetto <em>diff_ANNCSU</em> e riprese qui come <strong>snapshot</strong>: un workflow GitHub scarica periodicamente i file JSON pubblicati (l'hash nell'URL cambia a ogni build) e li salva nella cartella <code>dati/</code> di questa app. I numeri sotto sono letti da quegli snapshot. Data del rilascio analizzato: <strong id="q-date">—</strong>.</p>
 
     <div class="info-source">
       <a href="https://mfortini.github.io/diff_ANNCSU/quality/" target="_blank" rel="noopener">mfortini.github.io/diff_ANNCSU/quality</a>
@@ -999,6 +999,30 @@
       <div class="q-chart"><canvas id="q-grid-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
     </div>
     <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_grid_quality.json</code>, diff_ANNCSU (M. Fortini). Mostrati i 15 comuni con più civici in celle anomale.</p>
+
+    <h3>4. Comuni con civici ancora da georeferenziare</h3>
+    <p>Elenco dei comuni in cui i civici <strong>georeferenziati</strong> nell'ultimo rilascio sono meno dei civici <strong>totali</strong> presenti in ANNCSU. Ordinati dal completamento più basso: in cima i comuni a zero, cioè quelli che non hanno ancora caricato alcuna coordinata. Per ciascuno è indicato anche quanti dei civici già georeferenziati cadono <strong>fuori dal territorio comunale</strong>.</p>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#d9534f,#b03a34)">Σ</span>
+        <div>
+          <strong>Riepilogo</strong>
+          <p id="q-incompleti-summary">Caricamento…</p>
+          <p id="q-incompleti-pnrr"></p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px"><strong>Riepilogo per regione</strong> <span style="color:var(--text-muted);font-size:12px">(comuni non completi / comuni della regione)</span></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Regione</th><th>Non completi</th><th>A zero</th><th>PNRR</th><th>Civici mancanti</th></tr></thead><tbody id="q-incompleti-reg-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="q-incompleti-reg-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><strong>Comuni meno completi</strong> <button type="button" id="q-incompleti-csv" class="civici-btn-dl" title="Scarica l'elenco completo dell'ambito scelto in CSV">⬇ Scarica elenco completo (CSV)</button></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Civici totali</th><th>Georeferenziati</th><th>% completamento</th><th>Fuori confine</th><th>PNRR 1.3.1</th></tr></thead><tbody id="q-incompleti-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="q-incompleti-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_andamento_spatial.json</code> (totali e georeferenziati) e <code>anncsu_comuni_inout.json</code> (fuori confine), diff_ANNCSU (M. Fortini). Il conteggio fuori confine non è disponibile per i comuni a zero. La colonna PNRR indica la data del primo finanziamento sulla misura 1.3.1 (<code>aggiudicatori.csv</code>).</p>
 
     <h3>Avvertenze</h3>
     <ul>
@@ -1080,6 +1104,42 @@
       <div class="q-chart"><canvas id="a-varcom-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
     </div>
     <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>6. Civici spostati o rimossi nel tempo</h3>
+    <p>Per ogni comune, somma dei civici <strong>spostati</strong> (coordinata cambiata) e <strong>rimossi</strong> (scomparsi dal rilascio) su tutti i confronti tra rilasci consecutivi. Un comune che ricompare spesso in questa lista sta rimaneggiando i propri dati: può essere una bonifica in corso oppure un'instabilità della geocodifica. Come la sezione 5, segue solo il filtro regione.</p>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#0066ff,#0047b3)">Σ</span>
+        <div>
+          <strong>Riepilogo</strong>
+          <p id="a-churn-summary">Caricamento…</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px"><strong>Comuni con più civici spostati o rimossi</strong></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Spostati</th><th>Rimossi</th><th>Totale</th><th>Rilasci coinvolti</th></tr></thead><tbody id="a-churn-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-churn-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini). Somma su tutti i rilasci disponibili.</p>
+
+    <h3>7. Comuni fermi a metà</h3>
+    <p>Comuni che hanno georeferenziato <strong>meno della metà</strong> dei civici e non hanno cambiato il numero di georeferenziati da <strong>almeno 3 rilasci</strong> consecutivi. Hanno iniziato ma sembrano essersi fermati. I comuni ancora a zero non sono inclusi: sono nella scheda <em>Qualità</em>, sezione 4.</p>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#d9534f,#b03a34)">Σ</span>
+        <div>
+          <strong>Riepilogo</strong>
+          <p id="a-fermi-summary">Caricamento…</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><strong>Comuni fermi con più civici mancanti</strong> <button type="button" id="a-fermi-csv" class="civici-btn-dl" title="Scarica l'elenco completo dell'ambito scelto in CSV">⬇ Scarica elenco completo (CSV)</button></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Civici totali</th><th>Georeferenziati</th><th>% completamento</th><th>Rilasci fermi</th></tr></thead><tbody id="a-fermi-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-fermi-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini). "Rilasci fermi" = rilasci consecutivi, compreso l'ultimo, con lo stesso numero di georeferenziati.</p>
 
     <h3>Avvertenze</h3>
     <ul>
@@ -2454,5 +2514,5 @@
 })();
 </script>
 
-</body>
+cos</body>
 </html>
