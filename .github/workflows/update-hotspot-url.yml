@@ -1,4 +1,4 @@
-name: Aggiorna URL Hotspot DBSCAN
+name: Aggiorna snapshot qualità diff_ANNCSU
 
 on:
   schedule:
@@ -34,10 +34,10 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add js/anncsu.js dati/hotspots_tmp.json
+          git add js/anncsu.js dati/hotspots_tmp.json dati/grid_quality.json dati/comuni_inout.json dati/cross_region_matrix.json dati/andamento_stats.json dati/andamento_spatial.json
           if git diff --staged --quiet; then
             echo "Nessuna modifica necessaria."
           else
-            git commit -m "chore: aggiorna hotspot DBSCAN locale [$(date -u +'%Y-%m-%d')]"
+            git commit -m "chore: aggiorna snapshot qualità diff_ANNCSU [$(date -u +'%Y-%m-%d')]"
             git push
           fi

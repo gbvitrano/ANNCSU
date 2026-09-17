@@ -2,8 +2,7 @@
 <html lang="it" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />  <script>
     if (window.top === window.self) {
       window.location.replace('https://palermohub.opendatasicilia.it/anncus.html');
     }
@@ -240,6 +239,9 @@
       <svg id="tb-fs-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       <svg id="tb-fs-compress" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
     </button>
+    <button class="tb-btn" id="tb-info" title="Informazioni sull'applicazione" aria-label="Informazioni" onclick="openInfoModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+    </button>
     <span class="tb-sep"></span>
     <input type="range" id="tb-zoom-slider" class="tb-zoom-slider" min="5" max="19" step="1" value="6" aria-label="Zoom mappa">
     <span id="tb-zoom-value" class="tb-zoom-value">6</span>
@@ -440,6 +442,8 @@
     <button class="info-tab active" data-tab="come-funziona" onclick="switchInfoTab('come-funziona')">Come funziona</button>
     <button class="info-tab"        data-tab="fonti"         onclick="switchInfoTab('fonti')">Fonti dati</button>
     <button class="info-tab"        data-tab="bivariata"     onclick="switchInfoTab('bivariata')">Bivariata</button>
+    <button class="info-tab"        data-tab="qualita"       onclick="switchInfoTab('qualita')">Qualità</button>
+    <button class="info-tab"        data-tab="andamento"     onclick="switchInfoTab('andamento')">Andamento</button>
     <button class="info-tab"        data-tab="dataviz"       onclick="switchInfoTab('dataviz')">DataViz</button>
     <button class="info-tab"        data-tab="credits"       onclick="switchInfoTab('credits')">Credits</button>
   </div>
@@ -487,7 +491,7 @@
     </div>
     <div class="info-source">
       <a href="https://mfortini.github.io/diff_ANNCSU/" target="_blank" rel="noopener">mfortini.github.io/diff_ANNCSU</a>
-      <p>Applicazione realizzata da <strong>Matteo Fortini</strong> per visualizzare le differenze tra versioni successive dei dati ANNCSU. Strumento prezioso per monitorare l'evoluzione nel tempo della qualità degli indirizzi e individuare le aree dove i dati sono stati aggiornati o corretti.</p>
+      <p>Applicazione realizzata da <strong>Matteo Fortini</strong> per visualizzare le differenze tra versioni successive dei dati ANNCSU. Strumento prezioso per monitorare l'evoluzione nel tempo della qualità degli indirizzi e individuare le aree dove i dati sono stati aggiornati o corretti. Dalla sezione <em>quality</em> del progetto provengono anche gli snapshot usati nella scheda <strong>Qualità</strong> (fuori confine oltre 500 m, matrice cross-regione, celle anomale su griglia 10 m) e gli hotspot DBSCAN della mappa bivariata; dalla pagina principale la serie storica dei rilasci mostrata nella scheda <strong>Andamento</strong>.</p>
     </div>
 
     <h3>Confini amministrativi</h3>
@@ -938,6 +942,150 @@
       <li>I parametri DBSCAN (<code>eps=8m, min_points=5</code>) possono includere cluster legittimi in edifici multipiano o piazze dense. La sottrazione degli hotspot è una stima conservativa, non una correzione esatta.</li>
       <li>I comuni non presenti nel dataset ANNCSU appaiono trasparenti nella mappa bivariate: indica assenza di dati, non qualità zero.</li>
       <li>La densità civici/km² è un proxy per l'urbanizzazione. Comuni con molte seconde case o destinazioni turistiche possono avere valori sproporzionati rispetto alla popolazione residente.</li>
+    </ul>
+
+  </div>
+
+  <!-- Tab: Qualità (snapshot diff_ANNCSU) -->
+  <div class="info-tab-body" id="info-tab-qualita">
+
+    <h3>Analisi di qualità da diff_ANNCSU <span class="info-new">Nuovo</span></h3>
+    <p>Tre analisi aggiuntive sulla qualità della geocodifica, calcolate da <strong>Matteo Fortini</strong> nel progetto <em>diff_ANNCSU</em> e riprese qui come <strong>snapshot</strong>: un workflow GitHub scarica periodicamente i file JSON pubblicati (l'hash nell'URL cambia a ogni build) e li salva nella cartella <code>dati/</code> di questa app. I numeri sotto sono letti da quegli snapshot. Data del rilascio analizzato: <strong id="q-date">—</strong>.</p>
+
+    <div class="info-source">
+      <a href="https://mfortini.github.io/diff_ANNCSU/quality/" target="_blank" rel="noopener">mfortini.github.io/diff_ANNCSU/quality</a>
+      <p>Fonte di tutte le tabelle di questa scheda. Elaborazione di <strong>Matteo Fortini</strong> sui dati open ANNCSU dell'Agenzia delle Entrate. Metodo e parametri sono documentati sul sito di origine.</p>
+    </div>
+
+    <h3>Filtra per territorio</h3>
+    <div class="q-filters">
+      <select id="q-f-reg" aria-label="Regione"><option value="">Tutte le regioni</option></select>
+      <select id="q-f-prov" aria-label="Provincia"><option value="">Tutte le province</option></select>
+      <select id="q-f-com" aria-label="Comune"><option value="">Tutti i comuni</option></select>
+      <button type="button" id="q-f-reset" title="Azzera filtri">Reset</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-muted)">Ambito corrente: <strong id="q-scope">nazionale</strong>. Le tabelle mostrano i primi 15 risultati dell'ambito scelto.</p>
+
+    <h3>1. Fuori confine oltre 500 m</h3>
+    <p>Il conteggio "fuori confine" usato altrove in questa app include anche civici a pochi metri dal limite comunale, spesso errori di confine e non di geocodifica. Questa analisi applica un <strong>buffer di 500 m</strong> attorno a ogni comune: i civici fuori anche dal buffer sono errori quasi certi.</p>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#d9534f,#b03a34)">Σ</span>
+        <div>
+          <strong>Riepilogo nazionale</strong>
+          <p id="q-inout-summary">Caricamento…</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px"><strong>Comuni con più civici oltre 500 m</strong></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Totale</th><th>Fuori</th><th>Fuori &gt;500 m</th><th>% &gt;500 m</th></tr></thead><tbody id="q-inout-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="q-inout-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_comuni_inout.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>2. Civici finiti in un'altra regione</h3>
+    <p>Per ogni civico fuori confine, confronto tra la <strong>regione attesa</strong> (quella del comune) e la <strong>regione reale</strong> in cui cade la coordinata. "Fuori da tutte" = coordinata in mare o all'estero. Rivela errori sistematici, per esempio scambio lat/lon o comuni omonimi. Questa matrice è disponibile solo a livello regionale: i filtri provincia e comune non la restringono.</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Regione attesa</th><th>Regione reale</th><th>Civici</th></tr></thead><tbody id="q-xreg-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="q-xreg-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_cross_region_matrix.json</code>, diff_ANNCSU (M. Fortini). Mostrati i 15 flussi principali.</p>
+
+    <h3>3. Celle anomale su griglia 10 m</h3>
+    <p>Alternativa al DBSCAN usato nella mappa bivariata: il territorio è diviso in <strong>celle di 10 × 10 m</strong> e si contano i civici per cella. Una cella con un numero di civici sopra il 99° percentile nazionale è <strong>anomala</strong>: decine o centinaia di indirizzi con la stessa coordinata, tipico segno di geocodifica di fallback su centroide.</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Celle anomale</th><th>Max per cella</th><th>Civici coinvolti</th></tr></thead><tbody id="q-grid-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="q-grid-chart" aria-label="Grafico a barre della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_grid_quality.json</code>, diff_ANNCSU (M. Fortini). Mostrati i 15 comuni con più civici in celle anomale.</p>
+
+    <h3>Avvertenze</h3>
+    <ul>
+      <li>Gli snapshot possono essere di qualche giorno più vecchi del sito di origine: la data in alto indica il rilascio ANNCSU analizzato.</li>
+      <li>I totali nazionali di questa scheda possono differire da quelli del pannello statistiche: la fonte del parquet e la versione dei confini comunali non coincidono necessariamente.</li>
+      <li>Le celle anomale su griglia e gli hotspot DBSCAN misurano lo stesso fenomeno con metodi diversi: non sommare i due valori.</li>
+    </ul>
+
+  </div>
+
+  <!-- Tab: Andamento (snapshot diff_ANNCSU, serie storica rilasci) -->
+  <div class="info-tab-body" id="info-tab-andamento">
+
+    <h3>Andamento dei rilasci ANNCSU <span class="info-new">Nuovo</span></h3>
+    <p>L'Agenzia delle Entrate pubblica un nuovo rilascio open data ANNCSU circa ogni mese. <strong>Matteo Fortini</strong> (progetto <em>diff_ANNCSU</em>) confronta ogni rilascio con il precedente e calcola, per Italia, regione e comune, quanti civici sono georeferenziati e quanti sono <strong>nuovi</strong>, <strong>rimossi</strong> o <strong>spostati</strong>. Questa scheda riprende quei numeri come snapshot locali. Rilasci disponibili: <strong id="a-ndates">—</strong>, ultimo del <strong id="a-date">—</strong>.</p>
+
+    <div class="info-source">
+      <a href="https://mfortini.github.io/diff_ANNCSU/" target="_blank" rel="noopener">mfortini.github.io/diff_ANNCSU</a>
+      <p>Fonte di tutte le tabelle di questa scheda. Elaborazione di <strong>Matteo Fortini</strong> sui rilasci mensili open data ANNCSU dell'Agenzia delle Entrate.</p>
+    </div>
+
+    <h3>Filtra per territorio</h3>
+    <div class="q-filters">
+      <select id="a-f-reg" aria-label="Regione"><option value="">Tutte le regioni</option></select>
+      <select id="a-f-prov" aria-label="Provincia"><option value="">Tutte le province</option></select>
+      <select id="a-f-com" aria-label="Comune"><option value="">Tutti i comuni</option></select>
+      <button type="button" id="a-f-reset" title="Azzera filtri">Reset</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-muted)">Ambito corrente: <strong id="a-scope">nazionale</strong>.</p>
+
+    <h3>1. Andamento civici georeferenziati</h3>
+    <p>Per ogni rilascio: civici totali nell'ambito, civici con coordinata e percentuale. Per provincia e comune i valori sono somme esatte per codice ISTAT dei comuni inclusi.</p>
+    <div class="info-pipeline">
+      <div class="info-step">
+        <span class="info-step-n" style="background:linear-gradient(135deg,#149c73,#0e6e51)">%</span>
+        <div><strong>Riepilogo</strong><p id="a-trend-summary">Caricamento…</p></div>
+      </div>
+    </div>
+    <p style="margin-top:10px"><strong>Rilasci</strong></p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Rilascio</th><th>Totale</th><th>Georef.</th><th>%</th><th>Nuovi</th><th>Rimossi</th><th>Spostati</th></tr></thead><tbody id="a-trend-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-trend-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="margin-top:10px"><strong>Variazioni per rilascio</strong> <span id="a-var-note" style="display:none;font-weight:400;color:var(--text-muted)">— disponibili solo per Italia e regioni</span></p>
+    <div class="q-row"><div class="q-chart q-chart-wide"><canvas id="a-var-chart" aria-label="Nuovi, rimossi e spostati per rilascio" role="img"></canvas></div></div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_stats.json, anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>2. Completamento per regione</h3>
+    <p>Percentuale di civici georeferenziati nell'ultimo rilascio, regione per regione. Sempre tutte le regioni: con un filtro attivo la regione scelta resta evidenziata e le altre passano in grigio.</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Regione</th><th>Totale</th><th>Georef.</th><th>%</th></tr></thead><tbody id="a-reg-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-reg-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>3. Distribuzione del completamento dei comuni</h3>
+    <p>Quanti comuni dell'ambito ricadono in ogni fascia di completamento nell'ultimo rilascio. Una distribuzione a due gobbe (molti comuni vicini a 0% e molti vicini a 100%) indica che la georeferenziazione procede comune per comune, non a piccoli passi diffusi.</p>
+    <p id="a-dist-summary" style="font-size:12.5px;color:var(--text-muted)">Caricamento…</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Fascia</th><th>Comuni</th><th>%</th></tr></thead><tbody id="a-dist-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-dist-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>4. Variazioni nell'ultimo rilascio per regione</h3>
+    <p>Civici nuovi, rimossi e spostati tra il penultimo e l'ultimo rilascio. Ordinate per attività totale.</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Regione</th><th>Nuovi</th><th>Rimossi</th><th>Spostati</th></tr></thead><tbody id="a-varreg-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-varreg-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>5. Variazioni nell'ultimo rilascio per comune</h3>
+    <p>I 15 comuni con più civici
+      <select id="a-metric" class="q-inline-select" aria-label="Metrica"><option value="new">nuovi</option><option value="missing">rimossi</option><option value="moved">spostati</option></select>
+      nell'ambito <strong id="a-varcom-scope">nazionale</strong>. Questo elenco segue solo il filtro regione: nel file di origine i comuni sono identificati per nome, senza codice ISTAT, e un incrocio per nome non sarebbe esatto.</p>
+    <div class="q-row">
+      <div class="can-table-wrap"><table class="can-table"><thead><tr><th>Comune</th><th>Ultimo rilascio</th><th>Precedente</th></tr></thead><tbody id="a-varcom-table"></tbody></table></div>
+      <div class="q-chart"><canvas id="a-varcom-chart" aria-label="Grafico della tabella a fianco" role="img"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">Fonte: <code>anncsu_spatial_stats.json</code>, diff_ANNCSU (M. Fortini).</p>
+
+    <h3>Avvertenze</h3>
+    <ul>
+      <li>"Georeferenziato" qui significa civico con coordinata nel rilascio, senza giudizio sulla correttezza della coordinata: per quella vedi la scheda <em>Qualità</em>.</li>
+      <li>Il totale civici cambia leggermente tra rilasci perché l'Agenzia aggiunge e rimuove indirizzi: le percentuali sono calcolate sul totale di ciascun rilascio.</li>
+      <li>Le date dei rilasci sono quelle di pubblicazione dell'open data, non della rilevazione.</li>
     </ul>
 
   </div>

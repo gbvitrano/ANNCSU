@@ -2259,6 +2259,265 @@
       t.classList.toggle('active', t.dataset.tab === id));
     document.querySelectorAll('.info-tab-body').forEach(b =>
       b.classList.toggle('active', b.id === 'info-tab-' + id));
+    if (id === 'qualita') loadQualitaTab();
+    if (id === 'andamento') loadAndamentoTab();
+  }
+
+  // ── Grafici del modale info (Chart.js già caricato) ─────────────────────────
+  // ponytail: colori letti a ogni render; il grafico si ridisegna solo al cambio filtro
+  const CHART_OK = '#149c73'; // verde più saturo di COLOR_OK: passa i check CVD accanto a rosso e blu
+  function qChartTheme() {
+    const css = getComputedStyle(document.documentElement);
+    return { ink: css.getPropertyValue('--text-secondary').trim() || '#666',
+             grid: css.getPropertyValue('--border-color').trim() || '#ddd' };
+  }
+  // type: 'bar' (orizzontale) | 'line'. datasets: [{label, data, color}]
+  function qChart(canvasId, type, labels, datasets, opts = {}) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(canvasId);
+    Chart.getChart(canvas)?.destroy();
+    if (!labels.length) { canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); return; }
+    const { ink, grid } = qChartTheme();
+    const fmtV = v => opts.percent ? v.toLocaleString('it-IT') + '%' : v.toLocaleString('it-IT');
+    const horizontal = type === 'bar';
+    const ds = datasets.map(d => type === 'line'
+      ? { label: d.label, data: d.data, borderColor: d.color, backgroundColor: d.color, borderWidth: 2,
+          pointRadius: 3, pointHoverRadius: 5, tension: 0, fill: false }
+      : { label: d.label, data: d.data, backgroundColor: d.color, barThickness: datasets.length > 1 ? 8 : 14,
+          borderRadius: { topRight: 4, bottomRight: 4, topLeft: 0, bottomLeft: 0 }, borderSkipped: false });
+    const valueAxis = { beginAtZero: true, grid: { color: grid, lineWidth: 1 }, border: { display: false },
+      ticks: { color: ink, font: { size: 11 }, maxTicksLimit: 6, callback: fmtV }, ...(opts.percent ? { max: 100 } : {}) };
+    const catAxis = { grid: { display: false }, border: { display: false },
+      ticks: { color: ink, font: { size: 11 }, autoSkip: !horizontal, maxRotation: 0,
+        callback: function (v) { const l = String(this.getLabelForValue(v)); return l.length > 30 ? l.slice(0, 29) + '…' : l; } } };
+    new Chart(canvas, {
+      type: type === 'line' ? 'line' : 'bar',
+      data: { labels, datasets: ds },
+      options: {
+        indexAxis: horizontal ? 'y' : 'x', responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: datasets.length > 1, position: 'top', labels: { color: ink, boxWidth: 10, font: { size: 11 } } },
+          datalabels: { display: false },
+          tooltip: { callbacks: { label: c => ' ' + (datasets.length > 1 ? c.dataset.label + ': ' : '') + fmtV(horizontal ? c.parsed.x : c.parsed.y) } } },
+        scales: horizontal ? { x: valueAxis, y: catAxis } : { x: catAxis, y: valueAxis }
+      }
+    });
+  }
+  function qBarChart(canvasId, labels, values, color) { qChart(canvasId, 'bar', labels, [{ data: values, color }]); }
+
+  // ── Filtri territorio a cascata regione → provincia → comune (comuni.csv via ANNCSUDataViz.comuniMap) ──
+  // prefix: 'q' → #q-f-reg/#q-f-prov/#q-f-com/#q-f-reset, 'a' → #a-f-…
+  function tfComuni() { return Object.values(window.ANNCSUDataViz?.comuniMap || {}); }
+  function tfFill(id, values, placeholder) {
+    document.getElementById(id).innerHTML = `<option value="">${placeholder}</option>` +
+      values.map(v => `<option value="${v.value}">${v.label}</option>`).join('');
+  }
+  function tfInit(prefix, onChange) {
+    const el = k => document.getElementById(`${prefix}-f-${k}`);
+    const regioni = [...new Set(tfComuni().map(c => c.regione))].sort();
+    tfFill(`${prefix}-f-reg`, regioni.map(r => ({ value: r, label: r })), 'Tutte le regioni');
+    tfFill(`${prefix}-f-prov`, [], 'Tutte le province');
+    tfFill(`${prefix}-f-com`, [], 'Tutti i comuni');
+    el('reg').onchange = () => { tfCascade(prefix, 'reg'); onChange(); };
+    el('prov').onchange = () => { tfCascade(prefix, 'prov'); onChange(); };
+    el('com').onchange = onChange;
+    el('reset').onclick = () => { el('reg').value = ''; tfCascade(prefix, 'reg'); onChange(); };
+  }
+  function tfCascade(prefix, level) {
+    const el = k => document.getElementById(`${prefix}-f-${k}`);
+    const reg = el('reg').value;
+    if (level === 'reg') {
+      const prov = [...new Set(tfComuni().filter(c => !reg || c.regione === reg).map(c => c.provincia))].sort();
+      tfFill(`${prefix}-f-prov`, prov.map(p => ({ value: p, label: p })), 'Tutte le province');
+    }
+    const prov = el('prov').value;
+    const com = tfComuni().filter(c => (!reg || c.regione === reg) && (!prov || c.provincia === prov))
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+    tfFill(`${prefix}-f-com`, com.map(c => ({ value: c.codiceIstat, label: c.nome })), 'Tutti i comuni');
+  }
+  // Stato filtri + predicato su codice ISTAT a 6 cifre
+  function tfState(prefix) {
+    const el = k => document.getElementById(`${prefix}-f-${k}`);
+    const reg = el('reg').value, prov = el('prov').value, com = el('com').value;
+    const map = window.ANNCSUDataViz?.comuniMap || {};
+    const keep = istat => {
+      if (com) return istat === com;
+      const c = map[istat];
+      if (!c) return !reg && !prov;
+      return (!reg || c.regione === reg) && (!prov || c.provincia === prov);
+    };
+    const scope = com ? el('com').selectedOptions[0]?.text : (prov || reg || 'nazionale');
+    return { reg, prov, com, keep, scope };
+  }
+
+  // ── Tab "Qualità": snapshot dei JSON di mfortini/diff_ANNCSU (scaricati da update_hotspot_url.py) ──
+  let qData = null; // { inout, xreg, grid } caricati una volta
+  async function loadQualitaTab() {
+    if (qData) return;
+    try {
+      const [inout, xreg, grid] = await Promise.all(
+        ['comuni_inout', 'cross_region_matrix', 'grid_quality']
+          .map(f => fetch(`dati/${f}.json`).then(r => r.json())));
+      qData = { inout, xreg, grid };
+      document.getElementById('q-date').textContent = inout.date || '—';
+      tfInit('q', renderQualita);
+      renderQualita();
+    } catch (e) {
+      console.warn('Tab qualità: dati non disponibili', e);
+      document.getElementById('q-inout-summary').textContent = 'Snapshot non disponibili.';
+    }
+  }
+
+  const fmtIt = n => n.toLocaleString('it-IT');
+  const pctIt = (a, b) => b ? (100 * a / b).toFixed(2).replace('.', ',') + '%' : '—';
+  const setRows = (id, html, cols = 5) => {
+    document.getElementById(id).innerHTML = html ||
+      `<tr><td colspan="${cols}" style="text-align:center;color:var(--text-muted)">Nessun dato</td></tr>`;
+  };
+
+  function renderQualita() {
+    if (!qData) return;
+    const { inout, xreg, grid } = qData;
+    const fmt = fmtIt, pct = pctIt, rows = setRows;
+    const { reg, keep, scope } = tfState('q');
+    document.getElementById('q-scope').textContent = scope;
+
+    // 1 — dentro/fuori con buffer 500 m
+    const c = inout.comuni.filter(r => keep(String(r.pro_com).padStart(6, '0')));
+    const tot = c.reduce((s, r) => s + r.totale, 0);
+    const fuori = c.reduce((s, r) => s + r.fuori, 0);
+    const f500 = c.reduce((s, r) => s + r.fuori_buffer_500m, 0);
+    const n500 = c.filter(r => r.fuori_buffer_500m > 0).length;
+    document.getElementById('q-inout-summary').innerHTML =
+      `Civici analizzati: <b style="color:var(--text-primary)">${fmt(tot)}</b> in ${fmt(c.length)} comuni · ` +
+      `fuori confine: <b class="civ-err">${fmt(fuori)}</b> (${pct(fuori, tot)}) · ` +
+      `oltre 500 m: <b class="civ-err">${fmt(f500)}</b> (${pct(f500, tot)}) in ${fmt(n500)} comuni.`;
+    const topInout = c.filter(r => r.fuori_buffer_500m > 0)
+      .sort((a, b) => b.fuori_buffer_500m - a.fuori_buffer_500m).slice(0, 15);
+    rows('q-inout-table', topInout
+      .map(r => `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td>` +
+        `<td>${fmt(r.totale)}</td><td>${fmt(r.fuori)}</td><td class="civ-err">${fmt(r.fuori_buffer_500m)}</td>` +
+        `<td>${pct(r.fuori_buffer_500m, r.totale)}</td></tr>`).join(''));
+    qBarChart('q-inout-chart', topInout.map(r => r.comune), topInout.map(r => r.fuori_buffer_500m), COLOR_ERR);
+
+    // 2 — matrice cross-regione: disponibile solo a livello regionale
+    const topXreg = xreg.flows.filter(f => !reg || f.expected_regione === reg)
+      .sort((a, b) => b.count - a.count).slice(0, 15);
+    rows('q-xreg-table', topXreg
+      .map(f => `<tr><td>${f.expected_regione}</td><td>${f.actual_regione}</td><td class="civ-err">${fmt(f.count)}</td></tr>`).join(''));
+    qBarChart('q-xreg-chart', topXreg.map(f => `${f.expected_regione} → ${f.actual_regione}`), topXreg.map(f => f.count), COLOR_ERR);
+
+    // 3 — celle anomale griglia 10 m
+    const topGrid = grid.by_comune.filter(r => r.grid_size_m === 10 && keep(r.codice_istat))
+      .sort((a, b) => b.punti_in_celle_anomale - a.punti_in_celle_anomale).slice(0, 15);
+    rows('q-grid-table', topGrid
+      .map(r => `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td>` +
+        `<td>${fmt(r.n_celle_anomale)}</td><td>${fmt(r.max_point_count)}</td><td class="civ-warn">${fmt(r.punti_in_celle_anomale)}</td></tr>`).join(''));
+    qBarChart('q-grid-chart', topGrid.map(r => r.comune), topGrid.map(r => r.punti_in_celle_anomale), COLOR_OOB);
+  }
+
+  // ── Tab "Andamento": serie storica dei rilasci ANNCSU da mfortini/diff_ANNCSU ──
+  // Fonti: dati/andamento_stats.json (nazionale per data), dati/andamento_spatial.json (regioni e comuni per data).
+  // Le variazioni per comune nel file non hanno codice ISTAT: filtrate solo per regione, mai per nome (join impreciso).
+  let aData = null;
+  async function loadAndamentoTab() {
+    if (aData) return;
+    try {
+      const [stats, spatial] = await Promise.all(
+        ['andamento_stats', 'andamento_spatial'].map(f => fetch(`dati/${f}.json`).then(r => r.json())));
+      aData = { stats, spatial, dates: spatial.date_columns };
+      document.getElementById('a-date').textContent = aData.dates[aData.dates.length - 1];
+      document.getElementById('a-ndates').textContent = aData.dates.length;
+      tfInit('a', renderAndamento);
+      document.getElementById('a-metric').onchange = renderAndamento;
+      renderAndamento();
+    } catch (e) {
+      console.warn('Tab andamento: dati non disponibili', e);
+      document.getElementById('a-trend-summary').textContent = 'Snapshot non disponibili.';
+    }
+  }
+
+  function renderAndamento() {
+    if (!aData) return;
+    const { stats, spatial, dates } = aData;
+    const last = dates[dates.length - 1], prev = dates[dates.length - 2];
+    const fmt = fmtIt, pct = pctIt, rows = setRows;
+    const { reg, prov, com, keep, scope } = tfState('a');
+    document.getElementById('a-scope').textContent = scope;
+    const shortDate = d => d.slice(2).replace(/-/g, '/').slice(0, 5); // "2026-09-15" → "26/09"
+    const pctNum = (a, b) => b ? Math.round(1000 * a / b) / 10 : 0;
+
+    // 1 — andamento georeferenziazione nell'ambito
+    let series; // [{date, total_all, total, new, missing, moved}]
+    const regRow = kind => spatial.regioni[kind].find(r => r.regione === reg) || {};
+    if (!reg && !prov && !com) {
+      series = stats.map(r => ({ ...r }));
+    } else if (reg && !prov && !com) {
+      const t = regRow('total'), n = regRow('new'), m = regRow('missing'), v = regRow('moved');
+      series = dates.map(d => ({ date: d, total_all: t['total_all_' + d] || 0, total: t[d] || 0,
+        new: n[d] ?? null, missing: m[d] ?? null, moved: v[d] ?? null }));
+    } else {
+      const cs = spatial.comuni.total.filter(r => keep(r.codice_istat));
+      series = dates.map(d => ({ date: d,
+        total_all: cs.reduce((s, r) => s + (r['total_all_' + d] || 0), 0),
+        total: cs.reduce((s, r) => s + (r[d] || 0), 0), new: null, missing: null, moved: null }));
+    }
+    const lastRow = series[series.length - 1], firstRow = series[0];
+    document.getElementById('a-trend-summary').innerHTML =
+      `Georeferenziati al ${last}: <b style="color:var(--text-primary)">${fmt(lastRow.total)}</b> su ${fmt(lastRow.total_all)} ` +
+      `(<b class="civ-ok">${pct(lastRow.total, lastRow.total_all)}</b>) · ` +
+      `al ${firstRow.date} erano ${pct(firstRow.total, firstRow.total_all)}.`;
+    const na = v => v == null ? '<span style="color:var(--text-muted)">—</span>' : fmt(v);
+    rows('a-trend-table', series.map(r =>
+      `<tr><td>${r.date}</td><td>${fmt(r.total_all)}</td><td class="civ-ok">${fmt(r.total)}</td><td>${pct(r.total, r.total_all)}</td>` +
+      `<td>${na(r.new)}</td><td>${na(r.missing)}</td><td>${na(r.moved)}</td></tr>`).join(''), 7);
+    qChart('a-trend-chart', 'line', series.map(r => shortDate(r.date)),
+      [{ label: '% georeferenziati', data: series.map(r => pctNum(r.total, r.total_all)), color: CHART_OK }], { percent: true });
+    const hasVar = series.some(r => r.new != null);
+    document.getElementById('a-var-note').style.display = hasVar ? 'none' : '';
+    qChart('a-var-chart', 'bar', hasVar ? series.map(r => r.date) : [], [
+      { label: 'Nuovi', data: series.map(r => r.new || 0), color: CHART_OK },
+      { label: 'Rimossi', data: series.map(r => r.missing || 0), color: COLOR_ERR },
+      { label: 'Spostati', data: series.map(r => r.moved || 0), color: COLOR_OOB }]);
+
+    // 2 — completamento per regione (ultimo rilascio, sempre tutte le regioni)
+    const regs = spatial.regioni.total.map(r => ({ regione: r.regione, tot: r['total_all_' + last] || 0, geo: r[last] || 0 }))
+      .map(r => ({ ...r, p: pctNum(r.geo, r.tot) })).sort((a, b) => b.p - a.p);
+    rows('a-reg-table', regs.map(r =>
+      `<tr${r.regione === reg ? ' style="font-weight:700"' : ''}><td>${r.regione}</td><td>${fmt(r.tot)}</td><td class="civ-ok">${fmt(r.geo)}</td><td>${pct(r.geo, r.tot)}</td></tr>`).join(''), 4);
+    qChart('a-reg-chart', 'bar', regs.map(r => r.regione), [{ data: regs.map(r => r.p),
+      color: regs.map(r => (!reg || r.regione === reg) ? CHART_OK : '#b8b8b8') }], { percent: true });
+
+    // 3 — distribuzione del completamento dei comuni nell'ambito
+    const cs = spatial.comuni.total.filter(r => keep(r.codice_istat) && (r['total_all_' + last] || 0) > 0);
+    const bins = Array.from({ length: 10 }, (_, i) => ({ label: `${i * 10}–${i * 10 + 10}%`, n: 0 }));
+    cs.forEach(r => { const p = pctNum(r[last] || 0, r['total_all_' + last]); bins[Math.min(9, Math.floor(p / 10))].n++; });
+    document.getElementById('a-dist-summary').textContent =
+      `${fmt(cs.length)} comuni con civici · completi al 100%: ${fmt(cs.filter(r => (r[last] || 0) >= r['total_all_' + last]).length)} · sotto il 10%: ${fmt(bins[0].n)}.`;
+    rows('a-dist-table', bins.map(b => `<tr><td>${b.label}</td><td>${fmt(b.n)}</td><td>${pct(b.n, cs.length)}</td></tr>`).join(''), 3);
+    qChart('a-dist-chart', 'bar', bins.map(b => b.label), [{ data: bins.map(b => b.n), color: CHART_OK }]);
+
+    // 4 — variazioni ultimo rilascio per regione (nazionale o regione evidenziata)
+    const varReg = spatial.regioni.total.map(r => ({ regione: r.regione,
+      new: (spatial.regioni.new.find(x => x.regione === r.regione) || {})[last] || 0,
+      missing: (spatial.regioni.missing.find(x => x.regione === r.regione) || {})[last] || 0,
+      moved: (spatial.regioni.moved.find(x => x.regione === r.regione) || {})[last] || 0 }))
+      .sort((a, b) => (b.new + b.missing + b.moved) - (a.new + a.missing + a.moved));
+    rows('a-varreg-table', varReg.map(r =>
+      `<tr${r.regione === reg ? ' style="font-weight:700"' : ''}><td>${r.regione}</td><td class="civ-ok">${fmt(r.new)}</td><td class="civ-err">${fmt(r.missing)}</td><td class="civ-warn">${fmt(r.moved)}</td></tr>`).join(''), 4);
+    qChart('a-varreg-chart', 'bar', varReg.map(r => r.regione), [
+      { label: 'Nuovi', data: varReg.map(r => r.new), color: CHART_OK },
+      { label: 'Rimossi', data: varReg.map(r => r.missing), color: COLOR_ERR },
+      { label: 'Spostati', data: varReg.map(r => r.moved), color: COLOR_OOB }]);
+
+    // 5 — variazioni ultimo rilascio per comune: solo filtro regione (il file non ha codice ISTAT)
+    const metric = document.getElementById('a-metric').value; // new | missing | moved
+    const colorOf = { new: CHART_OK, missing: COLOR_ERR, moved: COLOR_OOB }[metric];
+    const topCom = spatial.comuni[metric].filter(r => (r[last] || 0) > 0 && (!reg || r.regione === reg))
+      .sort((a, b) => b[last] - a[last]).slice(0, 15);
+    document.getElementById('a-varcom-scope').textContent = reg || 'nazionale';
+    rows('a-varcom-table', topCom.map(r =>
+      `<tr><td>${r.comune} <span style="color:var(--text-muted)">(${r.regione})</span></td><td>${fmt(r[last])}</td><td>${fmt(r[prev] || 0)}</td></tr>`).join(''), 3);
+    qBarChart('a-varcom-chart', topCom.map(r => r.comune), topCom.map(r => r[last]), colorOf);
   }
 
   function openInfoModal() {

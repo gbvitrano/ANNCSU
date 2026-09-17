@@ -990,6 +990,17 @@ body:has(#comuni-analisi-panel.open) #active-filters-strip { max-width: var(--dr
 .info-source-qgis-btn:hover { background: #4a7d28 !important; }
 
 .info-pipeline { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.q-row { display: flex; gap: 12px; align-items: stretch; margin-bottom: 4px; }
+.q-row .can-table-wrap { flex: 1 1 58%; min-width: 0; margin-bottom: 0; }
+.q-row .q-chart { flex: 1 1 42%; min-width: 0; min-height: 120px; position: relative; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; }
+.q-row .q-chart canvas { position: absolute; inset: 8px 8px 4px 4px; width: calc(100% - 12px) !important; height: calc(100% - 12px) !important; }
+@media (max-width: 700px) { .q-row { flex-direction: column; } .q-row .q-chart { width: 100%; height: 360px; } }
+.q-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.q-filters select { flex: 1 1 160px; min-width: 0; padding: 7px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-subtle); color: var(--text-primary); }
+.q-filters button { padding: 7px 12px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-btn); color: var(--text-primary); cursor: pointer; }
+.q-filters button:hover { border-color: var(--border-accent); }
+.q-row .q-chart-wide { flex: 1 1 100%; height: 300px; }
+.q-inline-select { padding: 2px 6px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-subtle); color: var(--text-primary); }
 .info-step { display: flex; gap: 12px; align-items: flex-start; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 14px; }
 .info-step-n {
   flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;

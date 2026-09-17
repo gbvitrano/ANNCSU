@@ -51,7 +51,7 @@ La mappa è realizzata con **MapLibre GL JS**. I dati vettoriali sono in formato
 ### Numeri civici ANNCSU
 
 - [anncsu-open.github.io/anncsu-viewer](https://anncsu-open.github.io/anncsu-viewer/) — Viewer ufficiale dei dati ANNCSU, sviluppato da **Geobeyond**. Fonte primaria dei numeri civici, distribuiti in formato PMTiles per alte prestazioni su scala nazionale.
-- [mfortini.github.io/diff_ANNCSU](https://mfortini.github.io/diff_ANNCSU/) — Applicazione di **Matteo Fortini** per visualizzare le differenze tra versioni successive dei dati ANNCSU.
+- [mfortini.github.io/diff_ANNCSU](https://mfortini.github.io/diff_ANNCSU/) — Applicazione di **Matteo Fortini** per visualizzare le differenze tra versioni successive dei dati ANNCSU. Dalla sezione *quality* provengono gli snapshot (fuori confine oltre 500 m, matrice cross-regione, celle anomale su griglia 10 m, hotspot DBSCAN) mostrati nella scheda **Qualità** del pannello info, e dalla pagina principale la serie storica dei rilasci (georeferenziati, nuovi, rimossi, spostati per Italia, regione e comune) mostrata nella scheda **Andamento**; vengono aggiornati periodicamente dal workflow `update-hotspot-url.yml` e salvati in `dati/`.
 
 ### Confini amministrativi
 
