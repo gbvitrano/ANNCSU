@@ -16,15 +16,15 @@ import shutil
 import requests
 import io
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 import pandas as pd
 import geopandas as gpd
 
 # ── Configurazione ────────────────────────────────────────────────────────────
-PARQUET_URL = (
-    "https://github.com/quattochiacchiereinquattro/anncus/"
-    "raw/refs/heads/main/data/anncsu-indirizzi.parquet"
-)
+# Stesso file usato dalla mappa (PMTILES_URL): upstream lo carica via FTP, la copia
+# su GitHub (LFS) non viene più aggiornata da aprile 2026.
+PARQUET_URL = "https://gbvitrano.it/anncus/data/anncsu-indirizzi.parquet"
 GEOJSON_PATH = os.path.join("dati", "comuni.geojson")
 OUTPUT_DIR   = "dati"
 BASE_NAME    = "anncsu_stats"
@@ -32,12 +32,18 @@ MAX_BACKUPS  = 1
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def download_parquet(url: str) -> pd.DataFrame:
+def download_parquet(url: str) -> tuple[pd.DataFrame, str | None]:
+    """Ritorna (df, data ISO del file dal Last-Modified HTTP, o None)."""
     print(f"Scarico parquet da {url} …")
-    r = requests.get(url, timeout=120)
+    r = requests.get(url, timeout=600)
     r.raise_for_status()
     print(f"  {len(r.content) / 1_048_576:.1f} MB scaricati")
-    return pd.read_parquet(io.BytesIO(r.content))
+    dati_al = None
+    lm = r.headers.get("Last-Modified")
+    if lm:
+        dati_al = parsedate_to_datetime(lm).astimezone(timezone.utc).isoformat()
+        print(f"  Last-Modified: {dati_al}")
+    return pd.read_parquet(io.BytesIO(r.content)), dati_al
 
 
 def aggregate(df: pd.DataFrame) -> list[dict]:
@@ -106,7 +112,7 @@ def timestamp_str() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
 
-def save_outputs(rows: list[dict], output_dir: str, base_name: str, max_backups: int):
+def save_outputs(rows: list[dict], output_dir: str, base_name: str, max_backups: int, dati_al: str | None = None):
     os.makedirs(output_dir, exist_ok=True)
     backup_dir = os.path.join(output_dir, "backup")
     os.makedirs(backup_dir, exist_ok=True)
@@ -144,6 +150,7 @@ def save_outputs(rows: list[dict], output_dir: str, base_name: str, max_backups:
     json_path = os.path.join(output_dir, f"{base_name}.json")
     output = {
         "aggiornato_il": datetime.now(timezone.utc).isoformat(),
+        "dati_al": dati_al,   # Last-Modified del parquet = data del DB civici
         "fonte": PARQUET_URL,
         "dati": rows,
     }
@@ -154,9 +161,9 @@ def save_outputs(rows: list[dict], output_dir: str, base_name: str, max_backups:
 
 if __name__ == "__main__":
     print(f"=== Avvio estrazione ANNCSU — {datetime.now(timezone.utc).isoformat()} ===")
-    df   = download_parquet(PARQUET_URL)
+    df, dati_al = download_parquet(PARQUET_URL)
     print(f"Righe totali: {len(df):,}  —  Colonne: {list(df.columns)}")
     rows = aggregate(df)
     print(f"Comuni trovati: {len(rows)}")
-    save_outputs(rows, OUTPUT_DIR, BASE_NAME, MAX_BACKUPS)
+    save_outputs(rows, OUTPUT_DIR, BASE_NAME, MAX_BACKUPS, dati_al)
     print("=== Completato ===")

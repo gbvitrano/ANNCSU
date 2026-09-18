@@ -506,6 +506,8 @@ header #controls #comune-dropdown + .ctrl-sep { display: none; }
 .legend-item.legend-sub .legend-label, .legend-item.legend-total .legend-label { font-size: 12px; }
 .legend-item.legend-total .legend-label { color: var(--text-muted); }
 .legend-item.legend-total .legend-count { color: var(--text-primary); }
+.legend-db-date { font-size: 10.5px; color: var(--text-muted); padding: 5px 14px 6px; border-top: 1px solid var(--border-color); }
+.legend-db-date:empty { display: none; }
 #legend-close {
   display: none; position: absolute; top: 6px; right: 6px;
   color: var(--text-muted); font-size: 13px; line-height: 1; padding: 4px; border-radius: 4px;
@@ -1312,6 +1314,7 @@ body:has(#comuni-analisi-panel.open) #active-filters-strip { max-width: var(--dr
   .legend-count { font-size: 17px; }
   #legend-close { display: flex !important; }
   #legend.legend-collapsed .legend-content { display: none; }
+  #legend.legend-collapsed .legend-db-date { display: none; }
   #legend.legend-collapsed { padding-bottom: 8px; }
 
   #ods-logo { bottom: 84px; right: 8px; }

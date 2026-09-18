@@ -190,6 +190,11 @@
       const res = await fetch('dati/anncsu_stats.json');
       const data = await res.json();
       anncsuStatsMap = {};
+      const dbDate = data.dati_al || data.aggiornato_il;   // dati_al = Last-Modified del parquet
+      if (dbDate) {
+        const d = new Date(dbDate).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        document.getElementById('legend-db-date').textContent = `DB numeri civici aggiornato al ${d}`;
+      }
       (data.dati || []).forEach(row => {
         const cod = parseInt(row.CODICE_ISTAT, 10);
         if (!isNaN(cod)) anncsuStatsMap[cod] = row;
